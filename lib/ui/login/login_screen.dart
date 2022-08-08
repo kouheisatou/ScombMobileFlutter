@@ -40,11 +40,11 @@ class LoginScreen extends StatelessWidget {
                 urlRequest: URLRequest(url: Uri.parse(SCOMB_LOGIN_PAGE_URL)),
               );
             },
-            child: Text("ログイン"),
+            child: const Text("ログイン"),
           ),
           Expanded(
             child: Visibility(
-              visible: false,
+              visible: true,
               child: InAppWebView(
                 onWebViewCreated: (InAppWebViewController controller) {
                   webView = controller;
@@ -56,8 +56,20 @@ class LoginScreen extends StatelessWidget {
                     url: Uri.parse(SCOMBZ_DOMAIN),
                     name: SESSION_COOKIE_ID,
                   );
-                  sessionId = cookie?.value;
-                  print(sessionId);
+
+                  // two step auth page
+                  if (cookie == null) {
+                    // skip twp step auth
+                    await webView?.evaluateJavascript(
+                      source:
+                          "document.getElementById('$TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID').click();",
+                    );
+                  }
+                  // login succeeded
+                  else {
+                    sessionId = cookie.value;
+                    print("session_id=$sessionId");
+                  }
                 },
                 onReceivedHttpAuthRequest: (controller, challenge) async {
                   return HttpAuthResponse(
