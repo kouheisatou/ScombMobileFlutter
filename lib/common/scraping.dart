@@ -3,8 +3,8 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:scomb_mobile/common/values.dart';
 
-Future<Document?> getTimetable(
-  String sessionId,
+Future<Document?> fetchTimetable(
+  String? sessionId,
   int year,
   Term term,
 ) async {
@@ -18,6 +18,7 @@ Future<Document?> getTimetable(
   var url = "$SCOMB_TIMETABLE_URL?risyunen=$year&kikanCd=$termInt";
 
   var dio = Dio();
+  dio.options.baseUrl = url;
 
   var response = await dio.get(
     url,
@@ -29,6 +30,11 @@ Future<Document?> getTimetable(
   );
 
   var document = parse(response.data);
+  var currentUrl = "https://${response.realUri.host}${response.realUri.path}";
 
-  return document;
+  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
+    return null;
+  } else {
+    return document;
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../common/values.dart';
 
@@ -70,6 +71,7 @@ class LoginScreen extends StatelessWidget {
                   else {
                     sessionId = cookie.value;
                     print("session_id=$sessionId");
+                    Fluttertoast.showToast(msg: "session_id : $sessionId");
                     Navigator.pop(context);
                   }
                 },

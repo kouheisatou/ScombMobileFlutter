@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../common/scraping.dart';
 import '../../common/values.dart';
@@ -29,12 +30,15 @@ class TimetableScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              final doc = await getTimetable(
-                "ZDkwZjYwMTMtNjkzZC00OWMyLTkyODYtNmI2OGM5ODNjYzM2",
+              final doc = await fetchTimetable(
+                sessionId,
                 2022,
                 Term.First,
               );
               print(doc?.body?.text);
+              Fluttertoast.showToast(
+                msg: "fetched_document : ${doc?.body?.text}",
+              );
             },
             child: const Text("時間割画面"),
           ),
