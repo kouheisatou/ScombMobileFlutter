@@ -4,16 +4,16 @@ import 'package:scomb_mobile/ui/taskcalendar/task_calendar_screen.dart';
 import 'package:scomb_mobile/ui/tasklist/task_list_screen.dart';
 import 'package:scomb_mobile/ui/timetable/timetable_screen.dart';
 
-class BottomNavigationWidget extends StatefulWidget {
-  const BottomNavigationWidget({Key? key}) : super(key: key);
+class ScombMobile extends StatefulWidget {
+  const ScombMobile({Key? key}) : super(key: key);
 
   @override
-  State<BottomNavigationWidget> createState() {
-    return _BottomNavigationWidgetState();
+  State<ScombMobile> createState() {
+    return _ScombMobileState();
   }
 }
 
-class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
+class _ScombMobileState extends State<ScombMobile> {
   static const _screens = [
     TimetableScreen(),
     TaskListScreen(),
@@ -31,7 +31,12 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      title: "ScombMobile",
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Scaffold(
         body: _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
@@ -41,10 +46,12 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
                 icon: Icon(Icons.table_chart), label: "時間割"),
             BottomNavigationBarItem(icon: Icon(Icons.list), label: "課題一覧"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month), label: "締切カレンダー"),
+                icon: Icon(Icons.calendar_month), label: "カレンダー"),
             BottomNavigationBarItem(icon: Icon(Icons.settings), label: "設定"),
           ],
           type: BottomNavigationBarType.fixed,
-        ));
+        ),
+      ),
+    );
   }
 }
