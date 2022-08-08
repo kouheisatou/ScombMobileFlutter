@@ -43,8 +43,9 @@ class LoginScreen extends StatelessWidget {
             child: const Text("ログイン"),
           ),
           Expanded(
-            child: Visibility(
-              visible: true,
+            child: Container(
+              width: 0,
+              height: 0,
               child: InAppWebView(
                 onWebViewCreated: (InAppWebViewController controller) {
                   webView = controller;
