@@ -43,9 +43,10 @@ class LoginScreen extends StatelessWidget {
             child: const Text("ログイン"),
           ),
           Expanded(
-            child: Container(
-              width: 0,
+            child: SizedBox(
+              width: double.infinity,
               height: 0,
+              // visible: true,
               child: InAppWebView(
                 onWebViewCreated: (InAppWebViewController controller) {
                   webView = controller;
@@ -70,6 +71,7 @@ class LoginScreen extends StatelessWidget {
                   else {
                     sessionId = cookie.value;
                     print("session_id=$sessionId");
+                    Navigator.pop(context);
                   }
                 },
                 onReceivedHttpAuthRequest: (controller, challenge) async {
