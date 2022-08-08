@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:scomb_mobile/values.dart';
+import 'package:scomb_mobile/common/values.dart';
 
 class TestApp extends StatefulWidget {
   TestApp({Key? key}) : super(key: key);

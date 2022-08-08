@@ -41,3 +41,9 @@ const TASK_LIST_TYPE_CULUMN_CSS_NM = "tasklist-contents";
 const TASK_LIST_TITLE_CULUMN_CSS_NM = "tasklist-title";
 // 課題行の締切列のCSS
 const TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline";
+
+enum Term { First, Second }
+
+// shared resource
+String? sessionId;
+String? userName;

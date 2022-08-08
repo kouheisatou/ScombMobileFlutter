@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import '../../values.dart';
+import '../../common/values.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
-  String sessionId = "not init yet";
   String username = "";
   String password = "";
   InAppWebViewController? webView;
