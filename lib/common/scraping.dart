@@ -1,6 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
-import 'package:http/http.dart' as http;
 import 'package:scomb_mobile/common/values.dart';
 
 Future<Document?> getTimetable(
@@ -15,19 +15,20 @@ Future<Document?> getTimetable(
     termInt = 20;
   }
 
-  final url = "$SCOMB_TIMETABLE_URL?risyunen=$year&kikanCd=$termInt";
+  var url = "$SCOMB_TIMETABLE_URL?risyunen=$year&kikanCd=$termInt";
 
-  final response = await http.get(
-    Uri.parse(url),
-    headers: {SESSION_COOKIE_ID: sessionId},
+  var dio = Dio();
+
+  var response = await dio.get(
+    url,
+    options: Options(
+      headers: {
+        "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+      },
+    ),
   );
 
-  if (response.statusCode != 200) {
-    print('ERROR: ${response.statusCode}');
-    return null;
-  }
-
-  final document = parse(response.body);
+  var document = parse(response.data);
 
   return document;
 }

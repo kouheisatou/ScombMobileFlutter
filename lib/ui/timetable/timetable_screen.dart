@@ -30,11 +30,11 @@ class TimetableScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () async {
               final doc = await getTimetable(
-                "ZTdjNjVmYzMtOTVlYS00ZTY5LWE0ZjYtNTEwNTc1NmEyN2Rj",
+                "ZDkwZjYwMTMtNjkzZC00OWMyLTkyODYtNmI2OGM5ODNjYzM2",
                 2022,
                 Term.First,
               );
-              print(doc?.getElementById("login")?.text);
+              print(doc?.body?.text);
             },
             child: const Text("時間割画面"),
           ),
