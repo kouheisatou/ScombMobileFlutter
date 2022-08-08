@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:scomb_mobile/basic_auth_test.dart';
 import 'package:scomb_mobile/ui/login/login_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  // runApp(const MyApp());
+  runApp(TestApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class ScombMobile extends StatelessWidget {
+  const ScombMobile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginScreen(),
+      home: LoginScreen(),
     );
   }
 }
