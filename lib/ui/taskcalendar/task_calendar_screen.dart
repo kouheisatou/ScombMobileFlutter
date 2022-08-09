@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:scomb_mobile/common/network_screen_state.dart';
+import 'package:scomb_mobile/common/network_screen.dart';
 
-import '../scomb_mobile.dart';
-
-class TaskCalendarScreen extends StatefulWidget {
-  TaskCalendarScreen(this.parent, {Key? key}) : super(key: key);
-  ScombMobileState parent;
+class TaskCalendarScreen extends NetworkScreen {
+  TaskCalendarScreen(super.parent, super.title, {Key? key}) : super(key: key);
 
   @override
-  State<TaskCalendarScreen> createState() => _TaskCalendarScreenState(
-        parent,
-        "締切カレンダー",
-      );
+  State<TaskCalendarScreen> createState() => _TaskCalendarScreenState();
 }
 
 class _TaskCalendarScreenState extends NetworkScreenState<TaskCalendarScreen> {
-  _TaskCalendarScreenState(super.parent, super.title);
-
   @override
-  void fetchData() {
-    // TODO: implement fetchData
-  }
-
-  @override
-  void refreshData() {
-    // TODO: implement refreshData
+  Future<void> getFromServerAndSaveToSharedResource() {
+    // TODO: implement getFromServer
+    return super.getFromServerAndSaveToSharedResource();
   }
 
   @override

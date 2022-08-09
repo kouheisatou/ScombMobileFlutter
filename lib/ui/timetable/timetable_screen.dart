@@ -1,39 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scomb_mobile/common/network_screen_state.dart';
+import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/timetable_scraping.dart';
 
 import '../../common/values.dart';
-import '../scomb_mobile.dart';
 
-class TimetableScreen extends StatefulWidget {
-  TimetableScreen(this.parent, {Key? key}) : super(key: key);
-
-  ScombMobileState parent;
+class TimetableScreen extends NetworkScreen {
+  TimetableScreen(super.parent, super.title, {Key? key}) : super(key: key);
 
   @override
   State<TimetableScreen> createState() {
-    return _TimetableScreenState(parent, "時間割");
+    return _TimetableScreenState();
   }
 }
 
 class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
-  _TimetableScreenState(super.parent, super.title);
+  _TimetableScreenState();
 
-  Future<void> refreshData() async {
-    initialized = false;
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    if (initialized) {
-      return;
-    }
-
-    setState(() {
-      isLoading = true;
-    });
-
+  @override
+  Future<void> getFromServerAndSaveToSharedResource() async {
     // todo recover from local db
     var savedSessionId = "saved_session_id";
     var yearFromSettings = 2022;
@@ -47,19 +32,13 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
     // permission error
     if (timetable == null) {
-      parent.navToLoginScreen();
-      return;
+      widget.parent.navToLoginScreen();
+      throw Exception("not_permitted");
     }
     // saved session id passed
     else {
       sessionId ??= savedSessionId;
     }
-
-    setState(() {
-      isLoading = false;
-    });
-
-    initialized = true;
   }
 
   @override

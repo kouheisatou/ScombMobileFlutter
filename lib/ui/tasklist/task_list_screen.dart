@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:scomb_mobile/common/network_screen_state.dart';
+import 'package:scomb_mobile/common/network_screen.dart';
 
-import '../scomb_mobile.dart';
-
-class TaskListScreen extends StatefulWidget {
-  TaskListScreen(this.parent, {Key? key}) : super(key: key);
-  ScombMobileState parent;
+class TaskListScreen extends NetworkScreen {
+  TaskListScreen(super.parent, super.title);
 
   @override
-  State<TaskListScreen> createState() => _TaskListScreenState(
-        parent,
-        "課題・テスト一覧",
-      );
+  State<TaskListScreen> createState() => _TaskListScreenState();
 }
 
 class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
-  _TaskListScreenState(super.parent, super.title);
-
   @override
-  void fetchData() {
-    // TODO: implement fetchData
-  }
-
-  @override
-  void refreshData() {
-    // TODO: implement refreshData
+  Future<void> getFromServerAndSaveToSharedResource() {
+    // TODO: implement getFromServer
+    return super.getFromServerAndSaveToSharedResource();
   }
 
   @override
