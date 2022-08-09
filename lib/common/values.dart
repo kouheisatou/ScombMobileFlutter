@@ -42,7 +42,20 @@ const TASK_LIST_TITLE_CULUMN_CSS_NM = "tasklist-title";
 // 課題行の締切列のCSS
 const TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline";
 
-enum Term { First, Second }
+class Term {
+  static int FIRST = 10;
+  static int SECOND = 20;
+}
+
+class DayOfWeek {
+  static int MONDAY = 0;
+  static int TUESDAY = 1;
+  static int WEDNESDEY = 2;
+  static int THURSDAY = 3;
+  static int FRIDAY = 4;
+  static int SATURDAY = 5;
+  static int SUNDAY = 6;
+}
 
 // shared resource
 String? sessionId;
