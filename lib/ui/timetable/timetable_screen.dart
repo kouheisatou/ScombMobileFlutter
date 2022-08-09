@@ -13,51 +13,12 @@ class TimetableScreen extends StatefulWidget {
 
   @override
   State<TimetableScreen> createState() {
-    return _TimetableScreenState(parent);
+    return _TimetableScreenState(parent, "時間割");
   }
 }
 
-class _TimetableScreenState extends State<TimetableScreen>
-    implements NetworkScreenState {
-  _TimetableScreenState(this.parent) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => fetchData());
-  }
-
-  @override
-  ScombMobileState parent;
-  @override
-  bool initialized = false;
-  @override
-  bool isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("時間割"),
-      ),
-      body: !isLoading
-          ? Column(
-              children: [
-                OutlinedButton(
-                  onPressed: () {
-                    Fluttertoast.showToast(
-                      msg: "timetable : $timetable",
-                    );
-                  },
-                  child: const Text("取得済み時間割表示"),
-                ),
-                OutlinedButton(
-                  onPressed: () async {
-                    refreshData();
-                  },
-                  child: const Text("時間割再取得"),
-                ),
-              ],
-            )
-          : const CircularProgressIndicator(),
-    );
-  }
+class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
+  _TimetableScreenState(super.parent, super.title);
 
   Future<void> refreshData() async {
     initialized = false;
@@ -99,5 +60,27 @@ class _TimetableScreenState extends State<TimetableScreen>
     });
 
     initialized = true;
+  }
+
+  @override
+  Widget innerBuild() {
+    return Column(
+      children: [
+        OutlinedButton(
+          onPressed: () {
+            Fluttertoast.showToast(
+              msg: "timetable : $timetable",
+            );
+          },
+          child: const Text("取得済み時間割表示"),
+        ),
+        OutlinedButton(
+          onPressed: () async {
+            refreshData();
+          },
+          child: const Text("時間割再取得"),
+        ),
+      ],
+    );
   }
 }

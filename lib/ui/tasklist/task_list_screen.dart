@@ -8,29 +8,14 @@ class TaskListScreen extends StatefulWidget {
   ScombMobileState parent;
 
   @override
-  State<TaskListScreen> createState() => _TaskListScreenState(parent);
+  State<TaskListScreen> createState() => _TaskListScreenState(
+        parent,
+        "課題・テスト一覧",
+      );
 }
 
-class _TaskListScreenState extends State<TaskListScreen>
-    implements NetworkScreenState {
-  _TaskListScreenState(this.parent);
-
-  @override
-  ScombMobileState parent;
-  @override
-  bool initialized = false;
-  @override
-  bool isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("課題・テスト一覧"),
-      ),
-      body: const Center(child: Text("リスト")),
-    );
-  }
+class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
+  _TaskListScreenState(super.parent, super.title);
 
   @override
   void fetchData() {
@@ -40,5 +25,10 @@ class _TaskListScreenState extends State<TaskListScreen>
   @override
   void refreshData() {
     // TODO: implement refreshData
+  }
+
+  @override
+  Widget innerBuild() {
+    return const Center(child: Text("リスト"));
   }
 }

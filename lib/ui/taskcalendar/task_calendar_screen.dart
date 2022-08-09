@@ -8,29 +8,14 @@ class TaskCalendarScreen extends StatefulWidget {
   ScombMobileState parent;
 
   @override
-  State<TaskCalendarScreen> createState() => _TaskCalendarScreenState(parent);
+  State<TaskCalendarScreen> createState() => _TaskCalendarScreenState(
+        parent,
+        "締切カレンダー",
+      );
 }
 
-class _TaskCalendarScreenState extends State<TaskCalendarScreen>
-    implements NetworkScreenState {
-  _TaskCalendarScreenState(this.parent);
-
-  @override
-  ScombMobileState parent;
-  @override
-  bool initialized = false;
-  @override
-  bool isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("締切カレンダー"),
-      ),
-      body: const Center(child: Text("カレンダー画面")),
-    );
-  }
+class _TaskCalendarScreenState extends NetworkScreenState<TaskCalendarScreen> {
+  _TaskCalendarScreenState(super.parent, super.title);
 
   @override
   void fetchData() {
@@ -40,5 +25,10 @@ class _TaskCalendarScreenState extends State<TaskCalendarScreen>
   @override
   void refreshData() {
     // TODO: implement refreshData
+  }
+
+  @override
+  Widget innerBuild() {
+    return const Center(child: Text("カレンダー画面"));
   }
 }
