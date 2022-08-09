@@ -24,21 +24,23 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     var yearFromSettings = 2022;
     var termFromSettings = Term.FIRST;
 
-    timetable = await fetchTimetable(
+    var newTimetable = await fetchTimetable(
       sessionId ?? savedSessionId,
       yearFromSettings,
       termFromSettings,
     );
 
     // permission error
-    if (timetable == null) {
+    if (newTimetable == null) {
       widget.parent.navToLoginScreen();
+      widget.initialized = false;
       throw Exception("not_permitted");
     }
     // saved session id passed
     else {
       sessionId ??= savedSessionId;
     }
+    timetable = newTimetable;
   }
 
   @override
