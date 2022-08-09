@@ -16,14 +16,19 @@ Future<List<List<ClassCell?>>?> fetchTimetable(
   var dio = Dio();
   dio.options.baseUrl = url;
 
-  var response = await dio.get(
-    url,
-    options: Options(
-      headers: {
-        "Cookie": "$SESSION_COOKIE_ID=$sessionId",
-      },
-    ),
-  );
+  Response? response;
+  try {
+    response = await dio.get(
+      url,
+      options: Options(
+        headers: {
+          "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+        },
+      ),
+    );
+  } catch (e) {
+    return null;
+  }
 
   var document = parse(response.data);
   var currentUrl = "https://${response.realUri.host}${response.realUri.path}";

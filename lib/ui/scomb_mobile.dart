@@ -82,7 +82,7 @@ class ScombMobileState extends State<ScombMobile> {
 
   Future<void> fetchData() async {
     // todo recover from local db
-    var savedSessionId = "";
+    var savedSessionId = "saved_session_id";
     var yearFromSettings = 2022;
     var termFromSettings = Term.FIRST;
 
@@ -97,6 +97,10 @@ class ScombMobileState extends State<ScombMobile> {
       setState(() {
         selectedIndex = null;
       });
+    }
+    // saved session id passed
+    else {
+      sessionId ??= savedSessionId;
     }
   }
 }

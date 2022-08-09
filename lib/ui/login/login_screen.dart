@@ -53,7 +53,10 @@ class LoginScreen extends StatelessWidget {
                 onWebViewCreated: (InAppWebViewController controller) {
                   webView = controller;
                 },
-                onLoadStart: (controller, url) {},
+                onLoadError: (controller, url, code, message) {
+                  Fluttertoast.showToast(msg: "ERROR : $message");
+                  parent.setIndex(0);
+                },
                 onLoadStop: (controller, url) async {
                   CookieManager cookieManager = CookieManager.instance();
                   Cookie? cookie = await cookieManager.getCookie(
@@ -73,7 +76,6 @@ class LoginScreen extends StatelessWidget {
                   else {
                     sessionId = cookie.value;
                     print("session_id=$sessionId");
-                    Fluttertoast.showToast(msg: "session_id : $sessionId");
                     // set bottom navigation timetable
                     parent.setIndex(0);
                     parent.fetchData();
