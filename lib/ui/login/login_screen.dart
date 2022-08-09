@@ -5,10 +5,16 @@ import 'package:scomb_mobile/ui/scomb_mobile.dart';
 
 import '../../common/values.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginScreen(this.parent, {Key? key}) : super(key: key);
 
   ScombMobileState parent;
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   String username = "";
   String password = "";
   InAppWebViewController? webView;
@@ -55,7 +61,7 @@ class LoginScreen extends StatelessWidget {
                 },
                 onLoadError: (controller, url, code, message) {
                   Fluttertoast.showToast(msg: "ERROR : $message");
-                  parent.setIndex(0);
+                  widget.parent.setBottomNavIndex(0);
                 },
                 onLoadStop: (controller, url) async {
                   CookieManager cookieManager = CookieManager.instance();
@@ -77,8 +83,7 @@ class LoginScreen extends StatelessWidget {
                     sessionId = cookie.value;
                     print("session_id=$sessionId");
                     // set bottom navigation timetable
-                    parent.setIndex(0);
-                    parent.fetchData();
+                    widget.parent.setBottomNavIndex(0);
                   }
                 },
                 onReceivedHttpAuthRequest: (controller, challenge) async {

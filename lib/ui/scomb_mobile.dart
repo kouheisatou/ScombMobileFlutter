@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scomb_mobile/common/timetable_scraping.dart';
-import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/settings/setting_screen.dart';
 import 'package:scomb_mobile/ui/taskcalendar/task_calendar_screen.dart';
 import 'package:scomb_mobile/ui/tasklist/task_list_screen.dart';
@@ -18,22 +16,24 @@ class ScombMobile extends StatefulWidget {
 }
 
 class ScombMobileState extends State<ScombMobile> {
-  final List<StatelessWidget> _screens = [];
+  final List<StatefulWidget> _screens = [];
   ScombMobileState() {
-    _screens.add(const TimetableScreen());
-    _screens.add(const TaskListScreen());
-    _screens.add(const TaskCalendarScreen());
-    _screens.add(const SettingScreen());
+    _screens.add(TimetableScreen(this));
+    _screens.add(TaskListScreen(this));
+    _screens.add(TaskCalendarScreen(this));
+    _screens.add(SettingScreen(this));
     _screens.add(LoginScreen(this));
-
-    fetchData();
   }
 
   // bottom nav selection
   // null : login screen
   int? selectedIndex = 0;
 
-  void setIndex(int? index) {
+  void navToLoginScreen() {
+    setBottomNavIndex(null);
+  }
+
+  void setBottomNavIndex(int? index) {
     setState(() {
       selectedIndex = index;
     });
@@ -54,7 +54,11 @@ class ScombMobileState extends State<ScombMobile> {
             ? BottomNavigationBar(
                 // set bottom selection last
                 currentIndex: selectedIndex ?? 0,
-                onTap: setIndex,
+                onTap: (int index) {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
                     icon: Icon(Icons.table_chart),
@@ -78,29 +82,5 @@ class ScombMobileState extends State<ScombMobile> {
             : null,
       ),
     );
-  }
-
-  Future<void> fetchData() async {
-    // todo recover from local db
-    var savedSessionId = "saved_session_id";
-    var yearFromSettings = 2022;
-    var termFromSettings = Term.FIRST;
-
-    timetable = await fetchTimetable(
-      sessionId ?? savedSessionId,
-      yearFromSettings,
-      termFromSettings,
-    );
-
-    // permission error
-    if (timetable == null) {
-      setState(() {
-        selectedIndex = null;
-      });
-    }
-    // saved session id passed
-    else {
-      sessionId ??= savedSessionId;
-    }
   }
 }
