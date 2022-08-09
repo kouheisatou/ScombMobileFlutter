@@ -1,5 +1,7 @@
 import 'package:scomb_mobile/ui/timetable/class_cell.dart';
 
+import '../ui/tasklist/task.dart';
+
 const SCOMBZ_DOMAIN = "https://scombz.shibaura-it.ac.jp";
 const SCOMB_LOGIN_PAGE_URL =
     "https://scombz.shibaura-it.ac.jp/saml/login?idp=http://adfs.sic.shibaura-it.ac.jp/adfs/services/trust";
@@ -59,7 +61,10 @@ class DayOfWeek {
   static int SUNDAY = 6;
 }
 
+enum TaskType { Task, Test, Questionnaire, Others }
+
 // shared resource
 String? sessionId;
 String? userName;
 List<List<ClassCell?>>? timetable;
+List<Task>? taskList;

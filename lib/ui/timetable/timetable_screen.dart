@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/timetable_scraping.dart';
 
@@ -48,19 +47,12 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     return Column(
       children: [
         OutlinedButton(
-          onPressed: () {
-            Fluttertoast.showToast(
-              msg: "timetable : $timetable",
-            );
-          },
-          child: const Text("取得済み時間割表示"),
-        ),
-        OutlinedButton(
           onPressed: () async {
             refreshData();
           },
           child: const Text("時間割再取得"),
         ),
+        Text(timetable.toString())
       ],
     );
   }
