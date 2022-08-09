@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/ui/scomb_mobile.dart';
 
 import '../../common/values.dart';
 
 class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  LoginScreen(this.parent, {Key? key}) : super(key: key);
 
+  ScombMobileState parent;
   String username = "";
   String password = "";
   InAppWebViewController? webView;
@@ -72,7 +74,9 @@ class LoginScreen extends StatelessWidget {
                     sessionId = cookie.value;
                     print("session_id=$sessionId");
                     Fluttertoast.showToast(msg: "session_id : $sessionId");
-                    Navigator.pop(context);
+                    // set bottom navigation timetable
+                    parent.setIndex(0);
+                    parent.fetchData();
                   }
                 },
                 onReceivedHttpAuthRequest: (controller, challenge) async {
