@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
+import 'package:scomb_mobile/common/db/task.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
-import 'package:scomb_mobile/ui/tasklist/task.dart';
 
 Future<List<Task>?> fetchTasks(
   String? sessionId,
@@ -51,7 +51,7 @@ List<Task> _constructTasks(Document document) {
         taskType = TaskType.Test;
         break;
       case "アンケート":
-        taskType = TaskType.Questionnaire;
+        taskType = TaskType.Survey;
         break;
       default:
         taskType = TaskType.Others;

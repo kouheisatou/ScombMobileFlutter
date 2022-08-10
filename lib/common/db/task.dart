@@ -4,9 +4,9 @@ import 'package:scomb_mobile/common/values.dart';
 class Task {
   String title;
   String className;
-  TaskType taskType;
+  late TaskType taskType;
   int deadline;
-  String url;
+  late String url;
 
   String? classId;
   String? reportId;
@@ -16,6 +16,14 @@ class Task {
     var uri = Uri.parse(url);
     classId = uri.queryParameters["idnumber"];
     reportId = uri.queryParameters["reportId"];
+    id = DateTime.now().millisecondsSinceEpoch;
+  }
+
+  // task as survey
+  Task.constructSurvey(
+      this.title, this.className, this.deadline, this.reportId, this.classId) {
+    taskType = TaskType.Survey;
+    url = "$SURVEY_PAGE_URL?$reportId";
     id = DateTime.now().millisecondsSinceEpoch;
   }
 

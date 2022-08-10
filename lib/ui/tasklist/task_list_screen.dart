@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
-import 'package:scomb_mobile/common/scraping/task_scraping.dart';
+import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
 
 import '../../common/db/scomb_mobile_database.dart';
 import '../../common/db/setting_entity.dart';
@@ -24,12 +24,13 @@ class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
 
     if (savedSessionId == null) throw Exception("ログインが必要です");
 
-    var newTaskList = await fetchTasks(sessionId ?? savedSessionId);
+    // var newTaskList = await fetchTasks(sessionId ?? savedSessionId);
+    var newTaskList = await fetchSurveys(sessionId ?? savedSessionId);
 
     if (newTaskList == null) {
       widget.parent.navToLoginScreen();
       widget.initialized = false;
-      throw Exception("セッションの有効期限切れ");
+      throw Exception("セッションIDの有効期限切れ");
     }
     // saved session id passed
     else {

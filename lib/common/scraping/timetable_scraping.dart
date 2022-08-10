@@ -3,7 +3,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:scomb_mobile/common/values.dart';
 
-import '../../ui/timetable/class_cell.dart';
+import '../db/class_cell.dart';
 
 // if returned null, permission denied
 Future<List<List<ClassCell?>>?> fetchTimetable(

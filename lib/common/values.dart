@@ -1,6 +1,6 @@
-import 'package:scomb_mobile/ui/timetable/class_cell.dart';
+import 'package:scomb_mobile/common/db/class_cell.dart';
 
-import '../ui/tasklist/task.dart';
+import 'db/task.dart';
 
 const SCOMBZ_DOMAIN = "https://scombz.shibaura-it.ac.jp";
 const SCOMB_LOGIN_PAGE_URL =
@@ -10,6 +10,9 @@ const SCOMB_LOGGED_OUT_PAGE_URL = "https://scombz.shibaura-it.ac.jp/login";
 const SCOMB_TIMETABLE_URL = "https://scombz.shibaura-it.ac.jp/lms/timetable";
 const CLASS_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course?idnumber=";
 const TASK_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/task";
+const SURVEY_LIST_PAGE_URL =
+    "https://scombz.shibaura-it.ac.jp/portal/surveys/list";
+const SURVEY_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/surveys/take";
 
 // ScombのCookieとして保存されているセッションIDのキー
 const SESSION_COOKIE_ID = "SESSION";
@@ -46,6 +49,8 @@ const TASK_LIST_TITLE_CULUMN_CSS_NM = "tasklist-title";
 // 課題行の締切列のCSS
 const TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline";
 
+// --------アンケート一覧ページCSS---------
+
 class Term {
   static int FIRST = 10;
   static int SECOND = 20;
@@ -61,7 +66,7 @@ class DayOfWeek {
   static int SUNDAY = 6;
 }
 
-enum TaskType { Task, Test, Questionnaire, Others }
+enum TaskType { Task, Test, Survey, Others }
 
 // shared resource
 String? sessionId;

@@ -42,7 +42,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     if (newTimetable == null) {
       widget.parent.navToLoginScreen();
       widget.initialized = false;
-      throw Exception("not_permitted");
+      throw Exception("セッションIDの有効期限切れ");
     }
     // saved session id passed
     else {
