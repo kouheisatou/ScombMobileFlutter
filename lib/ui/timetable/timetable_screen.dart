@@ -19,7 +19,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   @override
   Future<void> getFromServerAndSaveToSharedResource() async {
     // todo recover from local db
-    var savedSessionId = "saved_session_id";
+    var savedSessionId = "NzYyYmIyNjktYjA0Yy00NGZlLTg2ZjktYmZlODZlMzk0Mjli";
     var yearFromSettings = 2022;
     var termFromSettings = Term.FIRST;
 

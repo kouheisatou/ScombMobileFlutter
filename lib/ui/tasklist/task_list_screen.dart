@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
+import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/tasklist/task_scraping.dart';
 
 import '../../common/values.dart';
@@ -34,16 +36,52 @@ class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
 
   @override
   Widget innerBuild() {
-    return Column(
-      children: [
-        OutlinedButton(
-          onPressed: () async {
-            refreshData();
-          },
-          child: const Text("課題リスト再取得"),
-        ),
-        Text(taskList.toString())
-      ],
+    return ListView.builder(
+      itemCount: taskList?.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: determineIcon(taskList?[index].taskType),
+          title: Container(
+              alignment: Alignment.centerLeft, //任意のプロパティ
+              width: double.infinity,
+              child: Text('${taskList?[index].title}')),
+          subtitle: Column(
+            children: [
+              Text('${taskList?[index].className}\n'),
+              Text(timeToString(taskList?[index].deadline ?? 0)),
+            ],
+          ),
+          dense: true,
+        );
+      },
     );
+  }
+
+  Widget determineIcon(TaskType? taskType) {
+    print(taskType);
+    Fluttertoast.showToast(msg: "$taskType");
+    if (taskType == TaskType.Task) {
+      return Column(
+        children: [
+          const Icon(Icons.task),
+          Text('課題'),
+        ],
+      );
+    } else if (taskType == TaskType.Test) {
+      return Column(children: [
+        const Icon(Icons.text_snippet),
+        Text('テスト'),
+      ]);
+    } else if (taskType == TaskType.Questionnaire) {
+      return Column(children: [
+        const Icon(Icons.question_answer),
+        Text('アンケート'),
+      ]);
+    } else {
+      return Column(children: [
+        const Icon(Icons.task_alt),
+        Text('その他'),
+      ]);
+    }
   }
 }
