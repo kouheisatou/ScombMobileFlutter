@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
-import 'package:scomb_mobile/ui/tasklist/task_scraping.dart';
+import 'package:scomb_mobile/common/scraping/task_scraping.dart';
 
 import '../../common/values.dart';
 
