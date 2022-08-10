@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 
+import '../../common/db/scomb_mobile_database.dart';
+import '../../common/db/setting_entity.dart';
 import '../../common/values.dart';
 
 class TimetableScreen extends NetworkScreen {
@@ -18,8 +20,15 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
   @override
   Future<void> getFromServerAndSaveToSharedResource() async {
-    // todo recover from local db
-    var savedSessionId = "saved_session_id";
+    // recover session_id from local db
+    var db = await AppDatabase.getDatabase();
+    var sessionIdSetting =
+        await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
+    var savedSessionId = sessionIdSetting?.settingValue;
+
+    if (savedSessionId == null) throw Exception("ログインが必要です");
+
+    // recover from timetable setting
     var yearFromSettings = 2022;
     var termFromSettings = Term.FIRST;
 

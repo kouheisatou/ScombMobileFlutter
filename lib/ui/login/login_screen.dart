@@ -99,6 +99,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     name: SESSION_COOKIE_ID,
                   );
 
+                  var currentUrl = "https://${url?.host}${url?.path}";
+                  // login failed
+                  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
+                    initState();
+                  }
+
                   // two step auth page
                   if (cookie == null) {
                     // skip twp step auth
@@ -120,6 +126,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // set bottom navigation timetable
                       widget.parent.setBottomNavIndex(0);
+                    }
+                    // login failed
+                    else {
+                      initState();
                     }
                   }
                 },
