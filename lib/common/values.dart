@@ -70,8 +70,35 @@ class DayOfWeek {
 
 enum TaskType { Task, Test, Survey, Others }
 
+Map<int, String> DAY_OF_WEEK = {
+  0: "月曜",
+  1: "火曜",
+  2: "水曜",
+  3: "木曜",
+  4: "金曜",
+  5: "土曜",
+};
+
+Map<int, String> PERIOD = {
+  0: "1限",
+  1: "2限",
+  2: "3限",
+  3: "4限",
+  4: "5限",
+  5: "6限",
+  6: "7限",
+};
+
 // shared resource
 String? sessionId;
 String? userName;
-List<List<ClassCell?>> timetable = List.filled(7, List.filled(6, null));
+List<List<ClassCell?>> timetable = [
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+];
 List<Task> taskList = [];

@@ -71,6 +71,8 @@ void _constructTimetableArray(Document doc, int year, int term) {
       if (id == null || room == null) continue;
       var newCell = ClassCell(id, name, teachers, room, c, r, year, term);
       timetable[r][c] = newCell;
+
+      print("$r-$c : ${timetable[r][c]?.name}");
       print("fetched_timetable : $newCell");
     }
   }
