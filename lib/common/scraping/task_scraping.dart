@@ -51,7 +51,7 @@ void _constructTasks(Document document) {
     if (row.children[2].children.isEmpty) continue;
     var title = row.children[2].children[0].text;
 
-    var url = row.children[2].children[0].attributes["href"];
+    var url = "$SCOMBZ_DOMAIN${row.children[2].children[0].attributes["href"]}";
 
     var deadlineElement =
         row.getElementsByClassName(TASK_LIST_DEADLINE_CULUMN_CSS_NM);

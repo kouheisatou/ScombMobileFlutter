@@ -3,8 +3,9 @@ import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
 import 'package:scomb_mobile/common/scraping/task_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
+import 'package:scomb_mobile/ui/single_page_scomb.dart';
 
-import '../../common/values.dart';
+import '../common/values.dart';
 
 class TaskListScreen extends NetworkScreen {
   TaskListScreen(super.parent, super.title);
@@ -60,7 +61,18 @@ class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         currentTask.title,
         textAlign: TextAlign.left,
       ),
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SinglePageScomb(
+              currentTask.url,
+              currentTask.title,
+            ),
+            fullscreenDialog: true,
+          ),
+        );
+      },
       subtitle: Column(
         children: [
           Align(

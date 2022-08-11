@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../scomb_mobile.dart';
+import 'scomb_mobile.dart';
 
 class SettingScreen extends StatefulWidget {
   SettingScreen(this.parent, {Key? key}) : super(key: key);

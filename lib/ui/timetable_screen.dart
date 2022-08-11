@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 
-import '../../common/values.dart';
+import '../common/values.dart';
 
 class TimetableScreen extends NetworkScreen {
   TimetableScreen(super.parent, super.title, {Key? key}) : super(key: key);
