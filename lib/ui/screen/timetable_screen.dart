@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/db/class_cell.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 import 'package:scomb_mobile/ui/dialog/class_detail_dialog.dart';
@@ -107,15 +108,25 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
                   timetable[row][col]?.customColorInt ?? Colors.white70.value,
                 ),
                 onPressed: () async {
-                  var detailDialog = ClassDetailDialog(timetable[row][col]!);
+                  var currentClassCell = timetable[row][col]!;
+                  var detailDialog = ClassDetailDialog(currentClassCell);
                   await showDialog(
                     context: context,
                     builder: (_) {
                       return detailDialog;
                     },
                   );
-                  await timetable[row][col]
-                      ?.setColor(detailDialog.selectedColor);
+                  await currentClassCell.setColor(detailDialog.selectedColor);
+
+                  // apply color to same class
+                  applyToAllCells((classCell) async {
+                    if (classCell != null) {
+                      if (classCell.classId == currentClassCell.classId) {
+                        await classCell.setColor(detailDialog.selectedColor);
+                      }
+                    }
+                  });
+
                   setState(() {});
                 },
                 onLongPress: () async {
@@ -128,5 +139,14 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
               ),
       ),
     );
+  }
+
+  Future<void> applyToAllCells(
+      void Function(ClassCell? classCell) process) async {
+    for (int r = 0; r < timetable.length; r++) {
+      for (int c = 0; c < timetable[0].length; c++) {
+        process(timetable[r][c]);
+      }
+    }
   }
 }
