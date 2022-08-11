@@ -16,7 +16,12 @@ class SinglePageScomb extends StatelessWidget {
         title: Text(title),
       ),
       body: InAppWebView(
-        initialUrlRequest: URLRequest(url: Uri.parse(url)),
+        initialUrlRequest: URLRequest(
+          url: Uri.parse(url),
+          headers: {
+            "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+          },
+        ),
         onLoadStop: (controller, currentUrl) async {
           await controller.evaluateJavascript(
             source: "document.getElementById('$HEADER_ELEMENT_ID').remove();",
