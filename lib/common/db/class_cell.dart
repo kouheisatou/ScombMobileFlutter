@@ -14,8 +14,17 @@ class ClassCell {
   int term;
   int? customColorInt;
 
-  ClassCell(this.classId, this.name, this.teachers, this.room, this.dayOfWeek,
-      this.period, this.year, this.term, this.customColorInt);
+  ClassCell(
+    this.classId,
+    this.name,
+    this.teachers,
+    this.room,
+    this.dayOfWeek,
+    this.period,
+    this.year,
+    this.term,
+    this.customColorInt,
+  );
 
   Future<void> setColor(int? colorInt) async {
     if (colorInt == null) return;

@@ -61,7 +61,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     dayOfWeekCells.add(
       const Text(" 　"),
     );
-    DAY_OF_WEEK.forEach(
+    DAY_OF_WEEK_MAP.forEach(
       (key, value) {
         dayOfWeekCells.add(
           Expanded(
@@ -83,7 +83,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     tableCells.add(
       Container(
         child: Center(
-          child: Text(textAlign: TextAlign.center, PERIOD[row] ?? ""),
+          child: Text(textAlign: TextAlign.center, PERIOD_MAP[row] ?? ""),
         ),
       ),
     );

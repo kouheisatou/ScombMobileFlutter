@@ -8,7 +8,7 @@ const SCOMB_LOGIN_PAGE_URL =
 const SCOMB_HOME_URL = "https://scombz.shibaura-it.ac.jp/portal/home";
 const SCOMB_LOGGED_OUT_PAGE_URL = "https://scombz.shibaura-it.ac.jp/login";
 const SCOMB_TIMETABLE_URL = "https://scombz.shibaura-it.ac.jp/lms/timetable";
-const CLASS_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course?idnumber=";
+const CLASS_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course";
 const TASK_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/task";
 const SURVEY_LIST_PAGE_URL =
     "https://scombz.shibaura-it.ac.jp/portal/surveys/list";
@@ -70,7 +70,7 @@ class DayOfWeek {
 
 enum TaskType { Task, Test, Survey, Others }
 
-Map<int, String> DAY_OF_WEEK = {
+Map<int, String> DAY_OF_WEEK_MAP = {
   0: "月曜",
   1: "火曜",
   2: "水曜",
@@ -79,7 +79,7 @@ Map<int, String> DAY_OF_WEEK = {
   5: "土曜",
 };
 
-Map<int, String> PERIOD = {
+Map<int, String> PERIOD_MAP = {
   0: "1限",
   1: "2限",
   2: "3限",
@@ -87,6 +87,16 @@ Map<int, String> PERIOD = {
   4: "5限",
   5: "6限",
   6: "7限",
+};
+
+Map<int, String> PERIOD_TIME_MAP = {
+  0: "9:00 ~ 10:40",
+  1: "10:50 ~ 12:30",
+  2: "13:20 ~ 15:00",
+  3: "15:10 ~ 16:50",
+  4: "17:00 ~ 18:40",
+  5: "18:50 ~ 20:30",
+  6: "21:40 ~ 23:10",
 };
 
 // shared resource
