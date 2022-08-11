@@ -38,19 +38,14 @@ void _constructTasks(Document document) {
     var className = row.children[0].text;
 
     late TaskType taskType;
-    switch (row.children[1].text) {
-      case "課題":
-        taskType = TaskType.Task;
-        break;
-      case "テスト":
-        taskType = TaskType.Test;
-        break;
-      case "アンケート":
-        taskType = TaskType.Survey;
-        break;
-      default:
-        taskType = TaskType.Others;
-        break;
+    if (row.children[1].text.contains("課題")) {
+      taskType = TaskType.Task;
+    } else if (row.children[1].text.contains("テスト")) {
+      taskType = TaskType.Test;
+    } else if (row.children[1].text.contains("アンケート")) {
+      taskType = TaskType.Survey;
+    } else {
+      taskType = TaskType.Others;
     }
 
     var title = row.children[2].text;
