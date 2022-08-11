@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../common/values.dart';
 
@@ -27,11 +26,11 @@ class SinglePageScomb extends StatelessWidget {
           );
 
           // on load diff page
-          if ("${currentUrl?.host}${currentUrl?.path}" != url) {
-            if (await canLaunchUrl(Uri.parse(url))) {
-              await launchUrl(Uri.parse(url));
-            }
-          }
+          // if ("${currentUrl?.host}${currentUrl?.path}" != url) {
+          //   if (await canLaunchUrl(Uri.parse(url))) {
+          //     await launchUrl(Uri.parse(url));
+          //   }
+          // }
         },
       ),
     );

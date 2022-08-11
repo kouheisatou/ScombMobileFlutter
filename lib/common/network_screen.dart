@@ -52,9 +52,13 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       widget.initialized = false;
       Fluttertoast.showToast(msg: e.toString());
     } finally {
-      setState(() {
+      try {
+        setState(() {
+          widget.isLoading = false;
+        });
+      } catch (e) {
         widget.isLoading = false;
-      });
+      }
     }
   }
 
