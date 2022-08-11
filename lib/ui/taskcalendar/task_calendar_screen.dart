@@ -10,9 +10,9 @@ class TaskCalendarScreen extends NetworkScreen {
 
 class _TaskCalendarScreenState extends NetworkScreenState<TaskCalendarScreen> {
   @override
-  Future<void> getFromServerAndSaveToSharedResource() {
+  Future<void> getFromServerAndSaveToSharedResource(savedSessionId) {
     // TODO: implement getFromServer
-    return super.getFromServerAndSaveToSharedResource();
+    return super.getFromServerAndSaveToSharedResource(savedSessionId);
   }
 
   @override

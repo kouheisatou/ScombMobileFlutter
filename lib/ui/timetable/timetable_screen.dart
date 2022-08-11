@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 
-import '../../common/db/scomb_mobile_database.dart';
-import '../../common/db/setting_entity.dart';
 import '../../common/values.dart';
 
 class TimetableScreen extends NetworkScreen {
@@ -19,36 +17,16 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   _TimetableScreenState();
 
   @override
-  Future<void> getFromServerAndSaveToSharedResource() async {
-    // recover session_id from local db
-    var db = await AppDatabase.getDatabase();
-    var sessionIdSetting =
-        await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
-    var savedSessionId = sessionIdSetting?.settingValue;
-
-    if (savedSessionId == null) throw Exception("ログインが必要です");
-
-    // recover from timetable setting
+  Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
+    // todo recover from timetable setting
     var yearFromSettings = 2022;
     var termFromSettings = Term.FIRST;
 
-    var newTimetable = await fetchTimetable(
+    await fetchTimetable(
       sessionId ?? savedSessionId,
       yearFromSettings,
       termFromSettings,
     );
-
-    // permission error
-    if (newTimetable == null) {
-      widget.parent.navToLoginScreen();
-      widget.initialized = false;
-      throw Exception("セッションIDの有効期限切れ");
-    }
-    // saved session id passed
-    else {
-      sessionId ??= savedSessionId;
-    }
-    timetable = newTimetable;
   }
 
   @override

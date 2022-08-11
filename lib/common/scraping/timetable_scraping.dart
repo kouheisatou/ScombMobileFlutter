@@ -6,7 +6,7 @@ import 'package:scomb_mobile/common/values.dart';
 import '../db/class_cell.dart';
 
 // if returned null, permission denied
-Future<List<List<ClassCell?>>?> fetchTimetable(
+Future<void> fetchTimetable(
   String? sessionId,
   int year,
   int term,
@@ -16,32 +16,26 @@ Future<List<List<ClassCell?>>?> fetchTimetable(
   var dio = Dio();
   dio.options.baseUrl = url;
 
-  Response? response;
-  try {
-    response = await dio.get(
-      url,
-      options: Options(
-        headers: {
-          "Cookie": "$SESSION_COOKIE_ID=$sessionId",
-        },
-      ),
-    );
-  } catch (e) {
-    return null;
-  }
+  Response? response = await dio.get(
+    url,
+    options: Options(
+      headers: {
+        "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+      },
+    ),
+  );
 
   var document = parse(response.data);
   var currentUrl = "https://${response.realUri.host}${response.realUri.path}";
 
-  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) return null;
+  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
+    throw Exception("セッションIDの有効期限切れ");
+  }
 
-  return _constructTimetableArray(document, year, term);
+  _constructTimetableArray(document, year, term);
 }
 
-List<List<ClassCell?>>? _constructTimetableArray(
-    Document doc, int year, int term) {
-  List<List<ClassCell?>> timetable = List.filled(7, List.filled(6, null));
-
+void _constructTimetableArray(Document doc, int year, int term) {
   var timetableRows = doc.getElementsByClassName(TIMETABLE_ROW_CSS_CLASS_NM);
   for (var r = 0; r < timetableRows.length; r++) {
     var timetableCells =
@@ -80,5 +74,4 @@ List<List<ClassCell?>>? _constructTimetableArray(
       print("fetched_timetable : $newCell");
     }
   }
-  return timetable;
 }

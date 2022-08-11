@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/scomb_mobile.dart';
+
+import 'db/scomb_mobile_database.dart';
+import 'db/setting_entity.dart';
 
 class NetworkScreen extends StatefulWidget {
   NetworkScreen(this.parent, this.title, {Key? key}) : super(key: key);
@@ -28,9 +32,24 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     });
 
     try {
-      await getFromServerAndSaveToSharedResource();
+      // recover session_id from local db
+      var db = await AppDatabase.getDatabase();
+      var sessionIdSetting =
+          await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
+      var savedSessionId = sessionIdSetting?.settingValue;
+
+      if (savedSessionId == null) throw Exception("ログインが必要です");
+
+      await getFromServerAndSaveToSharedResource(savedSessionId);
+
+      // saved session id passed
+      sessionId ??= savedSessionId;
+
       widget.initialized = true;
     } catch (e) {
+      // if fetch failed, auto nav to login screen
+      widget.parent.navToLoginScreen();
+      widget.initialized = false;
       Fluttertoast.showToast(msg: e.toString());
     } finally {
       setState(() {
@@ -51,7 +70,8 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
 
   /// fetch data and save as shared resource here
   // if fail, throw exception
-  Future<void> getFromServerAndSaveToSharedResource() async {}
+  Future<void> getFromServerAndSaveToSharedResource(
+      String savedSessionId) async {}
 
   NetworkScreenState() {
     // run fetch after build

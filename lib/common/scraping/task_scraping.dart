@@ -5,37 +5,32 @@ import 'package:scomb_mobile/common/db/task.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
-Future<List<Task>?> fetchTasks(
+Future<void> fetchTasks(
   String? sessionId,
 ) async {
   var dio = Dio();
   dio.options.baseUrl = TASK_LIST_PAGE_URL;
 
-  Response? response;
-  try {
-    response = await dio.get(
-      TASK_LIST_PAGE_URL,
-      options: Options(
-        headers: {
-          "Cookie": "$SESSION_COOKIE_ID=$sessionId",
-        },
-      ),
-    );
-  } catch (e) {
-    return null;
-  }
+  Response? response = await dio.get(
+    TASK_LIST_PAGE_URL,
+    options: Options(
+      headers: {
+        "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+      },
+    ),
+  );
 
   var document = parse(response.data);
   var currentUrl = "https://${response.realUri.host}${response.realUri.path}";
 
-  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) return null;
+  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
+    throw Exception("セッションIDの有効期限切れ");
+  }
 
-  return _constructTasks(document);
+  _constructTasks(document);
 }
 
-List<Task> _constructTasks(Document document) {
-  List<Task> newTasks = [];
-
+void _constructTasks(Document document) {
   var taskRows = document.getElementsByClassName(TASK_LIST_CSS_CLASS_NM);
   for (var row in taskRows) {
     if (row.children.length < 5) continue;
@@ -71,8 +66,6 @@ List<Task> _constructTasks(Document document) {
     if (url == null) continue;
     var newTask = Task(title, className, taskType, deadline, url);
     print("fetched_tasks : $newTask");
-    newTasks.add(newTask);
+    taskList.add(newTask);
   }
-
-  return newTasks;
 }

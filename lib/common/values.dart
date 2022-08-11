@@ -73,5 +73,5 @@ enum TaskType { Task, Test, Survey, Others }
 // shared resource
 String? sessionId;
 String? userName;
-List<List<ClassCell?>>? timetable;
-List<Task>? taskList;
+List<List<ClassCell?>> timetable = List.filled(7, List.filled(6, null));
+List<Task> taskList = [];

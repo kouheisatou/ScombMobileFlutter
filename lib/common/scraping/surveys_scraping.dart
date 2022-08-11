@@ -7,33 +7,28 @@ import 'package:scomb_mobile/common/values.dart';
 
 import '../db/task.dart';
 
-Future<List<Task>?> fetchSurveys(
+Future<void> fetchSurveys(
   String? sessionId,
 ) async {
-  Response? response;
-  try {
-    response = await http.get(
-      Uri.parse(SURVEY_LIST_PAGE_URL),
-      headers: {
-        "Cookie": "$SESSION_COOKIE_ID=$sessionId",
-      },
-    );
-  } catch (e) {
-    return null;
-  }
+  Response? response = await http.get(
+    Uri.parse(SURVEY_LIST_PAGE_URL),
+    headers: {
+      "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+    },
+  );
 
   var document = parse(response.body);
 
   var currentUrl =
       "https://${response.request?.url.host}${response.request?.url.path}";
-  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) return null;
+  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
+    throw Exception("セッションIDの有効期限切れ");
+  }
 
-  return _constructSurveys(document);
+  _constructSurveys(document);
 }
 
-List<Task> _constructSurveys(Document document) {
-  List<Task> newSurveys = [];
-
+void _constructSurveys(Document document) {
   var contents = document.getElementsByClassName("result-list");
 
   for (var row in contents) {
@@ -62,8 +57,6 @@ List<Task> _constructSurveys(Document document) {
       classId,
     );
     print(newSurvey);
-    newSurveys.add(newSurvey);
+    taskList.add(newSurvey);
   }
-
-  return newSurveys;
 }
