@@ -19,7 +19,7 @@ class ClassDetailDialog extends StatelessWidget {
             selectedColor = await showDialog<int>(
               context: context,
               builder: (builder) {
-                return const ColorPickerDialog();
+                return ColorPickerDialog();
               },
             );
           },
