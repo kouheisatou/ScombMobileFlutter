@@ -6,7 +6,10 @@ String timeToString(int time) {
   return formatter.format(date);
 }
 
-int stringToTime(String time) {
+int stringToTime(String time, {bool includeSecond = true}) {
   var formatter = DateFormat("yyyy/MM/dd HH:mm:ss");
+  if (!includeSecond) {
+    formatter = DateFormat("yyyy/MM/dd HH:mm");
+  }
   return formatter.parse(time).millisecondsSinceEpoch;
 }

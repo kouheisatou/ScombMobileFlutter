@@ -23,7 +23,7 @@ class Task {
   Task.constructSurvey(
       this.title, this.className, this.deadline, this.reportId, this.classId) {
     taskType = TaskType.Survey;
-    url = "$SURVEY_PAGE_URL?$reportId";
+    url = "$SURVEY_PAGE_URL?surveyId=$reportId";
     id = DateTime.now().millisecondsSinceEpoch;
   }
 

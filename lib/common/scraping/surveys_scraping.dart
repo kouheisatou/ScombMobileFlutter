@@ -1,6 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
 import '../db/task.dart';
@@ -8,26 +10,22 @@ import '../db/task.dart';
 Future<List<Task>?> fetchSurveys(
   String? sessionId,
 ) async {
-  var dio = Dio();
-  dio.options.baseUrl = SURVEY_LIST_PAGE_URL;
-
   Response? response;
   try {
-    response = await dio.get(
-      TASK_LIST_PAGE_URL,
-      options: Options(
-        headers: {
-          "Cookie": "$SESSION_COOKIE_ID=$sessionId",
-        },
-      ),
+    response = await http.get(
+      Uri.parse(SURVEY_LIST_PAGE_URL),
+      headers: {
+        "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+      },
     );
   } catch (e) {
     return null;
   }
 
-  var document = parse(response.data);
-  var currentUrl = "https://${response.realUri.host}${response.realUri.path}";
+  var document = parse(response.body);
 
+  var currentUrl =
+      "https://${response.request?.url.host}${response.request?.url.path}";
   if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) return null;
 
   return _constructSurveys(document);
@@ -36,13 +34,36 @@ Future<List<Task>?> fetchSurveys(
 List<Task> _constructSurveys(Document document) {
   List<Task> newSurveys = [];
 
-  print(document.getElementById("surveyTakeList")?.text);
+  var contents = document.getElementsByClassName("result-list");
+
+  for (var row in contents) {
+    if (row.children.length < 7) continue;
+    var surveyId = row.children[0].attributes["value"];
+    var classId = row.children[1].attributes["value"];
+
+    // if this survey is done, skip this
+    if (row.children[2]
+        .getElementsByClassName("portal-surveys-status")
+        .isNotEmpty) continue;
+
+    var title = row.children[2].children[0].text;
+
+    if (row.children[3].children.length < 3) continue;
+    var deadline = row.children[3].children[2].text;
+
+    if (row.children[5].children.isEmpty) continue;
+    var surveyDomain = row.children[5].children[0].text;
+
+    var newSurvey = Task.constructSurvey(
+      title,
+      surveyDomain,
+      stringToTime(deadline, includeSecond: false),
+      surveyId,
+      classId,
+    );
+    print(newSurvey);
+    newSurveys.add(newSurvey);
+  }
 
   return newSurveys;
-}
-
-// not yet implemented
-Future<List<Task>>? fetchTasksAndSurveys(String? sessionId) async {
-  List<Task> newTaskList = [];
-  return newTaskList;
 }

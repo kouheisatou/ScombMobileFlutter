@@ -50,6 +50,8 @@ const TASK_LIST_TITLE_CULUMN_CSS_NM = "tasklist-title";
 const TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline";
 
 // --------アンケート一覧ページCSS---------
+// アンケート1行分のCSS
+const SURVEY_ROW_CSS_NM = "result-list";
 
 class Term {
   static int FIRST = 10;
