@@ -39,41 +39,53 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     );
   }
 
-  Table buildTable() {
+  Widget buildTable() {
     for (int r = 0; r < timetable.length; r++) {
       for (int c = 0; c < timetable[0].length; c++) {
         print("$r-$c : ${timetable[r][c]?.name}");
       }
     }
 
-    List<TableRow> tableRows = [];
-
     // day of week row
-    List<TableCell> dayOfWeekCells = [const TableCell(child: Text(""))];
-    DAY_OF_WEEK.forEach((key, value) {
-      dayOfWeekCells.add(TableCell(child: Center(child: Text(value))));
-    });
-    var dayOfWeekRow = TableRow(children: dayOfWeekCells);
-    tableRows.add(dayOfWeekRow);
+    List<Widget> tableRows = [buildDayOfWeekRow()];
 
     // main rows
     for (int r = 0; r < timetable.length; r++) {
       tableRows.add(buildTableRow(r));
     }
-    return Table(
+
+    return Column(
       children: tableRows,
-      columnWidths: const <int, TableColumnWidth>{
-        0: IntrinsicColumnWidth(),
-      },
     );
   }
 
-  TableRow buildTableRow(int row) {
-    List<TableCell> tableCells = [];
+  Row buildDayOfWeekRow() {
+    List<Widget> dayOfWeekCells = [];
+    // day of week row
+    dayOfWeekCells.add(
+      const Text(" 　"),
+    );
+    DAY_OF_WEEK.forEach(
+      (key, value) {
+        dayOfWeekCells.add(
+          Expanded(
+            child: Center(
+              child: Text(value),
+            ),
+          ),
+        );
+      },
+    );
+
+    return Row(children: dayOfWeekCells);
+  }
+
+  Widget buildTableRow(int row) {
+    List<Widget> tableCells = [];
 
     // period column
     tableCells.add(
-      TableCell(
+      Container(
         child: Center(
           child: Text(textAlign: TextAlign.center, PERIOD[row] ?? ""),
         ),
@@ -85,22 +97,28 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       tableCells.add(buildTableCell(row, c));
     }
 
-    return TableRow(children: tableCells);
+    return Expanded(child: Row(children: tableCells));
   }
 
-  TableCell buildTableCell(int row, int col) {
-    return TableCell(
-      child: timetable[row][col] == null
-          ? const Text("")
-          : OutlinedButton(
-              onPressed: () {
-                Fluttertoast.showToast(msg: timetable[row][col]?.room ?? "");
-              },
-              child: Text(
-                timetable[row][col]?.name ?? "",
-                textAlign: TextAlign.center,
+  Widget buildTableCell(int row, int col) {
+    return Expanded(
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: timetable[row][col] == null
+            ? const Text("")
+            : MaterialButton(
+                color: Colors.white70,
+                onPressed: () {},
+                onLongPress: () {
+                  Fluttertoast.showToast(msg: timetable[row][col]?.room ?? "");
+                },
+                child: Text(
+                  timetable[row][col]?.name ?? "",
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
+      ),
     );
   }
 }
