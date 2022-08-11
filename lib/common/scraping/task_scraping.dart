@@ -48,7 +48,8 @@ void _constructTasks(Document document) {
       taskType = TaskType.Others;
     }
 
-    var title = row.children[2].text;
+    if (row.children[2].children.isEmpty) continue;
+    var title = row.children[2].children[0].text;
 
     var url = row.children[2].children[0].attributes["href"];
 
