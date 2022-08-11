@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:scomb_mobile/ui/setting_screen.dart';
-import 'package:scomb_mobile/ui/task_calendar_screen.dart';
-import 'package:scomb_mobile/ui/task_list_screen.dart';
-import 'package:scomb_mobile/ui/timetable_screen.dart';
+import 'package:scomb_mobile/ui/screen/setting_screen.dart';
+import 'package:scomb_mobile/ui/screen/task_calendar_screen.dart';
+import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
+import 'package:scomb_mobile/ui/screen/timetable_screen.dart';
 
-import 'login_screen.dart';
+import 'screen/login_screen.dart';
 
 class ScombMobile extends StatefulWidget {
   const ScombMobile({Key? key}) : super(key: key);

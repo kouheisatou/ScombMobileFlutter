@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import '../common/values.dart';
+import '../../common/values.dart';
 
 class SinglePageScomb extends StatelessWidget {
   SinglePageScomb(this.url, this.title, {Key? key}) : super(key: key);

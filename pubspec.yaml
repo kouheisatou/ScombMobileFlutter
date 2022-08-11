@@ -48,6 +48,9 @@ dependencies:
   floor: ^1.3.0
   # open default browser
   url_launcher: ^6.1.5
+  # color picker
+  flutter_colorpicker: ^1.0.3
+
 
 flutter_native_splash:
   image: "resources/splash.png"

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
+import 'package:scomb_mobile/ui/dialog/class_detail_dialog.dart';
 
-import '../common/db/scomb_mobile_database.dart';
-import '../common/values.dart';
+import '../../common/values.dart';
 
 class TimetableScreen extends NetworkScreen {
   TimetableScreen(super.parent, super.title, {Key? key}) : super(key: key);
@@ -103,18 +103,22 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
         child: timetable[row][col] == null
             ? const Text("")
             : MaterialButton(
-                color: Color(timetable[row][col]?.customColorInt ??
-                    Colors.white70.value),
+                color: Color(
+                  timetable[row][col]?.customColorInt ?? Colors.white70.value,
+                ),
                 onPressed: () async {
-                  await timetable[row][col]?.setColor(Colors.red.value);
+                  var detailDialog = ClassDetailDialog(timetable[row][col]!);
+                  await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return detailDialog;
+                    },
+                  );
+                  await timetable[row][col]
+                      ?.setColor(detailDialog.selectedColor);
                   setState(() {});
                 },
                 onLongPress: () async {
-                  var db = await AppDatabase.getDatabase();
-                  var classCellFromDB = await db.currentClassCellDao
-                      .getClassCell(timetable[row][col]?.classId ?? "");
-                  print(classCellFromDB);
-
                   Fluttertoast.showToast(msg: timetable[row][col]?.room ?? "");
                 },
                 child: Text(

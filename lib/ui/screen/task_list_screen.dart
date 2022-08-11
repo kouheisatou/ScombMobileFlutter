@@ -3,9 +3,9 @@ import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
 import 'package:scomb_mobile/common/scraping/task_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
-import 'package:scomb_mobile/ui/single_page_scomb.dart';
+import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
-import '../common/values.dart';
+import '../../common/values.dart';
 
 class TaskListScreen extends NetworkScreen {
   TaskListScreen(super.parent, super.title);

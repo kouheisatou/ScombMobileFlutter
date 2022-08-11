@@ -17,10 +17,10 @@ class ClassCell {
   ClassCell(this.classId, this.name, this.teachers, this.room, this.dayOfWeek,
       this.period, this.year, this.term, this.customColorInt);
 
-  Future<void> setColor(int colorInt) async {
+  Future<void> setColor(int? colorInt) async {
+    if (colorInt == null) return;
     var db = await AppDatabase.getDatabase();
     customColorInt = colorInt;
-    print(this);
     await db.currentClassCellDao.insertClassCell(this);
   }
 
