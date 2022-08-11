@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 
+import '../common/db/scomb_mobile_database.dart';
 import '../common/values.dart';
 
 class TimetableScreen extends NetworkScreen {
@@ -40,12 +41,6 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   }
 
   Widget buildTable() {
-    for (int r = 0; r < timetable.length; r++) {
-      for (int c = 0; c < timetable[0].length; c++) {
-        print("$r-$c : ${timetable[r][c]?.name}");
-      }
-    }
-
     // day of week row
     List<Widget> tableRows = [buildDayOfWeekRow()];
 
@@ -108,9 +103,18 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
         child: timetable[row][col] == null
             ? const Text("")
             : MaterialButton(
-                color: Colors.white70,
-                onPressed: () {},
-                onLongPress: () {
+                color: Color(timetable[row][col]?.customColorInt ??
+                    Colors.white70.value),
+                onPressed: () async {
+                  await timetable[row][col]?.setColor(Colors.red.value);
+                  setState(() {});
+                },
+                onLongPress: () async {
+                  var db = await AppDatabase.getDatabase();
+                  var classCellFromDB = await db.currentClassCellDao
+                      .getClassCell(timetable[row][col]?.classId ?? "");
+                  print(classCellFromDB);
+
                   Fluttertoast.showToast(msg: timetable[row][col]?.room ?? "");
                 },
                 child: Text(

@@ -63,6 +63,8 @@ class _$AppDatabase extends AppDatabase {
 
   SettingDao? _currentSettingDaoInstance;
 
+  ClassCellDao? _currentClassCellDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -83,6 +85,8 @@ class _$AppDatabase extends AppDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `settings` (`settingKey` TEXT NOT NULL, `settingValue` TEXT NOT NULL, PRIMARY KEY (`settingKey`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `name` TEXT NOT NULL, `teachers` TEXT NOT NULL, `room` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `period` INTEGER NOT NULL, `year` INTEGER NOT NULL, `term` INTEGER NOT NULL, `customColorInt` INTEGER, PRIMARY KEY (`classId`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -94,6 +98,12 @@ class _$AppDatabase extends AppDatabase {
   SettingDao get currentSettingDao {
     return _currentSettingDaoInstance ??=
         _$SettingDao(database, changeListener);
+  }
+
+  @override
+  ClassCellDao get currentClassCellDao {
+    return _currentClassCellDaoInstance ??=
+        _$ClassCellDao(database, changeListener);
   }
 }
 
@@ -141,5 +151,69 @@ class _$SettingDao extends SettingDao {
   @override
   Future<void> insertSetting(Setting setting) async {
     await _settingInsertionAdapter.insert(setting, OnConflictStrategy.replace);
+  }
+}
+
+class _$ClassCellDao extends ClassCellDao {
+  _$ClassCellDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _classCellInsertionAdapter = InsertionAdapter(
+            database,
+            'class_cell',
+            (ClassCell item) => <String, Object?>{
+                  'classId': item.classId,
+                  'name': item.name,
+                  'teachers': item.teachers,
+                  'room': item.room,
+                  'dayOfWeek': item.dayOfWeek,
+                  'period': item.period,
+                  'year': item.year,
+                  'term': item.term,
+                  'customColorInt': item.customColorInt
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<ClassCell> _classCellInsertionAdapter;
+
+  @override
+  Future<List<ClassCell>> getAllClasses() async {
+    return _queryAdapter.queryList('SELECT * FROM class_cell',
+        mapper: (Map<String, Object?> row) => ClassCell(
+            row['classId'] as String,
+            row['name'] as String,
+            row['teachers'] as String,
+            row['room'] as String,
+            row['dayOfWeek'] as int,
+            row['period'] as int,
+            row['year'] as int,
+            row['term'] as int,
+            row['customColorInt'] as int?));
+  }
+
+  @override
+  Future<ClassCell?> getClassCell(String classId) async {
+    return _queryAdapter.query('SELECT * FROM class_cell WHERE classId = ?1',
+        mapper: (Map<String, Object?> row) => ClassCell(
+            row['classId'] as String,
+            row['name'] as String,
+            row['teachers'] as String,
+            row['room'] as String,
+            row['dayOfWeek'] as int,
+            row['period'] as int,
+            row['year'] as int,
+            row['term'] as int,
+            row['customColorInt'] as int?),
+        arguments: [classId]);
+  }
+
+  @override
+  Future<void> insertClassCell(ClassCell classCell) async {
+    await _classCellInsertionAdapter.insert(
+        classCell, OnConflictStrategy.replace);
   }
 }

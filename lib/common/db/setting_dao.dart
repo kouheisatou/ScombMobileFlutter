@@ -9,6 +9,7 @@ abstract class SettingDao {
   @Query("SELECT * FROM settingKey")
   Future<List<Setting>> getAllSetting();
 
+  // onConflict = replace
   @insert
   Future<void> insertSetting(Setting setting);
 

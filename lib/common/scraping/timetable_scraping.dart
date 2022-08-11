@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/values.dart';
 
 import '../db/class_cell.dart';
@@ -32,10 +33,12 @@ Future<void> fetchTimetable(
     throw Exception("セッションIDの有効期限切れ");
   }
 
-  _constructTimetableArray(document, year, term);
+  await _constructTimetableArray(document, year, term);
 }
 
-void _constructTimetableArray(Document doc, int year, int term) {
+Future<void> _constructTimetableArray(Document doc, int year, int term) async {
+  var db = await AppDatabase.getDatabase();
+
   var timetableRows = doc.getElementsByClassName(TIMETABLE_ROW_CSS_CLASS_NM);
   for (var r = 0; r < timetableRows.length; r++) {
     var timetableCells =
@@ -69,11 +72,16 @@ void _constructTimetableArray(Document doc, int year, int term) {
       }
 
       if (id == null || room == null) continue;
-      var newCell = ClassCell(id, name, teachers, room, c, r, year, term);
+      var newCell = ClassCell(id, name, teachers, room, c, r, year, term, null);
       timetable[r][c] = newCell;
 
-      print("$r-$c : ${timetable[r][c]?.name}");
-      print("fetched_timetable : $newCell");
+      // load custom color from db
+      var classCellFromDB = await db.currentClassCellDao.getClassCell(id);
+      print(classCellFromDB);
+      newCell.customColorInt = classCellFromDB?.customColorInt;
+      await db.currentClassCellDao.insertClassCell(newCell);
+
+      print("$r-$c : $newCell");
     }
   }
 }
