@@ -71,7 +71,9 @@ Future<void> _constructSurveys(Document document) async {
       customColor,
     );
 
-    print(newSurvey);
+    print("fetched_survey : $newSurvey");
+
+    // if already exists
     Task? duplicatedTask;
     for (var task in taskList) {
       if (task == newSurvey) {

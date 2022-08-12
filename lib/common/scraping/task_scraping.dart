@@ -82,6 +82,8 @@ Future<void> _constructTasks(Document document) async {
       newTask.customColor = classCellFromDB?.customColorInt;
 
       print("fetched_tasks : $newTask");
+
+      // if already exists
       Task? duplicatedTask;
       for (var task in taskList) {
         if (task == newTask) {

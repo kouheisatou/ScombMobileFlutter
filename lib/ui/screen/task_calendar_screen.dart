@@ -75,6 +75,98 @@ class _TaskCalendarScreenState extends NetworkScreenState<TaskCalendarScreen> {
           ),
           onDaySelected: _onDaySelected,
           eventLoader: getTaskForDay,
+          headerStyle: HeaderStyle(titleTextFormatter: (date, _) {
+            return "${date.year}年${date.month}月";
+          }),
+          calendarBuilders: CalendarBuilders(
+            markerBuilder: (_, date, dailyTasks) {
+              List<Widget> listChildren = [];
+
+              for (int i = 0; i < dailyTasks.length; i++) {
+                if (i < 2 || dailyTasks.length == 3) {
+                  listChildren.add(
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3, right: 3),
+                      child: Container(
+                        height: 10,
+                        width: 10,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.grey,
+                              spreadRadius: 0.6,
+                              blurRadius: 0.6,
+                            )
+                          ],
+                          border: Border.all(
+                            width: 0.3,
+                            color: Colors.black,
+                          ),
+                          color: dailyTasks[i].customColor != null
+                              ? Color(dailyTasks[i].customColor!)
+                              : Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  listChildren.add(
+                    Text(
+                      " +${(dailyTasks.length - i).toString()}",
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                  );
+                  break;
+                }
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Container(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: listChildren,
+                  ),
+                ),
+              );
+            },
+            dowBuilder: (_, day) {
+              late String text;
+              TextStyle? style;
+              switch (day.weekday) {
+                case DateTime.monday:
+                  text = "月";
+                  break;
+                case DateTime.tuesday:
+                  text = "火";
+                  break;
+                case DateTime.wednesday:
+                  text = "水";
+                  break;
+                case DateTime.thursday:
+                  text = "木";
+                  break;
+                case DateTime.friday:
+                  text = "金";
+                  break;
+                case DateTime.saturday:
+                  text = "土";
+                  style = const TextStyle(color: Colors.blue);
+                  break;
+                case DateTime.sunday:
+                  text = "日";
+                  style = const TextStyle(color: Colors.red);
+                  break;
+              }
+              return Center(
+                  child: Text(
+                text,
+                style: style,
+              ));
+            },
+          ),
           onFormatChanged: (format) {
             if (_calendarFormat != format) {
               setState(() {
@@ -86,7 +178,10 @@ class _TaskCalendarScreenState extends NetworkScreenState<TaskCalendarScreen> {
             _focusedDay = focusedDay;
           },
         ),
-        const SizedBox(height: 8.0),
+        const Divider(
+          height: 1,
+          color: Colors.black,
+        ),
         Expanded(
           child: ValueListenableBuilder<List<Task>>(
             valueListenable: _selectedEvents,
