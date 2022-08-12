@@ -5,6 +5,7 @@ import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
+import '../../common/db/task.dart';
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
@@ -12,10 +13,10 @@ class TaskListScreen extends NetworkScreen {
   TaskListScreen(super.parent, super.title, {Key? key}) : super(key: key);
 
   @override
-  State<TaskListScreen> createState() => _TaskListScreenState();
+  State<TaskListScreen> createState() => TaskListScreenState();
 }
 
-class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
+class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
     if (taskListInitialized) return;
@@ -41,12 +42,12 @@ class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         );
       },
       itemBuilder: (BuildContext context, int index) {
-        return buildListTile(index);
+        return buildListTile(index, taskList);
       },
     );
   }
 
-  Widget buildListTile(int index) {
+  Widget buildListTile(int index, List<Task> taskList) {
     var currentTask = taskList[index];
     late Icon icon;
     switch (currentTask.taskType) {
