@@ -8,8 +8,8 @@ class Task {
   int deadline;
   late String url;
 
-  String? classId;
-  String? reportId;
+  late String classId;
+  late String reportId;
   late int id;
   int? customColor;
 
@@ -26,18 +26,30 @@ class Task {
     // if survey
     // require not null reportId and classId
     if (taskType == TaskType.Survey) {
-      this.classId = classId;
-      this.reportId = reportId;
+      this.classId = classId!;
+      this.reportId = reportId!;
     }
     // if task or test
     // require not null url
     else {
       var uri = Uri.parse(url);
-      this.classId = uri.queryParameters["idnumber"];
-      this.reportId = uri.queryParameters["reportId"];
+      this.classId = uri.queryParameters["idnumber"]!;
+      this.reportId = uri.queryParameters["reportId"]!;
     }
 
     id = DateTime.now().millisecondsSinceEpoch;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is Task) {
+      return (other.reportId == reportId &&
+          other.classId == classId &&
+          other.taskType == taskType &&
+          other.deadline == deadline);
+    } else {
+      return false;
+    }
   }
 
   @override

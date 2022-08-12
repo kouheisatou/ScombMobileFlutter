@@ -72,10 +72,13 @@ Future<void> _constructSurveys(Document document) async {
     );
 
     print(newSurvey);
-    if (taskList != null) {
-      taskList!.add(newSurvey);
-    } else {
-      taskList = [];
+    Task? duplicatedTask;
+    for (var task in taskList) {
+      if (task == newSurvey) {
+        duplicatedTask = task;
+      }
     }
+    taskList.remove(duplicatedTask);
+    taskList.add(newSurvey);
   }
 }

@@ -64,29 +64,34 @@ Future<void> _constructTasks(Document document) async {
     if (deadlineElement[0].children.length < 2) continue;
     var deadline = stringToTime(deadlineElement[0].children[1].text);
 
-    var newTask = Task(
-      title,
-      className,
-      taskType,
-      deadline,
-      url,
-      null,
-      null,
-      null,
-    );
+    try {
+      var newTask = Task(
+        title,
+        className,
+        taskType,
+        deadline,
+        url,
+        null,
+        null,
+        null,
+      );
 
-    // custom color from timetable
-    if (newTask.classId != null) {
+      // custom color from timetable
       var classCellFromDB =
-          await db.currentClassCellDao.getClassCell(newTask.classId!);
+          await db.currentClassCellDao.getClassCell(newTask.classId);
       newTask.customColor = classCellFromDB?.customColorInt;
-    }
 
-    print("fetched_tasks : $newTask");
-    if (taskList != null) {
-      taskList!.add(newTask);
-    } else {
-      taskList = [];
+      print("fetched_tasks : $newTask");
+      Task? duplicatedTask;
+      for (var task in taskList) {
+        if (task == newTask) {
+          duplicatedTask = task;
+        }
+      }
+      taskList.remove(duplicatedTask);
+      taskList.add(newTask);
+    } catch (e) {
+      continue;
     }
   }
 }

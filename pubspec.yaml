@@ -50,6 +50,8 @@ dependencies:
   url_launcher: ^6.1.5
   # color picker
   flutter_colorpicker: ^1.0.3
+  # calendar
+  table_calendar: ^3.0.6
 
 
 flutter_native_splash:

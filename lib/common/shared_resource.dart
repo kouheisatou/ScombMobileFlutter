@@ -13,4 +13,5 @@ List<List<ClassCell?>> timetable = [
   [null, null, null, null, null, null],
   [null, null, null, null, null, null],
 ];
-List<Task>? taskList = [];
+List<Task> taskList = [];
+bool taskListInitialized = false;

@@ -9,7 +9,7 @@ import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class TaskListScreen extends NetworkScreen {
-  TaskListScreen(super.parent, super.title);
+  TaskListScreen(super.parent, super.title, {Key? key}) : super(key: key);
 
   @override
   State<TaskListScreen> createState() => _TaskListScreenState();
@@ -18,15 +18,23 @@ class TaskListScreen extends NetworkScreen {
 class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
+    if (taskListInitialized) return;
     await fetchSurveys(sessionId ?? savedSessionId);
     await fetchTasks(sessionId ?? savedSessionId);
-    taskList?.sort((a, b) => a.deadline.compareTo(b.deadline));
+    taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+    taskListInitialized = true;
+  }
+
+  @override
+  Future<void> refreshData() {
+    taskListInitialized = false;
+    return super.refreshData();
   }
 
   @override
   Widget innerBuild() {
     return ListView.separated(
-      itemCount: taskList?.length ?? 0,
+      itemCount: taskList.length,
       separatorBuilder: (BuildContext context, int index) {
         return const Divider(
           height: 0.5,
@@ -39,7 +47,7 @@ class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   }
 
   Widget buildListTile(int index) {
-    var currentTask = taskList![index];
+    var currentTask = taskList[index];
     late Icon icon;
     switch (currentTask.taskType) {
       case TaskType.Task:

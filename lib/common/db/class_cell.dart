@@ -34,11 +34,11 @@ class ClassCell {
     await db.currentClassCellDao.insertClassCell(this);
 
     // apply to task color
-    taskList?.forEach((element) {
+    for (var element in taskList) {
       if (element.classId == classId) {
         element.customColor = colorInt;
       }
-    });
+    }
   }
 
   @override
