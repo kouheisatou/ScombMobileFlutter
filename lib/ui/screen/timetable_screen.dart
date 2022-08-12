@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/class_cell.dart';
-import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 import 'package:scomb_mobile/ui/dialog/class_detail_dialog.dart';
+import 'package:scomb_mobile/ui/screen/network_screen.dart';
 
+import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class TimetableScreen extends NetworkScreen {

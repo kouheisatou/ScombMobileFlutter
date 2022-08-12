@@ -6,6 +6,7 @@ import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
 import '../db/task.dart';
+import '../shared_resource.dart';
 
 Future<void> fetchSurveys(
   String? sessionId,
@@ -57,6 +58,10 @@ void _constructSurveys(Document document) {
       classId,
     );
     print(newSurvey);
-    taskList.add(newSurvey);
+    if (taskList != null) {
+      taskList!.add(newSurvey);
+    } else {
+      taskList = [];
+    }
   }
 }

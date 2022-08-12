@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scomb_mobile/common/values.dart';
+import 'package:scomb_mobile/common/shared_resource.dart';
 import 'package:scomb_mobile/ui/scomb_mobile.dart';
 
-import 'db/scomb_mobile_database.dart';
-import 'db/setting_entity.dart';
+import '../../common/db/scomb_mobile_database.dart';
+import '../../common/db/setting_entity.dart';
 
 class NetworkScreen extends StatefulWidget {
   NetworkScreen(this.parent, this.title, {Key? key}) : super(key: key);

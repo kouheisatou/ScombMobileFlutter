@@ -1,7 +1,3 @@
-import 'package:scomb_mobile/common/db/class_cell.dart';
-
-import 'db/task.dart';
-
 const SCOMBZ_DOMAIN = "https://scombz.shibaura-it.ac.jp";
 const SCOMB_LOGIN_PAGE_URL =
     "https://scombz.shibaura-it.ac.jp/saml/login?idp=http://adfs.sic.shibaura-it.ac.jp/adfs/services/trust";
@@ -98,17 +94,3 @@ Map<int, String> PERIOD_TIME_MAP = {
   5: "18:50 ~ 20:30",
   6: "21:40 ~ 23:10",
 };
-
-// shared resource
-String? sessionId;
-String? userName;
-List<List<ClassCell?>> timetable = [
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-];
-List<Task> taskList = [];

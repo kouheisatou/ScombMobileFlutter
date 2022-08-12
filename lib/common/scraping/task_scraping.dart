@@ -5,6 +5,8 @@ import 'package:scomb_mobile/common/db/task.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
+import '../shared_resource.dart';
+
 Future<void> fetchTasks(
   String? sessionId,
 ) async {
@@ -62,6 +64,10 @@ void _constructTasks(Document document) {
     if (url == null) continue;
     var newTask = Task(title, className, taskType, deadline, url);
     print("fetched_tasks : $newTask");
-    taskList.add(newTask);
+    if (taskList != null) {
+      taskList!.add(newTask);
+    } else {
+      taskList = [];
+    }
   }
 }

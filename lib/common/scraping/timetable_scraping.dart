@@ -5,6 +5,7 @@ import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/values.dart';
 
 import '../db/class_cell.dart';
+import '../shared_resource.dart';
 
 // if returned null, permission denied
 Future<void> fetchTimetable(

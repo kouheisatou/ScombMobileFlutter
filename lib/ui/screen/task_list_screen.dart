@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:scomb_mobile/common/network_screen.dart';
 import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
 import 'package:scomb_mobile/common/scraping/task_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
+import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
+import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class TaskListScreen extends NetworkScreen {
@@ -19,13 +20,13 @@ class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
     await fetchSurveys(sessionId ?? savedSessionId);
     await fetchTasks(sessionId ?? savedSessionId);
-    taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+    taskList?.sort((a, b) => a.deadline.compareTo(b.deadline));
   }
 
   @override
   Widget innerBuild() {
     return ListView.separated(
-      itemCount: taskList.length,
+      itemCount: taskList?.length ?? 0,
       separatorBuilder: (BuildContext context, int index) {
         return const Divider(
           height: 0.5,
@@ -38,7 +39,7 @@ class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   }
 
   Widget buildListTile(int index) {
-    var currentTask = taskList[index];
+    var currentTask = taskList![index];
     late Icon icon;
     switch (currentTask.taskType) {
       case TaskType.Task:

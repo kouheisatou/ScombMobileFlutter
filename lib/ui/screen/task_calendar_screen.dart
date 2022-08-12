@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scomb_mobile/common/network_screen.dart';
+import 'package:scomb_mobile/ui/screen/network_screen.dart';
 
 class TaskCalendarScreen extends NetworkScreen {
   TaskCalendarScreen(super.parent, super.title, {Key? key}) : super(key: key);

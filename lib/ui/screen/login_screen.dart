@@ -5,6 +5,7 @@ import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/ui/scomb_mobile.dart';
 
+import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class LoginScreen extends StatefulWidget {
