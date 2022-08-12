@@ -69,7 +69,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
                 if (i < 2 || dailyTasks.length == 3) {
                   listChildren.add(
                     Padding(
-                      padding: const EdgeInsets.only(left: 3, right: 3),
+                      padding: const EdgeInsets.only(left: 2, right: 2),
                       child: Container(
                         height: 10,
                         width: 10,

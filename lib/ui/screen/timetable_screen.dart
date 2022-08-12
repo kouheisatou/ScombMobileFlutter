@@ -20,6 +20,8 @@ class TimetableScreen extends NetworkScreen {
 class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   _TimetableScreenState();
 
+  bool saturdayClassExists = true;
+
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
     // todo recover from timetable setting
@@ -31,6 +33,8 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       yearFromSettings,
       termFromSettings,
     );
+
+    saturdayClassExists = checkSaturdayClassExists();
   }
 
   @override
@@ -64,16 +68,18 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     );
     DAY_OF_WEEK_MAP.forEach(
       (key, value) {
-        dayOfWeekCells.add(
-          Expanded(
-            child: Center(
-              child: Text(value),
+        // skip saturday
+        if (saturdayClassExists || key != 5) {
+          dayOfWeekCells.add(
+            Expanded(
+              child: Center(
+                child: Text(value),
+              ),
             ),
-          ),
-        );
+          );
+        }
       },
     );
-
     return Row(children: dayOfWeekCells);
   }
 
@@ -82,16 +88,16 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
     // period column
     tableCells.add(
-      Container(
-        child: Center(
-          child: Text(textAlign: TextAlign.center, PERIOD_MAP[row] ?? ""),
-        ),
+      Center(
+        child: Text(textAlign: TextAlign.center, PERIOD_MAP[row] ?? ""),
       ),
     );
 
     // main columns
     for (int c = 0; c < timetable[0].length; c++) {
-      tableCells.add(buildTableCell(row, c));
+      if (saturdayClassExists || c != 5) {
+        tableCells.add(buildTableCell(row, c));
+      }
     }
 
     return Expanded(child: Row(children: tableCells));
@@ -133,12 +139,45 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
                 onLongPress: () async {
                   Fluttertoast.showToast(msg: timetable[row][col]?.room ?? "");
                 },
-                child: Text(
-                  timetable[row][col]?.name ?? "",
-                  textAlign: TextAlign.center,
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: buildLimitedText(
+                    timetable[row][col]?.name ?? "",
+                    saturdayClassExists ? 3 : 4,
+                  ),
                 ),
               ),
       ),
+    );
+  }
+
+  Text buildLimitedText(String text, int limit) {
+    String newText = "";
+    int count = 0;
+    int returnCount = 0;
+    for (var char in text.split("")) {
+      if (count % limit == 0 && count != 0) {
+        if (returnCount > 5) {
+          newText += "..";
+          break;
+        } else {
+          newText += "\n$char";
+          returnCount++;
+        }
+      } else {
+        newText += char;
+      }
+      count++;
+    }
+
+    if (newText == "") {
+      return const Text("  ");
+    }
+
+    return Text(
+      newText,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
     );
   }
 
@@ -149,5 +188,15 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
         process(timetable[r][c]);
       }
     }
+  }
+
+  bool checkSaturdayClassExists() {
+    var result = false;
+    applyToAllCells((classCell) {
+      if (classCell?.dayOfWeek == 5) {
+        result = true;
+      }
+    });
+    return result;
   }
 }
