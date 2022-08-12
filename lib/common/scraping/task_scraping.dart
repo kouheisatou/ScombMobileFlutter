@@ -61,8 +61,15 @@ void _constructTasks(Document document) {
     if (deadlineElement[0].children.length < 2) continue;
     var deadline = stringToTime(deadlineElement[0].children[1].text);
 
-    if (url == null) continue;
-    var newTask = Task(title, className, taskType, deadline, url);
+    var newTask = Task(
+      title,
+      className,
+      taskType,
+      deadline,
+      url,
+      null,
+      null,
+    );
     print("fetched_tasks : $newTask");
     if (taskList != null) {
       taskList!.add(newTask);

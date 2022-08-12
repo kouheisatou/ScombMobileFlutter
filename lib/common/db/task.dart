@@ -12,18 +12,30 @@ class Task {
   String? reportId;
   late int id;
 
-  Task(this.title, this.className, this.taskType, this.deadline, this.url) {
-    var uri = Uri.parse(url);
-    classId = uri.queryParameters["idnumber"];
-    reportId = uri.queryParameters["reportId"];
-    id = DateTime.now().millisecondsSinceEpoch;
-  }
-
-  // task as survey
-  Task.constructSurvey(
-      this.title, this.className, this.deadline, this.reportId, this.classId) {
-    taskType = TaskType.Survey;
-    url = "$SURVEY_PAGE_URL?surveyId=$reportId";
+  Task(
+    this.title,
+    this.className,
+    this.taskType,
+    this.deadline,
+    String? url,
+    String? reportId,
+    String? classId,
+  ) {
+    // if survey
+    // require not null reportId and classId
+    if (taskType == TaskType.Survey) {
+      url = "$SURVEY_PAGE_URL?surveyId=$reportId";
+      this.classId = classId!;
+      this.reportId = reportId;
+    }
+    // if task or test
+    // require not null url
+    else {
+      this.url = url!;
+      var uri = Uri.parse(this.url);
+      this.classId = uri.queryParameters["idnumber"];
+      this.reportId = uri.queryParameters["reportId"];
+    }
     id = DateTime.now().millisecondsSinceEpoch;
   }
 

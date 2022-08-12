@@ -50,10 +50,12 @@ void _constructSurveys(Document document) {
     if (row.children[5].children.isEmpty) continue;
     var surveyDomain = row.children[5].children[0].text;
 
-    var newSurvey = Task.constructSurvey(
+    var newSurvey = Task(
       title,
       surveyDomain,
+      TaskType.Survey,
       stringToTime(deadline, includeSecond: false),
+      null,
       surveyId,
       classId,
     );
