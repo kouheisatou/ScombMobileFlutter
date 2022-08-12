@@ -11,31 +11,32 @@ class Task {
   String? classId;
   String? reportId;
   late int id;
+  int? customColor;
 
   Task(
     this.title,
     this.className,
     this.taskType,
     this.deadline,
-    String? url,
+    this.url,
     String? reportId,
     String? classId,
+    this.customColor,
   ) {
     // if survey
     // require not null reportId and classId
     if (taskType == TaskType.Survey) {
-      url = "$SURVEY_PAGE_URL?surveyId=$reportId";
-      this.classId = classId!;
+      this.classId = classId;
       this.reportId = reportId;
     }
     // if task or test
     // require not null url
     else {
-      this.url = url!;
-      var uri = Uri.parse(this.url);
+      var uri = Uri.parse(url);
       this.classId = uri.queryParameters["idnumber"];
       this.reportId = uri.queryParameters["reportId"];
     }
+
     id = DateTime.now().millisecondsSinceEpoch;
   }
 

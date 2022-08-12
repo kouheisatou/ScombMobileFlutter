@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/task.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
@@ -29,10 +30,12 @@ Future<void> fetchTasks(
     throw Exception("セッションIDの有効期限切れ");
   }
 
-  _constructTasks(document);
+  await _constructTasks(document);
 }
 
-void _constructTasks(Document document) {
+Future<void> _constructTasks(Document document) async {
+  var db = await AppDatabase.getDatabase();
+
   var taskRows = document.getElementsByClassName(TASK_LIST_CSS_CLASS_NM);
   for (var row in taskRows) {
     if (row.children.length < 5) continue;
@@ -69,7 +72,16 @@ void _constructTasks(Document document) {
       url,
       null,
       null,
+      null,
     );
+
+    // custom color from timetable
+    if (newTask.classId != null) {
+      var classCellFromDB =
+          await db.currentClassCellDao.getClassCell(newTask.classId!);
+      newTask.customColor = classCellFromDB?.customColorInt;
+    }
+
     print("fetched_tasks : $newTask");
     if (taskList != null) {
       taskList!.add(newTask);

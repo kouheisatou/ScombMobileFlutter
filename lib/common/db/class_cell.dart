@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
+import 'package:scomb_mobile/common/shared_resource.dart';
 
 @Entity(tableName: "class_cell")
 class ClassCell {
@@ -31,6 +32,13 @@ class ClassCell {
     var db = await AppDatabase.getDatabase();
     customColorInt = colorInt;
     await db.currentClassCellDao.insertClassCell(this);
+
+    // apply to task color
+    taskList?.forEach((element) {
+      if (element.classId == classId) {
+        element.customColor = colorInt;
+      }
+    });
   }
 
   @override

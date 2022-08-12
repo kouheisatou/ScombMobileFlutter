@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
+import '../db/scomb_mobile_database.dart';
 import '../db/task.dart';
 import '../shared_resource.dart';
 
@@ -26,10 +27,12 @@ Future<void> fetchSurveys(
     throw Exception("セッションIDの有効期限切れ");
   }
 
-  _constructSurveys(document);
+  await _constructSurveys(document);
 }
 
-void _constructSurveys(Document document) {
+Future<void> _constructSurveys(Document document) async {
+  var db = await AppDatabase.getDatabase();
+
   var contents = document.getElementsByClassName("result-list");
 
   for (var row in contents) {
@@ -50,15 +53,24 @@ void _constructSurveys(Document document) {
     if (row.children[5].children.isEmpty) continue;
     var surveyDomain = row.children[5].children[0].text;
 
+    // custom color from timetable
+    int? customColor;
+    if (classId != null) {
+      var classCellFromDB = await db.currentClassCellDao.getClassCell(classId);
+      customColor = classCellFromDB?.customColorInt;
+    }
+
     var newSurvey = Task(
       title,
       surveyDomain,
       TaskType.Survey,
       stringToTime(deadline, includeSecond: false),
-      null,
+      "$SURVEY_PAGE_URL?surveyId=$surveyId",
       surveyId,
       classId,
+      customColor,
     );
+
     print(newSurvey);
     if (taskList != null) {
       taskList!.add(newSurvey);

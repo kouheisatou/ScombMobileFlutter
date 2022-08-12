@@ -80,6 +80,11 @@ class _TaskListScreenState extends NetworkScreenState<TaskListScreen> {
             alignment: Alignment.centerLeft,
             child: Text(
               currentTask.className,
+              style: currentTask.customColor != null
+                  ? TextStyle(
+                      color: Color(currentTask.customColor!),
+                    )
+                  : const TextStyle(),
             ),
           ),
           Align(
