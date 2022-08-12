@@ -63,7 +63,7 @@ Future<void> _constructSurveys(Document document) async {
     var newSurvey = Task(
       title,
       surveyDomain,
-      TaskType.Survey,
+      TaskType.SURVEY,
       stringToTime(deadline, includeSecond: false),
       "$SURVEY_PAGE_URL?surveyId=$surveyId",
       surveyId,
@@ -82,5 +82,7 @@ Future<void> _constructSurveys(Document document) async {
     }
     taskList.remove(duplicatedTask);
     taskList.add(newSurvey);
+
+    await db.currentTaskDao.insertTask(newSurvey);
   }
 }

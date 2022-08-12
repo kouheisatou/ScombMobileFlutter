@@ -1,17 +1,17 @@
 import 'package:floor/floor.dart';
 import 'package:scomb_mobile/common/utils.dart';
-import 'package:scomb_mobile/common/values.dart';
 
 @Entity(tableName: "task")
 class Task {
   String title;
   String className;
-  late TaskType taskType;
+  late int taskType;
   int deadline;
   late String url;
 
   late String classId;
   late String reportId;
+  @primaryKey
   late String id;
   int? customColor;
 
@@ -26,7 +26,10 @@ class Task {
     this.classId,
     this.customColor,
   ) {
-    id = "$classId-$reportId";
+    if (classId == "") {
+      classId = className;
+    }
+    id = "$taskType-$classId-$reportId";
   }
 
   // for inflate task or test
@@ -41,16 +44,13 @@ class Task {
     var uri = Uri.parse(url);
     classId = uri.queryParameters["idnumber"]!;
     reportId = uri.queryParameters["reportId"]!;
-    id = "$classId-$reportId";
+    id = "$taskType-$classId-$reportId";
   }
 
   @override
   bool operator ==(Object other) {
     if (other is Task) {
-      return (other.reportId == reportId &&
-          other.classId == classId &&
-          other.taskType == taskType &&
-          other.deadline == deadline);
+      return (other.id == id);
     } else {
       return false;
     }

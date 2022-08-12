@@ -65,6 +65,8 @@ class _$AppDatabase extends AppDatabase {
 
   ClassCellDao? _currentClassCellDaoInstance;
 
+  TaskDao? _currentTaskDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -87,6 +89,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `settings` (`settingKey` TEXT NOT NULL, `settingValue` TEXT NOT NULL, PRIMARY KEY (`settingKey`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `name` TEXT NOT NULL, `teachers` TEXT NOT NULL, `room` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `period` INTEGER NOT NULL, `year` INTEGER NOT NULL, `term` INTEGER NOT NULL, `customColorInt` INTEGER, PRIMARY KEY (`classId`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -104,6 +108,11 @@ class _$AppDatabase extends AppDatabase {
   ClassCellDao get currentClassCellDao {
     return _currentClassCellDaoInstance ??=
         _$ClassCellDao(database, changeListener);
+  }
+
+  @override
+  TaskDao get currentTaskDao {
+    return _currentTaskDaoInstance ??= _$TaskDao(database, changeListener);
   }
 }
 
@@ -215,5 +224,66 @@ class _$ClassCellDao extends ClassCellDao {
   Future<void> insertClassCell(ClassCell classCell) async {
     await _classCellInsertionAdapter.insert(
         classCell, OnConflictStrategy.replace);
+  }
+}
+
+class _$TaskDao extends TaskDao {
+  _$TaskDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _taskInsertionAdapter = InsertionAdapter(
+            database,
+            'task',
+            (Task item) => <String, Object?>{
+                  'title': item.title,
+                  'className': item.className,
+                  'taskType': item.taskType,
+                  'deadline': item.deadline,
+                  'url': item.url,
+                  'classId': item.classId,
+                  'reportId': item.reportId,
+                  'id': item.id,
+                  'customColor': item.customColor
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Task> _taskInsertionAdapter;
+
+  @override
+  Future<List<Task>> getAllTasks() async {
+    return _queryAdapter.queryList('SELECT * FROM task',
+        mapper: (Map<String, Object?> row) => Task(
+            row['title'] as String,
+            row['className'] as String,
+            row['taskType'] as int,
+            row['deadline'] as int,
+            row['url'] as String,
+            row['reportId'] as String,
+            row['classId'] as String,
+            row['customColor'] as int?));
+  }
+
+  @override
+  Future<Task?> getTask(String id) async {
+    return _queryAdapter.query('SELECT * FROM task WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => Task(
+            row['title'] as String,
+            row['className'] as String,
+            row['taskType'] as int,
+            row['deadline'] as int,
+            row['url'] as String,
+            row['reportId'] as String,
+            row['classId'] as String,
+            row['customColor'] as int?),
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> insertTask(Task task) async {
+    await _taskInsertionAdapter.insert(task, OnConflictStrategy.replace);
   }
 }

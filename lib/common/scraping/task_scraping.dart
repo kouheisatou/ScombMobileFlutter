@@ -42,15 +42,15 @@ Future<void> _constructTasks(Document document) async {
 
     var className = row.children[0].text;
 
-    late TaskType taskType;
+    late int taskType;
     if (row.children[1].text.contains("課題")) {
-      taskType = TaskType.Task;
+      taskType = TaskType.TASK;
     } else if (row.children[1].text.contains("テスト")) {
-      taskType = TaskType.Test;
+      taskType = TaskType.TEST;
     } else if (row.children[1].text.contains("アンケート")) {
-      taskType = TaskType.Survey;
+      taskType = TaskType.SURVEY;
     } else {
-      taskType = TaskType.Others;
+      taskType = TaskType.OTHERS;
     }
 
     if (row.children[2].children.isEmpty) continue;
@@ -90,6 +90,8 @@ Future<void> _constructTasks(Document document) async {
       }
       taskList.remove(duplicatedTask);
       taskList.add(newTask);
+
+      await db.currentTaskDao.insertTask(newTask);
     } catch (e) {
       print(e.toString());
       continue;

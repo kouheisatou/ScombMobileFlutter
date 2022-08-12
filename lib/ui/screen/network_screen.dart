@@ -50,6 +50,7 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       // if fetch failed, auto nav to login screen
       widget.parent.navToLoginScreen();
       widget.initialized = false;
+      print(e);
       Fluttertoast.showToast(msg: e.toString());
     } finally {
       try {

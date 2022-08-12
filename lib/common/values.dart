@@ -64,7 +64,12 @@ class DayOfWeek {
   static int SUNDAY = 6;
 }
 
-enum TaskType { Task, Test, Survey, Others }
+class TaskType {
+  static const int TASK = 0;
+  static const int TEST = 1;
+  static const int SURVEY = 2;
+  static const int OTHERS = 3;
+}
 
 Map<int, String> DAY_OF_WEEK_MAP = {
   0: "月曜",

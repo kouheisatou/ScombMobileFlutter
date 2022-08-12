@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
 import 'package:scomb_mobile/common/scraping/task_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
@@ -51,16 +52,16 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     var currentTask = taskList[index];
     late Icon icon;
     switch (currentTask.taskType) {
-      case TaskType.Task:
+      case TaskType.TASK:
         icon = const Icon(Icons.assignment);
         break;
-      case TaskType.Test:
+      case TaskType.TEST:
         icon = const Icon(Icons.checklist);
         break;
-      case TaskType.Survey:
+      case TaskType.SURVEY:
         icon = const Icon(Icons.question_mark_rounded);
         break;
-      case TaskType.Others:
+      case TaskType.OTHERS:
         icon = const Icon(Icons.task);
         break;
     }
@@ -71,6 +72,11 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         currentTask.title,
         textAlign: TextAlign.left,
       ),
+      onLongPress: () async {
+        var db = await AppDatabase.getDatabase();
+        var taskInDB = await db.currentTaskDao.getTask(currentTask.id);
+        print(taskInDB);
+      },
       onTap: () {
         Navigator.push(
           context,
