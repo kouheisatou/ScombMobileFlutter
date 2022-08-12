@@ -40,6 +40,8 @@ Future<void> _constructSurveys(Document document) async {
     var surveyId = row.children[0].attributes["value"];
     var classId = row.children[1].attributes["value"];
 
+    if (surveyId == null || classId == null) continue;
+
     // if this survey is done, skip this
     if (row.children[2]
         .getElementsByClassName("portal-surveys-status")
@@ -55,10 +57,8 @@ Future<void> _constructSurveys(Document document) async {
 
     // custom color from timetable
     int? customColor;
-    if (classId != null) {
-      var classCellFromDB = await db.currentClassCellDao.getClassCell(classId);
-      customColor = classCellFromDB?.customColorInt;
-    }
+    var classCellFromDB = await db.currentClassCellDao.getClassCell(classId);
+    customColor = classCellFromDB?.customColorInt;
 
     var newSurvey = Task(
       title,

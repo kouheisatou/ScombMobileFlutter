@@ -65,14 +65,12 @@ Future<void> _constructTasks(Document document) async {
     var deadline = stringToTime(deadlineElement[0].children[1].text);
 
     try {
-      var newTask = Task(
+      var newTask = Task.idFromUrl(
         title,
         className,
         taskType,
         deadline,
         url,
-        null,
-        null,
         null,
       );
 
@@ -93,6 +91,7 @@ Future<void> _constructTasks(Document document) async {
       taskList.remove(duplicatedTask);
       taskList.add(newTask);
     } catch (e) {
+      print(e.toString());
       continue;
     }
   }

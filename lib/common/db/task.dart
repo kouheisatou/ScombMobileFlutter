@@ -1,6 +1,8 @@
+import 'package:floor/floor.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
+@Entity(tableName: "task")
 class Task {
   String title;
   String className;
@@ -10,34 +12,36 @@ class Task {
 
   late String classId;
   late String reportId;
-  late int id;
+  late String id;
   int? customColor;
 
+  // for inflate survey
   Task(
     this.title,
     this.className,
     this.taskType,
     this.deadline,
     this.url,
-    String? reportId,
-    String? classId,
+    this.reportId,
+    this.classId,
     this.customColor,
   ) {
-    // if survey
-    // require not null reportId and classId
-    if (taskType == TaskType.Survey) {
-      this.classId = classId!;
-      this.reportId = reportId!;
-    }
-    // if task or test
-    // require not null url
-    else {
-      var uri = Uri.parse(url);
-      this.classId = uri.queryParameters["idnumber"]!;
-      this.reportId = uri.queryParameters["reportId"]!;
-    }
+    id = "$classId-$reportId";
+  }
 
-    id = DateTime.now().millisecondsSinceEpoch;
+  // for inflate task or test
+  Task.idFromUrl(
+    this.title,
+    this.className,
+    this.taskType,
+    this.deadline,
+    this.url,
+    this.customColor,
+  ) {
+    var uri = Uri.parse(url);
+    classId = uri.queryParameters["idnumber"]!;
+    reportId = uri.queryParameters["reportId"]!;
+    id = "$classId-$reportId";
   }
 
   @override
