@@ -46,11 +46,11 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       sessionId ??= savedSessionId;
 
       widget.initialized = true;
-    } catch (e) {
+    } catch (e, stackTrace) {
       // if fetch failed, auto nav to login screen
       widget.parent.navToLoginScreen();
       widget.initialized = false;
-      print(e);
+      print("$e\n$stackTrace");
       Fluttertoast.showToast(msg: e.toString());
     } finally {
       try {

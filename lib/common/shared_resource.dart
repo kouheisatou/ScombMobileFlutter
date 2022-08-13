@@ -15,3 +15,21 @@ List<List<ClassCell?>> timetable = [
 ];
 List<Task> taskList = [];
 bool taskListInitialized = false;
+
+void addOrReplaceTask(Task newTask) {
+  int? conflictedTaskIndex;
+  for (int i = 0; i < taskList.length; i++) {
+    if (taskList[i] == newTask) {
+      conflictedTaskIndex = i;
+    }
+  }
+
+  if (conflictedTaskIndex == null) {
+    taskList.add(newTask);
+  }
+  // on conflict, replace task
+  else {
+    taskList.removeAt(conflictedTaskIndex);
+    taskList.add(newTask);
+  }
+}

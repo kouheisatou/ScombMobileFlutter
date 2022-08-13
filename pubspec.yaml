@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # webview
+  # web view
   flutter_inappwebview: ^5.4.3+7
   # http
   http: ^0.13.1
@@ -55,6 +55,8 @@ dependencies:
   # notification
   flutter_local_notifications: ^9.7.0
   timezone: ^0.8.0
+  # data time picker
+  flutter_datetime_picker: ^1.2.1
 
 
 flutter_native_splash:

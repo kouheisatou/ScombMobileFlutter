@@ -4,6 +4,7 @@ import 'package:scomb_mobile/common/notification.dart';
 import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
 import 'package:scomb_mobile/common/scraping/task_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
+import 'package:scomb_mobile/ui/dialog/add_task_dialog.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
@@ -22,10 +23,25 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
     if (taskListInitialized) return;
+
+    // reset notification
     await cancelNotification();
+
+    // inflate tasks from db
+    var db = await AppDatabase.getDatabase();
+    var tasksFromDB = await db.currentTaskDao.getAllTasks();
+    for (var task in tasksFromDB) {
+      print("task_from_db : $task");
+      addOrReplaceTask(task);
+    }
+
+    // inflate tasks from server
     await fetchSurveys(sessionId ?? savedSessionId);
     await fetchTasks(sessionId ?? savedSessionId);
+
+    // sort
     taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+
     taskListInitialized = true;
   }
 
@@ -78,6 +94,13 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         var db = await AppDatabase.getDatabase();
         var taskInDB = await db.currentTaskDao.getTask(currentTask.id);
         print(taskInDB);
+
+        showDialog(
+          context: context,
+          builder: (_) {
+            return AddTaskDialog();
+          },
+        );
       },
       onTap: () {
         Navigator.push(

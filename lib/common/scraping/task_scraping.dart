@@ -36,6 +36,7 @@ Future<void> fetchTasks(
 
 Future<void> _constructTasks(Document document) async {
   var db = await AppDatabase.getDatabase();
+  var tasksFromDB = await db.currentTaskDao.getAllTasks();
 
   var taskRows = document.getElementsByClassName(TASK_LIST_CSS_CLASS_NM);
   for (var row in taskRows) {
@@ -65,38 +66,35 @@ Future<void> _constructTasks(Document document) async {
     if (deadlineElement[0].children.length < 2) continue;
     var deadline = stringToTime(deadlineElement[0].children[1].text);
 
-    try {
-      var newTask = Task.idFromUrl(
-        title,
-        className,
-        taskType,
-        deadline,
-        url,
-        null,
-      );
+    var newTask = Task.idFromUrl(
+      title,
+      className,
+      taskType,
+      deadline,
+      url,
+      null,
+    );
 
-      // custom color from timetable
-      var classCellFromDB =
-          await db.currentClassCellDao.getClassCell(newTask.classId);
-      newTask.customColor = classCellFromDB?.customColorInt;
+    // custom color from timetable
+    var classCellFromDB =
+        await db.currentClassCellDao.getClassCell(newTask.classId);
+    newTask.customColor = classCellFromDB?.customColorInt;
 
-      print("fetched_tasks : $newTask");
+    print("fetched_tasks : $newTask");
 
-      // if already exists
-      Task? duplicatedTask;
-      for (var task in taskList) {
-        if (task == newTask) {
-          duplicatedTask = task;
-        }
+    // if already exists
+    Task? duplicatedTask;
+    for (var task in taskList) {
+      if (task == newTask) {
+        duplicatedTask = task;
       }
-      taskList.remove(duplicatedTask);
-      taskList.add(newTask);
-
-      await db.currentTaskDao.insertTask(newTask);
-      await registerTaskNotification(newTask);
-    } catch (e) {
-      print(e.toString());
-      continue;
     }
+    taskList.remove(duplicatedTask);
+    taskList.add(newTask);
+
+    // addOrReplaceTask(newTask);
+
+    await db.currentTaskDao.insertTask(newTask);
+    await registerTaskNotification(newTask);
   }
 }

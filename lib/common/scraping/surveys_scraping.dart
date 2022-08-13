@@ -84,6 +84,8 @@ Future<void> _constructSurveys(Document document) async {
     taskList.remove(duplicatedTask);
     taskList.add(newSurvey);
 
+    // addOrReplaceTask(newSurvey);
+
     await db.currentTaskDao.insertTask(newSurvey);
     await registerTaskNotification(newSurvey);
   }
