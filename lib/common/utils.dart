@@ -3,9 +3,28 @@ import 'dart:ui';
 import 'package:intl/intl.dart';
 
 String timeToString(int time) {
+  var now = DateTime.now();
   var date = DateTime.fromMillisecondsSinceEpoch(time);
-  var formatter = DateFormat("yyyy/MM/dd HH:mm");
-  return formatter.format(date);
+
+  var result = "";
+  if (now.year == date.year && now.month == date.month && now.day == date.day) {
+    var formatter = DateFormat("HH:mm");
+    result = "今日 ${formatter.format(date)}";
+  } else if (now.year == date.year &&
+      now.month == date.month &&
+      now.day == date.day - 1) {
+    var formatter = DateFormat("HH:mm");
+    result = "昨日 ${formatter.format(date)}";
+  } else if (now.year == date.year &&
+      now.month == date.month &&
+      now.day == date.day + 1) {
+    var formatter = DateFormat("HH:mm");
+    result = "明日 ${formatter.format(date)}";
+  } else {
+    var formatter = DateFormat("yyyy/MM/dd HH:mm");
+    result = formatter.format(date);
+  }
+  return result;
 }
 
 int stringToTime(String time, {bool includeSecond = true}) {

@@ -52,6 +52,8 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   # calendar
   table_calendar: ^3.0.6
+  # notification
+  flutter_local_notifications: ^9.7.0
 
 
 flutter_native_splash:
