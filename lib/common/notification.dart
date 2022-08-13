@@ -4,13 +4,16 @@ import 'package:timezone/timezone.dart' as tz;
 
 import 'db/task.dart';
 
-Future<void> registerTaskNotification(Task task) {
+Future<void> registerTaskNotification(Task task) async {
   final plugin = FlutterLocalNotificationsPlugin();
+
+  print(timeToString(task.deadline));
+
   return plugin.zonedSchedule(
     task.id.hashCode,
     "課題締め切り通知",
     "${task.title} (${timeToString(task.deadline)})",
-    tz.TZDateTime.fromMicrosecondsSinceEpoch(
+    tz.TZDateTime.fromMillisecondsSinceEpoch(
       tz.UTC,
       task.deadline,
     ),
