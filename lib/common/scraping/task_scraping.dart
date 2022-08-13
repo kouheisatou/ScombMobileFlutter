@@ -73,6 +73,7 @@ Future<void> _constructTasks(Document document) async {
       deadline,
       url,
       null,
+      false,
     );
 
     // custom color from timetable
@@ -92,7 +93,7 @@ Future<void> _constructTasks(Document document) async {
     taskList.remove(duplicatedTask);
     taskList.add(newTask);
 
-    // addOrReplaceTask(newTask);
+    addOrReplaceTask(newTask);
 
     await db.currentTaskDao.insertTask(newTask);
     await registerTaskNotification(newTask);

@@ -95,12 +95,17 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         var taskInDB = await db.currentTaskDao.getTask(currentTask.id);
         print(taskInDB);
 
-        showDialog(
+        var newTask = await showDialog<Task>(
           context: context,
           builder: (_) {
             return AddTaskDialog();
           },
         );
+        if (newTask == null) return;
+        setState(() {
+          addOrReplaceTask(newTask);
+          taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+        });
       },
       onTap: () {
         Navigator.push(

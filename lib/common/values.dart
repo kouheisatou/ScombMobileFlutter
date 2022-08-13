@@ -71,6 +71,13 @@ class TaskType {
   static const int OTHERS = 3;
 }
 
+Map<int, String> TASK_TYPE_MAP = {
+  0: "課題",
+  1: "テスト",
+  2: "アンケート",
+  3: "その他",
+};
+
 Map<int, String> DAY_OF_WEEK_MAP = {
   0: "月曜",
   1: "火曜",

@@ -14,6 +14,7 @@ class Task {
   @primaryKey
   late String id;
   int? customColor;
+  bool addManually;
 
   // for inflate survey
   Task(
@@ -25,6 +26,7 @@ class Task {
     this.reportId,
     this.classId,
     this.customColor,
+    this.addManually,
   ) {
     if (classId == "") {
       classId = className;
@@ -40,6 +42,7 @@ class Task {
     this.deadline,
     this.url,
     this.customColor,
+    this.addManually,
   ) {
     var uri = Uri.parse(url);
     classId = uri.queryParameters["idnumber"]!;

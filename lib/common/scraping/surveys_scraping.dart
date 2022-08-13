@@ -70,6 +70,7 @@ Future<void> _constructSurveys(Document document) async {
       surveyId,
       classId,
       customColor,
+      false,
     );
 
     print("fetched_survey : $newSurvey");
@@ -84,7 +85,7 @@ Future<void> _constructSurveys(Document document) async {
     taskList.remove(duplicatedTask);
     taskList.add(newSurvey);
 
-    // addOrReplaceTask(newSurvey);
+    addOrReplaceTask(newSurvey);
 
     await db.currentTaskDao.insertTask(newSurvey);
     await registerTaskNotification(newSurvey);

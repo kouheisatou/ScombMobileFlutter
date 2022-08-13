@@ -88,9 +88,9 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `settings` (`settingKey` TEXT NOT NULL, `settingValue` TEXT NOT NULL, PRIMARY KEY (`settingKey`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `name` TEXT NOT NULL, `teachers` TEXT NOT NULL, `room` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `period` INTEGER NOT NULL, `year` INTEGER NOT NULL, `term` INTEGER NOT NULL, `customColorInt` INTEGER, PRIMARY KEY (`classId`))');
+            'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `name` TEXT NOT NULL, `teachers` TEXT NOT NULL, `room` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `period` INTEGER NOT NULL, `year` INTEGER NOT NULL, `term` INTEGER NOT NULL, `customColorInt` INTEGER, `url` TEXT NOT NULL, PRIMARY KEY (`classId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, `addManually` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -178,7 +178,8 @@ class _$ClassCellDao extends ClassCellDao {
                   'period': item.period,
                   'year': item.year,
                   'term': item.term,
-                  'customColorInt': item.customColorInt
+                  'customColorInt': item.customColorInt,
+                  'url': item.url
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -242,7 +243,8 @@ class _$TaskDao extends TaskDao {
                   'classId': item.classId,
                   'reportId': item.reportId,
                   'id': item.id,
-                  'customColor': item.customColor
+                  'customColor': item.customColor,
+                  'addManually': item.addManually ? 1 : 0
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -264,7 +266,8 @@ class _$TaskDao extends TaskDao {
             row['url'] as String,
             row['reportId'] as String,
             row['classId'] as String,
-            row['customColor'] as int?));
+            row['customColor'] as int?,
+            (row['addManually'] as int) != 0));
   }
 
   @override
@@ -278,7 +281,8 @@ class _$TaskDao extends TaskDao {
             row['url'] as String,
             row['reportId'] as String,
             row['classId'] as String,
-            row['customColor'] as int?),
+            row['customColor'] as int?,
+            (row['addManually'] as int) != 0),
         arguments: [id]);
   }
 

@@ -53,7 +53,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => SinglePageScomb(
-                              "$CLASS_PAGE_URL?idnumber=${widget.classCell.classId}",
+                              widget.classCell.url,
                               widget.classCell.name,
                             ),
                             fullscreenDialog: true,
