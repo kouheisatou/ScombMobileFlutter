@@ -7,6 +7,7 @@ import 'package:scomb_mobile/common/values.dart';
 
 import '../db/scomb_mobile_database.dart';
 import '../db/task.dart';
+import '../notification.dart';
 import '../shared_resource.dart';
 
 Future<void> fetchSurveys(
@@ -84,5 +85,6 @@ Future<void> _constructSurveys(Document document) async {
     taskList.add(newSurvey);
 
     await db.currentTaskDao.insertTask(newSurvey);
+    await registerTaskNotification(newSurvey);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
+import 'package:scomb_mobile/common/notification.dart';
 import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
 import 'package:scomb_mobile/common/scraping/task_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
@@ -22,6 +22,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
     if (taskListInitialized) return;
+    await cancelNotification();
     await fetchSurveys(sessionId ?? savedSessionId);
     await fetchTasks(sessionId ?? savedSessionId);
     taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
@@ -77,8 +78,6 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         var db = await AppDatabase.getDatabase();
         var taskInDB = await db.currentTaskDao.getTask(currentTask.id);
         print(taskInDB);
-        if (taskInDB == null) return;
-        notify(taskInDB);
       },
       onTap: () {
         Navigator.push(
@@ -114,32 +113,5 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> notify(Task task) {
-    final flnp = FlutterLocalNotificationsPlugin();
-    return flnp
-        .initialize(
-          const InitializationSettings(
-            android: AndroidInitializationSettings("ic_notification"),
-            iOS: IOSInitializationSettings(),
-          ),
-        )
-        .then(
-          (_) => flnp.show(
-            0,
-            "課題締め切り通知",
-            "${task.title} (${timeToString(task.deadline)})",
-            const NotificationDetails(
-              android: AndroidNotificationDetails(
-                "SCOMB_MOBILE_TASK_NOTIFICATION",
-                "課題締め切り通知",
-                importance: Importance.high,
-                priority: Priority.high,
-              ),
-              iOS: IOSNotificationDetails(),
-            ),
-          ),
-        );
   }
 }

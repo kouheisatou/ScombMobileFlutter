@@ -3,6 +3,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/task.dart';
+import 'package:scomb_mobile/common/notification.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
@@ -92,6 +93,7 @@ Future<void> _constructTasks(Document document) async {
       taskList.add(newTask);
 
       await db.currentTaskDao.insertTask(newTask);
+      await registerTaskNotification(newTask);
     } catch (e) {
       print(e.toString());
       continue;

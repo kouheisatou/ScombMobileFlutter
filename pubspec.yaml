@@ -54,6 +54,7 @@ dependencies:
   table_calendar: ^3.0.6
   # notification
   flutter_local_notifications: ^9.7.0
+  timezone: ^0.8.0
 
 
 flutter_native_splash:
