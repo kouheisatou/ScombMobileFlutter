@@ -168,7 +168,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
           color: Colors.black,
         ),
         Expanded(
-          child: buildList(taskList),
+          child: buildList(getTaskForDay(_selectedDay)),
         ),
       ],
     );
