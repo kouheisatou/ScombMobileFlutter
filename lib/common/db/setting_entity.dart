@@ -30,4 +30,5 @@ class SettingKeys {
   static String PASSWORD = "password";
   static String SESSION_ID = "session_id";
   static String ENABLED_AUTO_LOGIN = "enabled_auto_login";
+  static String TIMETABLE_LAST_UPDATE = "timetable_last_update";
 }

@@ -4,6 +4,7 @@ import 'db/task.dart';
 
 String? sessionId;
 String? userName;
+
 List<List<ClassCell?>> timetable = [
   [null, null, null, null, null, null],
   [null, null, null, null, null, null],
@@ -13,6 +14,8 @@ List<List<ClassCell?>> timetable = [
   [null, null, null, null, null, null],
   [null, null, null, null, null, null],
 ];
+bool timetableInitialized = false;
+
 List<Task> taskList = [];
 bool taskListInitialized = false;
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -46,6 +48,9 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       sessionId ??= savedSessionId;
 
       widget.initialized = true;
+    } on SocketException catch (e, stackTrace) {
+      Fluttertoast.showToast(msg: "オフライン");
+      widget.parent.selectedIndex = 0;
     } catch (e, stackTrace) {
       // if fetch failed, auto nav to login screen
       widget.parent.navToLoginScreen();
