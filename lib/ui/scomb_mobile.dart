@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/ui/screen/setting_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_calendar_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
@@ -28,6 +30,22 @@ class ScombMobileState extends State<ScombMobile> {
   // bottom nav selection
   // null : login screen
   int? selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // init notification
+    FlutterLocalNotificationsPlugin().initialize(
+      const InitializationSettings(
+        iOS: IOSInitializationSettings(),
+        android: AndroidInitializationSettings("@drawable/ic_notification"),
+      ),
+      onSelectNotification: (_) {
+        Fluttertoast.showToast(msg: "msg");
+      },
+    );
+  }
 
   void navToLoginScreen() {
     setBottomNavIndex(null);
