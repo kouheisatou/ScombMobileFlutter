@@ -10,9 +10,11 @@ import '../../common/db/task.dart';
 import '../../common/shared_resource.dart';
 
 class AddTaskDialog extends StatefulWidget {
-  AddTaskDialog(this.initDate, {Key? key}) : super(key: key);
+  AddTaskDialog(this.initDate, this.initRelatedClass, {Key? key})
+      : super(key: key);
 
   late DateTime? initDate;
+  late ClassCell? initRelatedClass;
 
   @override
   State<AddTaskDialog> createState() => _AddTaskDialogState();
@@ -30,6 +32,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       selectedDate = DateTime(widget.initDate!.year, widget.initDate!.month,
           widget.initDate!.day, 23, 59, 0, 0, 0);
     }
+    classDropDownValue = widget.initRelatedClass;
     super.initState();
   }
 

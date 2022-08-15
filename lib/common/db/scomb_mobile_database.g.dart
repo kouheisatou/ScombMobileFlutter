@@ -287,6 +287,12 @@ class _$TaskDao extends TaskDao {
   }
 
   @override
+  Future<void> removeTask(String id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM task WHERE id = ?1', arguments: [id]);
+  }
+
+  @override
   Future<void> insertTask(Task task) async {
     await _taskInsertionAdapter.insert(task, OnConflictStrategy.replace);
   }

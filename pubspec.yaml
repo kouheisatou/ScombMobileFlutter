@@ -57,6 +57,8 @@ dependencies:
   timezone: ^0.8.0
   # data time picker
   flutter_datetime_picker: ^1.2.1
+  # slidable
+  flutter_slidable: ^2.0.0
 
 
 flutter_native_splash:

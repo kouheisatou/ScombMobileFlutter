@@ -11,4 +11,7 @@ abstract class TaskDao {
 
   @Query("SELECT * FROM task WHERE id = :id")
   Future<Task?> getTask(String id);
+
+  @Query("DELETE FROM task WHERE id = :id")
+  Future<void> removeTask(String id);
 }

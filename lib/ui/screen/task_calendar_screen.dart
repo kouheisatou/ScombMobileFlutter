@@ -194,7 +194,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
     var newTask = await showDialog<Task>(
       context: context,
       builder: (_) {
-        return AddTaskDialog(_selectedDay);
+        return AddTaskDialog(_selectedDay, null);
       },
     );
     if (newTask == null) return;

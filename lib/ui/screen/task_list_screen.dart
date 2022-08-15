@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/notification.dart';
 import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
@@ -61,18 +62,13 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     return buildList(taskList);
   }
 
-  Widget buildList(List<Task> taskList) {
+  Widget buildList(List<Task> currentTaskList) {
     return Stack(
       children: [
-        ListView.separated(
-          itemCount: taskList.length,
-          separatorBuilder: (BuildContext context, int index) {
-            return const Divider(
-              height: 0.5,
-            );
-          },
+        ListView.builder(
+          itemCount: currentTaskList.length,
           itemBuilder: (BuildContext context, int index) {
-            return buildListTile(index, taskList);
+            return buildListTile(index, currentTaskList);
           },
         ),
         Align(
@@ -97,8 +93,8 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     );
   }
 
-  Widget buildListTile(int index, List<Task> taskList) {
-    var currentTask = taskList[index];
+  Widget buildListTile(int index, List<Task> currentTaskList) {
+    var currentTask = currentTaskList[index];
     late Icon icon;
     switch (currentTask.taskType) {
       case TaskType.TASK:
@@ -115,43 +111,90 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         break;
     }
 
-    return ListTile(
-      leading: icon,
-      title: Text(
-        currentTask.title,
-        textAlign: TextAlign.left,
-      ),
-      onTap: () {
-        if (currentTask.url == "") return;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SinglePageScomb(
-              currentTask.url,
-              currentTask.title,
-            ),
-            fullscreenDialog: true,
-          ),
-        );
-      },
-      subtitle: Column(
+    return Slidable(
+      endActionPane: currentTask.addManually
+          ? ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    showDialog<int>(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: const Text("タスク削除"),
+                        content: Text("${currentTask.title}\nを本当に削除しますか？"),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("キャンセル")),
+                          TextButton(
+                            onPressed: () async {
+                              var db = await AppDatabase.getDatabase();
+                              await db.currentTaskDao
+                                  .removeTask(currentTask.id);
+                              taskList.remove(currentTask);
+                              setState(() {});
+                              Navigator.pop(context);
+                            },
+                            child: const Text("削除"),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            )
+          : null,
+      key: Key(currentTask.id),
+      child: Column(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              currentTask.className,
-              style: currentTask.customColor != null
-                  ? TextStyle(
-                      color: Color(currentTask.customColor!),
-                    )
-                  : const TextStyle(),
+          ListTile(
+            leading: icon,
+            title: Text(
+              currentTask.title,
+              textAlign: TextAlign.left,
+            ),
+            onTap: () {
+              if (currentTask.url == "") return;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SinglePageScomb(
+                    currentTask.url,
+                    currentTask.title,
+                  ),
+                  fullscreenDialog: true,
+                ),
+              );
+            },
+            subtitle: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    currentTask.className,
+                    style: currentTask.customColor != null
+                        ? TextStyle(
+                            color: Color(currentTask.customColor!),
+                          )
+                        : const TextStyle(),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    timeToString(currentTask.deadline),
+                  ),
+                ),
+              ],
             ),
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              timeToString(currentTask.deadline),
-            ),
+          const Divider(
+            height: 0.5,
           ),
         ],
       ),
@@ -162,7 +205,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     var newTask = await showDialog<Task>(
       context: context,
       builder: (_) {
-        return AddTaskDialog(null);
+        return AddTaskDialog(null, null);
       },
     );
     if (newTask == null) return;
