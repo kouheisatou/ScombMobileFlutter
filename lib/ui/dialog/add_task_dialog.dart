@@ -28,6 +28,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
                 autofocus: true,
@@ -36,104 +37,129 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                   title = text;
                 },
               ),
-              Row(
-                children: [
-                  const Text("授業 : "),
-                  const Spacer(),
-                  DropdownButton<ClassCell>(
-                    value: classDropDownValue,
-                    items: buildDropdownItems()
-                        .map<DropdownMenuItem<ClassCell>>((ClassCell c) {
-                      return DropdownMenuItem<ClassCell>(
-                        value: c,
-                        child: Text(
-                          c.name,
-                          style: TextStyle(
-                              color: c.customColorInt != null
-                                  ? Color(c.customColorInt!)
-                                  : Colors.black),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (newClassCell) async {
-                      setState(() {
-                        classDropDownValue = newClassCell;
-                      });
-                    },
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        classDropDownValue = null;
-                      });
-                    },
-                    icon: const Icon(Icons.close_sharp),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  const Text("課題タイプ : "),
-                  const Spacer(),
-                  DropdownButton<int>(
-                    value: taskTypeDropDownValue,
-                    items: <int>[
-                      TaskType.TASK,
-                      TaskType.TEST,
-                      TaskType.SURVEY,
-                      TaskType.OTHERS
-                    ].map<DropdownMenuItem<int>>((int t) {
-                      return DropdownMenuItem<int>(
-                        value: t,
-                        child: Text(TASK_TYPE_MAP[t]!),
-                      );
-                    }).toList(),
-                    onChanged: (i) async {
-                      setState(() {
-                        taskTypeDropDownValue = i ?? TaskType.OTHERS;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  const Text("締め切り日時 : "),
-                  const Spacer(),
-                  Text(
-                    selectedDate != null
-                        ? timeToString(selectedDate!.millisecondsSinceEpoch)
-                        : "",
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.access_time),
-                    onPressed: () async {
-                      DatePicker.showDateTimePicker(
-                        context,
-                        showTitleActions: true,
-                        theme: const DatePickerTheme(
-                          backgroundColor: Colors.blue,
-                          itemStyle: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("授業 : "),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          DropdownButton<ClassCell?>(
+                            value: classDropDownValue,
+                            items: buildDropdownItems(),
+                            onChanged: (newClassCell) async {
+                              setState(() {
+                                classDropDownValue = newClassCell;
+                              });
+                            },
                           ),
-                          doneStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                classDropDownValue = null;
+                              });
+                            },
+                            icon: const Icon(Icons.close_sharp),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("課題タイプ : "),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          DropdownButton<int>(
+                            value: taskTypeDropDownValue,
+                            items: <int>[
+                              TaskType.TASK,
+                              TaskType.TEST,
+                              TaskType.SURVEY,
+                              TaskType.OTHERS
+                            ].map<DropdownMenuItem<int>>((int t) {
+                              return DropdownMenuItem<int>(
+                                value: t,
+                                child: Text(TASK_TYPE_MAP[t]!),
+                              );
+                            }).toList(),
+                            onChanged: (i) async {
+                              setState(() {
+                                taskTypeDropDownValue = i ?? TaskType.OTHERS;
+                              });
+                            },
                           ),
-                        ),
-                        onChanged: (date) {
-                          setState(() {
-                            selectedDate = date;
-                          });
-                        },
-                        currentTime: selectedDate ?? DateTime.now(),
-                        locale: LocaleType.jp,
-                      );
-                    },
-                  ),
-                ],
-              )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("締め切り日時 : "),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          Text(
+                            selectedDate != null
+                                ? timeToString(
+                                    selectedDate!.millisecondsSinceEpoch)
+                                : "選択されていません",
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.access_time),
+                            onPressed: () async {
+                              DatePicker.showDateTimePicker(
+                                context,
+                                showTitleActions: true,
+                                theme: const DatePickerTheme(
+                                  backgroundColor: Colors.blue,
+                                  itemStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  doneStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                onChanged: (date) {
+                                  if (date.millisecondsSinceEpoch <
+                                      DateTime.now().millisecondsSinceEpoch) {
+                                    Fluttertoast.showToast(
+                                        msg: "現在よりも前の日付は指定できません");
+                                  } else {
+                                    setState(() {
+                                      selectedDate = date;
+                                    });
+                                  }
+                                },
+                                currentTime: selectedDate ?? DateTime.now(),
+                                locale: LocaleType.jp,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -189,15 +215,31 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
     );
   }
 
-  List<ClassCell> buildDropdownItems() {
-    List<ClassCell> result = [];
+  List<DropdownMenuItem<ClassCell?>>? buildDropdownItems() {
+    List<ClassCell> allClasses = [];
     for (int r = 0; r < timetable.length; r++) {
       for (int c = 0; c < timetable[0].length; c++) {
-        if (timetable[r][c] != null && !result.contains(timetable[r][c])) {
-          result.add(timetable[r][c]!);
+        if (timetable[r][c] != null && !allClasses.contains(timetable[r][c])) {
+          allClasses.add(timetable[r][c]!);
         }
       }
     }
+
+    List<DropdownMenuItem<ClassCell?>> result = [];
+
+    result.add(const DropdownMenuItem(
+      value: null,
+      child: Text("選択なし"),
+    ));
+    for (var c in allClasses) {
+      result.add(
+        DropdownMenuItem(
+          value: c,
+          child: Text(c.name),
+        ),
+      );
+    }
+
     return result;
   }
 }

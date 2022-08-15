@@ -17,6 +17,10 @@ List<Task> taskList = [];
 bool taskListInitialized = false;
 
 void addOrReplaceTask(Task newTask) {
+  // deadline over
+  if (newTask.deadline < DateTime.now().millisecondsSinceEpoch) return;
+
+  // detect conflicting
   int? conflictedTaskIndex;
   for (int i = 0; i < taskList.length; i++) {
     if (taskList[i] == newTask) {
