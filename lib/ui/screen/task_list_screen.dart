@@ -52,14 +52,14 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   }
 
   @override
-  Future<void> refreshData() {
-    taskListInitialized = false;
-    return super.refreshData();
+  Future<void> getDataOffLine() async {
+    await inflateTasksFromDB();
   }
 
   @override
-  Future<void> getDataOffLine() async {
-    await inflateTasksFromDB();
+  Future<void> refreshData() async {
+    taskListInitialized = false;
+    super.refreshData();
   }
 
   @override
@@ -70,11 +70,14 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   Widget buildList(List<Task> currentTaskList) {
     return Stack(
       children: [
-        ListView.builder(
-          itemCount: currentTaskList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return buildListTile(index, currentTaskList);
-          },
+        RefreshIndicator(
+          onRefresh: refreshData,
+          child: ListView.builder(
+            itemCount: currentTaskList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return buildListTile(index, currentTaskList);
+            },
+          ),
         ),
         Align(
           alignment: Alignment.bottomRight,
