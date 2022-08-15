@@ -109,6 +109,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         if (newTask == null) return;
         setState(() {
           addOrReplaceTask(newTask);
+          registerTaskNotification(newTask);
           taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
         });
       },

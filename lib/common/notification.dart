@@ -6,9 +6,6 @@ import 'db/task.dart';
 
 Future<void> registerTaskNotification(Task task) async {
   final plugin = FlutterLocalNotificationsPlugin();
-
-  print(timeToString(task.deadline));
-
   return plugin.zonedSchedule(
     task.id.hashCode,
     "課題締め切り通知",
