@@ -25,11 +25,16 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
   int taskTypeDropDownValue = TaskType.OTHERS;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     if (widget.initDate != null) {
       selectedDate = DateTime(widget.initDate!.year, widget.initDate!.month,
           widget.initDate!.day, 23, 59, 0, 0, 0);
     }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SimpleDialog(
       title: const Text("課題追加"),
       children: [
@@ -158,8 +163,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                   }
                                 },
                                 currentTime: selectedDate ??
-                                    widget.initDate ??
-                                    DateTime.now(),
+                                    (widget.initDate ?? DateTime.now()),
                                 locale: LocaleType.jp,
                               );
                             },
