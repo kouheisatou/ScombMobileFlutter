@@ -14,12 +14,12 @@ String timeToString(int time) {
       now.month == date.month &&
       now.day == date.day - 1) {
     var formatter = DateFormat("HH:mm");
-    result = "昨日 ${formatter.format(date)}";
+    result = "明日 ${formatter.format(date)}";
   } else if (now.year == date.year &&
       now.month == date.month &&
       now.day == date.day + 1) {
     var formatter = DateFormat("HH:mm");
-    result = "明日 ${formatter.format(date)}";
+    result = "昨日 ${formatter.format(date)}";
   } else {
     var formatter = DateFormat("yyyy/MM/dd HH:mm");
     result = formatter.format(date);

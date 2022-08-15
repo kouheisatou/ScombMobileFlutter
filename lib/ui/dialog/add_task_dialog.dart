@@ -19,7 +19,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
   String title = "";
   ClassCell? classDropDownValue;
   int taskTypeDropDownValue = TaskType.OTHERS;
-  String url = "";
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +59,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                       setState(() {
                         classDropDownValue = newClassCell;
                       });
-
-                      if (newClassCell == null) return;
-
-                      var db = await AppDatabase.getDatabase();
-                      var relatedClass = await db.currentClassCellDao
-                          .getClassCell(newClassCell.classId);
-                      url = relatedClass?.url ?? "";
                     },
                   ),
                   IconButton(
@@ -157,7 +149,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                 child: const Text("キャンセル"),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   if (title == "") {
                     Fluttertoast.showToast(msg: "課題タイトルを入力してください");
                     return;
@@ -167,9 +159,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                     return;
                   }
                   if (selectedDate!.millisecondsSinceEpoch <
-                      DateTime.now()
-                          .add(const Duration(minutes: 1))
-                          .millisecondsSinceEpoch) {
+                      DateTime.now().millisecondsSinceEpoch) {
                     Fluttertoast.showToast(msg: "今よりの先の時刻を選択してください");
                     return;
                   }
@@ -179,12 +169,15 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                     classDropDownValue?.name ?? "",
                     taskTypeDropDownValue,
                     selectedDate!.millisecondsSinceEpoch,
-                    url,
+                    classDropDownValue?.url ?? "",
                     "usertask-${DateTime.now().millisecondsSinceEpoch.hashCode}",
                     classDropDownValue?.classId ?? "null",
                     classDropDownValue?.customColorInt,
                     true,
                   );
+
+                  var db = await AppDatabase.getDatabase();
+                  await db.currentTaskDao.insertTask(newTask);
                   Navigator.pop(context, newTask);
                 },
                 child: const Text("追加"),

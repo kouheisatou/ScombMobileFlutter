@@ -32,6 +32,11 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     var tasksFromDB = await db.currentTaskDao.getAllTasks();
     for (var task in tasksFromDB) {
       print("task_from_db : $task");
+      var relatedClass =
+          await db.currentClassCellDao.getClassCell(task.classId);
+      if (relatedClass != null) {
+        task.customColor = relatedClass.customColorInt;
+      }
       addOrReplaceTask(task);
     }
 
@@ -108,6 +113,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         });
       },
       onTap: () {
+        if (currentTask.url == "") return;
         Navigator.push(
           context,
           MaterialPageRoute(
