@@ -49,8 +49,10 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
 
       widget.initialized = true;
     } on SocketException catch (e, stackTrace) {
+      // offline mode
       Fluttertoast.showToast(msg: "オフライン");
-      widget.parent.selectedIndex = 0;
+      await getDataOffLine();
+      widget.initialized = true;
     } catch (e, stackTrace) {
       // if fetch failed, auto nav to login screen
       widget.parent.navToLoginScreen();
@@ -58,6 +60,9 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       print("$e\n$stackTrace");
       Fluttertoast.showToast(msg: e.toString());
     } finally {
+      // sort
+      taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+
       try {
         setState(() {
           widget.isLoading = false;
@@ -82,6 +87,9 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
   // if fail, throw exception
   Future<void> getFromServerAndSaveToSharedResource(
       String savedSessionId) async {}
+
+  /// fetch data from db and save to shared resource here
+  Future<void> getDataOffLine() async {}
 
   NetworkScreenState() {
     // run fetch after build

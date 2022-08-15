@@ -63,6 +63,16 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   }
 
   @override
+  Future<void> getDataOffLine() async {
+    // recover timetable from db
+    var db = await AppDatabase.getDatabase();
+    var allClasses = await db.currentClassCellDao.getAllClasses();
+    for (var c in allClasses) {
+      timetable[c.period][c.dayOfWeek] = c;
+    }
+  }
+
+  @override
   Widget innerBuild() {
     return DefaultTextStyle(
       textAlign: TextAlign.center,

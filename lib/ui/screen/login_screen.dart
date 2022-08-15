@@ -90,7 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   webView = controller;
                 },
                 onLoadError: (controller, url, code, message) {
-                  Fluttertoast.showToast(msg: "ERROR : $message");
+                  if (message == "net::ERR_NAME_NOT_RESOLVED") {
+                    Fluttertoast.showToast(msg: "オフライン");
+                  } else {
+                    Fluttertoast.showToast(msg: "ERROR : $message ($code)");
+                  }
                   widget.parent.setBottomNavIndex(0);
                 },
                 onLoadStop: (controller, url) async {

@@ -28,7 +28,16 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     // reset notification
     await cancelNotification();
 
-    // inflate tasks from db
+    await inflateTasksFromDB();
+
+    // inflate tasks from server
+    await fetchSurveys(sessionId ?? savedSessionId);
+    await fetchTasks(sessionId ?? savedSessionId);
+
+    taskListInitialized = true;
+  }
+
+  Future<void> inflateTasksFromDB() async {
     var db = await AppDatabase.getDatabase();
     var tasksFromDB = await db.currentTaskDao.getAllTasks();
     for (var task in tasksFromDB) {
@@ -40,21 +49,17 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
       }
       addOrReplaceTask(task);
     }
-
-    // inflate tasks from server
-    await fetchSurveys(sessionId ?? savedSessionId);
-    await fetchTasks(sessionId ?? savedSessionId);
-
-    // sort
-    taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
-
-    taskListInitialized = true;
   }
 
   @override
   Future<void> refreshData() {
     taskListInitialized = false;
     return super.refreshData();
+  }
+
+  @override
+  Future<void> getDataOffLine() async {
+    await inflateTasksFromDB();
   }
 
   @override
