@@ -58,16 +58,42 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
 
   @override
   Widget innerBuild() {
-    return ListView.separated(
-      itemCount: taskList.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return const Divider(
-          height: 0.5,
-        );
-      },
-      itemBuilder: (BuildContext context, int index) {
-        return buildListTile(index, taskList);
-      },
+    return buildList(taskList);
+  }
+
+  Widget buildList(List<Task> taskList) {
+    return Stack(
+      children: [
+        ListView.separated(
+          itemCount: taskList.length,
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider(
+              height: 0.5,
+            );
+          },
+          itemBuilder: (BuildContext context, int index) {
+            return buildListTile(index, taskList);
+          },
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10, bottom: 10),
+            child: ElevatedButton(
+              onPressed: () {
+                showAddNewTaskDialog();
+              },
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(5),
+              ),
+              child: const Icon(
+                Icons.add,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -95,24 +121,6 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         currentTask.title,
         textAlign: TextAlign.left,
       ),
-      onLongPress: () async {
-        var db = await AppDatabase.getDatabase();
-        var taskInDB = await db.currentTaskDao.getTask(currentTask.id);
-        print(taskInDB);
-
-        var newTask = await showDialog<Task>(
-          context: context,
-          builder: (_) {
-            return AddTaskDialog();
-          },
-        );
-        if (newTask == null) return;
-        setState(() {
-          addOrReplaceTask(newTask);
-          registerTaskNotification(newTask);
-          taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
-        });
-      },
       onTap: () {
         if (currentTask.url == "") return;
         Navigator.push(
@@ -148,5 +156,20 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> showAddNewTaskDialog() async {
+    var newTask = await showDialog<Task>(
+      context: context,
+      builder: (_) {
+        return AddTaskDialog(null);
+      },
+    );
+    if (newTask == null) return;
+    setState(() {
+      addOrReplaceTask(newTask);
+      registerTaskNotification(newTask);
+      taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+    });
   }
 }

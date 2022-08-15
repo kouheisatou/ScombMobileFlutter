@@ -4,6 +4,8 @@ import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../common/db/task.dart';
+import '../../common/notification.dart';
+import '../dialog/add_task_dialog.dart';
 
 class TaskCalendarScreen extends TaskListScreen {
   TaskCalendarScreen(super.parent, super.title, {Key? key}) : super(key: key);
@@ -166,17 +168,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
           color: Colors.black,
         ),
         Expanded(
-          child: ListView.separated(
-            itemCount: selectedTasks.length,
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider(
-                height: 0.5,
-              );
-            },
-            itemBuilder: (BuildContext context, int index) {
-              return buildListTile(index, getTaskForDay(_selectedDay));
-            },
-          ),
+          child: buildList(taskList),
         ),
       ],
     );
@@ -195,5 +187,21 @@ class _TaskCalendarScreenState extends TaskListScreenState {
       }
     }
     return result;
+  }
+
+  @override
+  Future<void> showAddNewTaskDialog() async {
+    var newTask = await showDialog<Task>(
+      context: context,
+      builder: (_) {
+        return AddTaskDialog(_selectedDay);
+      },
+    );
+    if (newTask == null) return;
+    setState(() {
+      addOrReplaceTask(newTask);
+      registerTaskNotification(newTask);
+      taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+    });
   }
 }

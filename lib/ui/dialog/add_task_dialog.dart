@@ -10,6 +10,10 @@ import '../../common/db/task.dart';
 import '../../common/shared_resource.dart';
 
 class AddTaskDialog extends StatefulWidget {
+  AddTaskDialog(this.initDate, {Key? key}) : super(key: key);
+
+  late DateTime? initDate;
+
   @override
   State<AddTaskDialog> createState() => _AddTaskDialogState();
 }
@@ -22,6 +26,10 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.initDate != null) {
+      selectedDate = DateTime(widget.initDate!.year, widget.initDate!.month,
+          widget.initDate!.day, 23, 59, 0, 0, 0);
+    }
     return SimpleDialog(
       title: const Text("課題追加"),
       children: [
@@ -149,7 +157,9 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                     });
                                   }
                                 },
-                                currentTime: selectedDate ?? DateTime.now(),
+                                currentTime: selectedDate ??
+                                    widget.initDate ??
+                                    DateTime.now(),
                                 locale: LocaleType.jp,
                               );
                             },
