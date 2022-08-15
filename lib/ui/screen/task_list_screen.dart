@@ -17,7 +17,7 @@ class TaskListScreen extends NetworkScreen {
   TaskListScreen(super.parent, super.title, {Key? key}) : super(key: key);
 
   @override
-  State<TaskListScreen> createState() => TaskListScreenState();
+  NetworkScreenState<TaskListScreen> createState() => TaskListScreenState();
 }
 
 class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
@@ -59,7 +59,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   @override
   Future<void> refreshData() async {
     taskListInitialized = false;
-    super.refreshData();
+    super.fetchData();
   }
 
   @override

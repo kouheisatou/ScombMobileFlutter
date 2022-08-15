@@ -6,12 +6,14 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../common/db/task.dart';
 import '../../common/notification.dart';
 import '../dialog/add_task_dialog.dart';
+import 'network_screen.dart';
 
 class TaskCalendarScreen extends TaskListScreen {
   TaskCalendarScreen(super.parent, super.title, {Key? key}) : super(key: key);
 
   @override
-  State<TaskListScreen> createState() => _TaskCalendarScreenState();
+  NetworkScreenState<TaskListScreen> createState() =>
+      _TaskCalendarScreenState();
 }
 
 final today = DateTime.now();

@@ -3,32 +3,26 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/login_exception.dart';
 import 'package:scomb_mobile/common/shared_resource.dart';
 import 'package:scomb_mobile/ui/scomb_mobile.dart';
 
 import '../../common/db/scomb_mobile_database.dart';
 import '../../common/db/setting_entity.dart';
 
-class NetworkScreen extends StatefulWidget {
+abstract class NetworkScreen extends StatefulWidget {
   NetworkScreen(this.parent, this.title, {Key? key}) : super(key: key);
 
   ScombMobileState parent;
   String title;
-  bool initialized = false;
   bool isLoading = false;
 
   @override
-  State<NetworkScreen> createState() {
-    return NetworkScreenState<NetworkScreen>();
-  }
+  NetworkScreenState<NetworkScreen> createState();
 }
 
-class NetworkScreenState<T extends NetworkScreen> extends State<T> {
+abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
   Future<void> fetchData() async {
-    if (widget.initialized) {
-      return;
-    }
-
     setState(() {
       widget.isLoading = true;
     });
@@ -40,25 +34,24 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
           await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
       var savedSessionId = sessionIdSetting?.settingValue;
 
-      if (savedSessionId == null) throw Exception("ログインが必要です");
+      if (savedSessionId == null) throw LoginException("ログインが必要です");
 
       await getFromServerAndSaveToSharedResource(savedSessionId);
 
       // saved session id passed
       sessionId ??= savedSessionId;
-
-      widget.initialized = true;
     } on SocketException catch (e, stackTrace) {
       // offline mode
       Fluttertoast.showToast(msg: "オフライン");
       await getDataOffLine();
-      widget.initialized = true;
-    } catch (e, stackTrace) {
+    } on LoginException catch (e, stackTrace) {
       // if fetch failed, auto nav to login screen
       widget.parent.navToLoginScreen();
-      widget.initialized = false;
-      print("$e\n$stackTrace");
-      Fluttertoast.showToast(msg: e.toString());
+      print("login_fail $e\n$stackTrace");
+      Fluttertoast.showToast(msg: "ログインが必要です");
+    } catch (e, stackTrace) {
+      Fluttertoast.showToast(
+          msg: "予期せぬエラーが発生しました。開発者に報告してください。\n$e,$stackTrace");
     } finally {
       // sort
       taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
@@ -73,23 +66,18 @@ class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     }
   }
 
-  Future<void> refreshData() async {
-    widget.initialized = false;
-    fetchData();
-  }
+  Future<void> refreshData();
 
   /// build view here
-  Widget innerBuild() {
-    return Container();
-  }
+  Widget innerBuild();
 
   /// fetch data and save as shared resource here
-  // if fail, throw exception
-  Future<void> getFromServerAndSaveToSharedResource(
-      String savedSessionId) async {}
+  // if login error, throw LoginException
+  // if offline error, throw SocketException
+  Future<void> getFromServerAndSaveToSharedResource(String savedSessionId);
 
   /// fetch data from db and save to shared resource here
-  Future<void> getDataOffLine() async {}
+  Future<void> getDataOffLine();
 
   NetworkScreenState() {
     // run fetch after build

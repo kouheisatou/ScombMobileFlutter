@@ -14,7 +14,7 @@ class TimetableScreen extends NetworkScreen {
   TimetableScreen(super.parent, super.title, {Key? key}) : super(key: key);
 
   @override
-  State<TimetableScreen> createState() {
+  NetworkScreenState<TimetableScreen> createState() {
     return _TimetableScreenState();
   }
 }
@@ -233,5 +233,11 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       }
     });
     return result;
+  }
+
+  @override
+  Future<void> refreshData() async {
+    super.fetchData();
+    timetableInitialized = false;
   }
 }
