@@ -229,22 +229,6 @@ class _$ClassCellDao extends ClassCellDao {
   }
 
   @override
-  Future<ClassCell?> getClassCellByCellId(String cellId) async {
-    return _queryAdapter.query('SELECT * FROM class_cell WHERE cellId = ?1',
-        mapper: (Map<String, Object?> row) => ClassCell(
-            row['classId'] as String,
-            row['name'] as String,
-            row['teachers'] as String,
-            row['room'] as String,
-            row['dayOfWeek'] as int,
-            row['period'] as int,
-            row['year'] as int,
-            row['term'] as int,
-            row['customColorInt'] as int?),
-        arguments: [cellId]);
-  }
-
-  @override
   Future<void> insertClassCell(ClassCell classCell) async {
     await _classCellInsertionAdapter.insert(
         classCell, OnConflictStrategy.replace);
