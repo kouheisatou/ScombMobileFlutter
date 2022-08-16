@@ -59,7 +59,8 @@ Future<void> _constructSurveys(Document document) async {
 
     // custom color from timetable
     int? customColor;
-    var classCellFromDB = await db.currentClassCellDao.getClassCell(classId);
+    var classCellFromDB =
+        await db.currentClassCellDao.getClassCellByClassId(classId);
     customColor = classCellFromDB?.customColorInt;
 
     var newSurvey = Task(

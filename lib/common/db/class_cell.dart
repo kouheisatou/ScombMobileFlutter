@@ -6,7 +6,6 @@ import '../values.dart';
 
 @Entity(tableName: "class_cell")
 class ClassCell {
-  @primaryKey
   String classId;
   String name;
   String teachers;
@@ -17,6 +16,8 @@ class ClassCell {
   int term;
   int? customColorInt;
   late String url;
+  @primaryKey
+  late String cellId;
 
   ClassCell(
     this.classId,
@@ -30,6 +31,7 @@ class ClassCell {
     this.customColorInt,
   ) {
     url = "$CLASS_PAGE_URL?idnumber=$classId";
+    cellId = "$year:$term-$period:$dayOfWeek-$classId";
   }
 
   Future<void> setColor(int? colorInt) async {

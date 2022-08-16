@@ -43,7 +43,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     for (var task in tasksFromDB) {
       print("task_from_db : $task");
       var relatedClass =
-          await db.currentClassCellDao.getClassCell(task.classId);
+          await db.currentClassCellDao.getClassCellByClassId(task.classId);
       if (relatedClass != null) {
         task.customColor = relatedClass.customColorInt;
       }

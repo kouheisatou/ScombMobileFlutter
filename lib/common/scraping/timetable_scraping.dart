@@ -78,7 +78,8 @@ Future<void> _constructTimetableArray(Document doc, int year, int term) async {
       timetable[r][c] = newCell;
 
       // load custom color from db
-      var classCellFromDB = await db.currentClassCellDao.getClassCell(id);
+      var classCellFromDB =
+          await db.currentClassCellDao.getClassCellByCellId(id);
       print(classCellFromDB);
       newCell.customColorInt = classCellFromDB?.customColorInt;
       await db.currentClassCellDao.insertClassCell(newCell);
