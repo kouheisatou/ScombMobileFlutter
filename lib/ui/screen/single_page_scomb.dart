@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
@@ -14,7 +15,23 @@ class SinglePageScomb extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              if (await canLaunchUrl(Uri.parse(url))) {
+                await launchUrl(
+                  Uri.parse(url),
+                  mode: LaunchMode.externalApplication,
+                );
+              }
+            },
+            icon: const Icon(Icons.open_in_browser),
+          )
+        ],
+        title: Text(
+          title,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
       body: InAppWebView(
         initialUrlRequest: URLRequest(
@@ -30,13 +47,6 @@ class SinglePageScomb extends StatelessWidget {
           await controller.evaluateJavascript(
             source: "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
           );
-
-          // on load diff page
-          // if ("${currentUrl?.host}${currentUrl?.path}" != url) {
-          //   if (await canLaunchUrl(Uri.parse(url))) {
-          //     await launchUrl(Uri.parse(url));
-          //   }
-          // }
         },
       ),
     );

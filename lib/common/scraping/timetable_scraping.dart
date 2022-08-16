@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
+import 'package:scomb_mobile/common/login_exception.dart';
 import 'package:scomb_mobile/common/values.dart';
 
 import '../db/class_cell.dart';
@@ -31,7 +32,7 @@ Future<void> fetchTimetable(
   var currentUrl = "https://${response.realUri.host}${response.realUri.path}";
 
   if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
-    throw Exception("セッションIDの有効期限切れ");
+    throw LoginException("セッションIDの有効期限切れ");
   }
 
   await _constructTimetableArray(document, year, term);

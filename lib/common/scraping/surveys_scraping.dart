@@ -2,6 +2,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:scomb_mobile/common/login_exception.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
@@ -25,7 +26,7 @@ Future<void> fetchSurveys(
   var currentUrl =
       "https://${response.request?.url.host}${response.request?.url.path}";
   if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
-    throw Exception("セッションIDの有効期限切れ");
+    throw LoginException("セッションIDの有効期限切れ");
   }
 
   await _constructSurveys(document);
