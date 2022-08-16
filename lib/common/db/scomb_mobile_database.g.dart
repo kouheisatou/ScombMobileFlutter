@@ -86,7 +86,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `settings` (`settingKey` TEXT NOT NULL, `settingValue` TEXT NOT NULL, PRIMARY KEY (`settingKey`))');
+            'CREATE TABLE IF NOT EXISTS `settings` (`settingKey` TEXT NOT NULL, `settingValue` TEXT, PRIMARY KEY (`settingKey`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `name` TEXT NOT NULL, `teachers` TEXT NOT NULL, `room` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `period` INTEGER NOT NULL, `year` INTEGER NOT NULL, `term` INTEGER NOT NULL, `customColorInt` INTEGER, `url` TEXT NOT NULL, PRIMARY KEY (`classId`))');
         await database.execute(
@@ -138,16 +138,16 @@ class _$SettingDao extends SettingDao {
   @override
   Future<Setting?> getSetting(String settingKey) async {
     return _queryAdapter.query('SELECT * FROM settings WHERE settingKey = ?1',
-        mapper: (Map<String, Object?> row) =>
-            Setting(row['settingKey'] as String, row['settingValue'] as String),
+        mapper: (Map<String, Object?> row) => Setting(
+            row['settingKey'] as String, row['settingValue'] as String?),
         arguments: [settingKey]);
   }
 
   @override
   Future<List<Setting>> getAllSetting() async {
-    return _queryAdapter.queryList('SELECT * FROM settingKey',
+    return _queryAdapter.queryList('SELECT * FROM settings',
         mapper: (Map<String, Object?> row) => Setting(
-            row['settingKey'] as String, row['settingValue'] as String));
+            row['settingKey'] as String, row['settingValue'] as String?));
   }
 
   @override
@@ -155,6 +155,11 @@ class _$SettingDao extends SettingDao {
     await _queryAdapter.queryNoReturn(
         'DELETE FROM settings WHERE settingKey = ?1',
         arguments: [settingKey]);
+  }
+
+  @override
+  Future<void> deleteAllSettings() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM settings');
   }
 
   @override

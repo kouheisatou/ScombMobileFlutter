@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/database_exception.dart';
 import 'package:scomb_mobile/common/db/class_cell.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
+import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/dialog/class_detail_dialog.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 
@@ -26,26 +28,56 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
-    if (timetableInitialized) return;
-
     var db = await AppDatabase.getDatabase();
 
-    // todo recover from timetable setting
-    var yearFromSettings = 2022;
-    var termFromSettings = Term.FIRST;
-    var refreshInterval = 86400000 * 7;
-    var lastUpdate = int.parse((await db.currentSettingDao
-                .getSetting(SettingKeys.TIMETABLE_LAST_UPDATE))
-            ?.settingValue ??
-        "0");
+    var prevTimetableYear = timetableYear;
+    var prevTimetableTerm = timetableTerm;
+
+    late int refreshInterval;
+    late int lastUpdate;
+    try {
+      timetableYear = int.parse(
+          (await db.currentSettingDao.getSetting(SettingKeys.TIMETABLE_YEAR))
+                  ?.settingValue ??
+              DateTime.now().year.toString());
+      timetableTerm = int.parse(
+          (await db.currentSettingDao.getSetting(SettingKeys.TIMETABLE_TERM))
+                  ?.settingValue ??
+              getCurrentTerm().toString());
+      refreshInterval = int.parse((await db.currentSettingDao
+                  .getSetting(SettingKeys.TIMETABLE_UPDATE_INTERVAL))
+              ?.settingValue ??
+          (86400000 * 7).toString());
+      lastUpdate = int.parse((await db.currentSettingDao
+                  .getSetting(SettingKeys.TIMETABLE_LAST_UPDATE))
+              ?.settingValue ??
+          "0");
+    } catch (e) {
+      throw DatabaseException("不正な設定");
+    }
+
+    // on timetable year or term setting changed, force fetch from server
+    var forceRefresh = false;
+    if ((timetableYear != prevTimetableYear ||
+            timetableTerm != prevTimetableTerm) &&
+        timetableInitialized) {
+      forceRefresh = true;
+      timetableInitialized = false;
+    }
+    print("start to fetch timetable ($timetableYear-$timetableTerm)");
+
+    if (timetableInitialized) return;
+
+    clearTimetable();
 
     // timetable info too old
-    if (lastUpdate < DateTime.now().millisecondsSinceEpoch - refreshInterval) {
+    if (lastUpdate < DateTime.now().millisecondsSinceEpoch - refreshInterval ||
+        forceRefresh) {
       // fetch timetable from server
       await fetchTimetable(
         sessionId ?? savedSessionId,
-        yearFromSettings,
-        termFromSettings,
+        timetableYear ?? DateTime.now().year,
+        timetableTerm ?? getCurrentTerm(),
       );
       db.currentSettingDao.insertSetting(Setting(
           SettingKeys.TIMETABLE_LAST_UPDATE,
@@ -54,7 +86,9 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       // recover from db
       var allClasses = await db.currentClassCellDao.getAllClasses();
       for (var c in allClasses) {
-        timetable[c.period][c.dayOfWeek] = c;
+        if (c.year == timetableYear && c.term == timetableTerm) {
+          timetable[c.period][c.dayOfWeek] = c;
+        }
       }
     }
 
@@ -68,7 +102,9 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     var db = await AppDatabase.getDatabase();
     var allClasses = await db.currentClassCellDao.getAllClasses();
     for (var c in allClasses) {
-      timetable[c.period][c.dayOfWeek] = c;
+      if (c.year == timetableYear && c.term == timetableTerm) {
+        timetable[c.period][c.dayOfWeek] = c;
+      }
     }
   }
 

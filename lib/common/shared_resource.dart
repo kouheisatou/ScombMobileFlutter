@@ -15,6 +15,15 @@ List<List<ClassCell?>> timetable = [
   [null, null, null, null, null, null],
 ];
 bool timetableInitialized = false;
+int? timetableYear;
+int? timetableTerm;
+void clearTimetable() {
+  for (int r = 0; r < timetable.length; r++) {
+    for (int c = 0; c < timetable[0].length; c++) {
+      timetable[r][c] = null;
+    }
+  }
+}
 
 List<Task> taskList = [];
 bool taskListInitialized = false;

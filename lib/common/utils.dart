@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:intl/intl.dart';
+import 'package:scomb_mobile/common/values.dart';
 
 String timeToString(int time) {
   var now = DateTime.now();
@@ -37,4 +38,13 @@ int stringToTime(String time, {bool includeSecond = true}) {
 
 Color hexToColor(String hexString, {String alphaChannel = 'FF'}) {
   return Color(int.parse(hexString.replaceFirst('#', '0x$alphaChannel')));
+}
+
+int getCurrentTerm() {
+  var today = DateTime.now();
+  if (3 < today.month && today.month < 9) {
+    return Term.FIRST;
+  } else {
+    return Term.SECOND;
+  }
 }

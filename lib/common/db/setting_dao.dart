@@ -6,7 +6,7 @@ abstract class SettingDao {
   @Query("SELECT * FROM settings WHERE settingKey = :settingKey")
   Future<Setting?> getSetting(String settingKey);
 
-  @Query("SELECT * FROM settingKey")
+  @Query("SELECT * FROM settings")
   Future<List<Setting>> getAllSetting();
 
   // onConflict = replace
@@ -15,4 +15,7 @@ abstract class SettingDao {
 
   @Query("DELETE FROM settings WHERE settingKey = :settingKey")
   Future<void> deleteSetting(String settingKey);
+
+  @Query("DELETE FROM settings")
+  Future<void> deleteAllSettings();
 }

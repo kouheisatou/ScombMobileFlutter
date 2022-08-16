@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/database_exception.dart';
 import 'package:scomb_mobile/common/login_exception.dart';
 import 'package:scomb_mobile/common/shared_resource.dart';
 import 'package:scomb_mobile/ui/scomb_mobile.dart';
@@ -27,9 +28,9 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       widget.isLoading = true;
     });
 
+    var db = await AppDatabase.getDatabase();
     try {
       // recover session_id from local db
-      var db = await AppDatabase.getDatabase();
       var sessionIdSetting =
           await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
       var savedSessionId = sessionIdSetting?.settingValue;
@@ -40,22 +41,37 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
 
       // saved session id passed
       sessionId ??= savedSessionId;
-    } on SocketException catch (e, stackTrace) {
-      // offline mode
+    }
+
+    // offline mode
+    on SocketException catch (e, stackTrace) {
       Fluttertoast.showToast(msg: "オフライン");
       await getDataOffLine();
-    } on LoginException catch (e, stackTrace) {
-      // if fetch failed, auto nav to login screen
+    }
+
+    // if fetch failed, auto nav to login screen
+    on LoginException catch (e, stackTrace) {
       widget.parent.navToLoginScreen();
       print("login_fail $e\n$stackTrace");
       Fluttertoast.showToast(msg: "ログインが必要です");
-    } catch (e, stackTrace) {
+    }
+
+    // inflate invalid setting
+    on DatabaseException catch (e, stackTrace) {
+      db.currentSettingDao.deleteAllSettings();
+      print("invalid_setting $e\n$stackTrace");
+      Fluttertoast.showToast(msg: "無効な設定");
+    }
+
+    // unhandled error
+    catch (e, stackTrace) {
       Fluttertoast.showToast(
           msg: "予期せぬエラーが発生しました。開発者に報告してください。\n$e,$stackTrace");
     } finally {
       // sort
       taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
 
+      // force to disable loading mode
       try {
         setState(() {
           widget.isLoading = false;
