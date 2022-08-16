@@ -59,6 +59,8 @@ dependencies:
   flutter_datetime_picker: ^1.2.1
   # slidable
   flutter_slidable: ^2.0.0
+  # settings_ui
+  settings_ui: ^2.0.2
 
 
 flutter_native_splash:

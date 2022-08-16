@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/utils.dart';
+import 'package:scomb_mobile/ui/screen/settings/login_setting_screen.dart';
+import 'package:settings_ui/settings_ui.dart';
 
 import '../../common/values.dart';
 import '../scomb_mobile.dart';
@@ -72,6 +74,81 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Widget innerBuild() {
+    return SettingsList(
+      sections: [
+        SettingsSection(
+          title: const Text("ログイン設定"),
+          tiles: [
+            SettingsTile(
+              title: const Text("ユーザ名"),
+              value: Text(settings[SettingKeys.USERNAME] ?? ""),
+              onPressed: (context) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => LoginSettingScreen(settings, db),
+                  ),
+                );
+              },
+            ),
+            SettingsTile(
+              title: const Text("パスワード"),
+              value: Text(settings[SettingKeys.PASSWORD] ?? ""),
+            ),
+            SettingsTile(
+              title: const Text("自動ログイン"),
+              value: Text(settings[SettingKeys.ENABLED_AUTO_LOGIN] ?? "有効"),
+            ),
+          ],
+        ),
+        SettingsSection(
+          title: const Text("時間割設定"),
+          tiles: [
+            SettingsTile(
+              title: const Text("取得間隔"),
+              value: Text(
+                settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ?? "1週間",
+              ),
+            ),
+            SettingsTile(
+              title: const Text("年度"),
+              value: Text(
+                settings[SettingKeys.TIMETABLE_YEAR] ?? "最新",
+              ),
+            ),
+            SettingsTile(
+              title: const Text("学期"),
+              enabled: !isLatestTimetable,
+              value: !isLatestTimetable
+                  ? Text(
+                      settings[SettingKeys.TIMETABLE_TERM] ??
+                          getCurrentTerm().toString(),
+                    )
+                  : const Text(""),
+            ),
+          ],
+        ),
+        SettingsSection(
+          title: const Text("通知設定"),
+          tiles: [
+            SettingsTile(
+              title: const Text("課題締切通知"),
+            ),
+          ],
+        ),
+        SettingsSection(
+          title: const Text("このアプリについて"),
+          tiles: [
+            SettingsTile(
+              title: const Text("GitHub"),
+            ),
+            SettingsTile(
+              title: const Text("プライバシーポリシー"),
+            )
+          ],
+        ),
+      ],
+    );
+
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(

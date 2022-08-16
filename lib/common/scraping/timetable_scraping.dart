@@ -80,11 +80,11 @@ Future<void> _constructTimetableArray(Document doc, int year, int term) async {
       // load custom color from db
       var classCellFromDB =
           await db.currentClassCellDao.getClassCellByClassId(newCell.classId);
-      print(classCellFromDB);
+      print("class_from_db : $classCellFromDB");
       newCell.customColorInt = classCellFromDB?.customColorInt;
       await db.currentClassCellDao.insertClassCell(newCell);
 
-      print("$r-$c : $newCell");
+      print("class_from_server : $newCell");
     }
   }
 }
