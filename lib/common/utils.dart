@@ -42,6 +42,7 @@ Color hexToColor(String hexString, {String alphaChannel = 'FF'}) {
 
 int getCurrentTerm() {
   var today = DateTime.now();
+  print(today.month);
   if (3 < today.month && today.month < 9) {
     return Term.FIRST;
   } else {

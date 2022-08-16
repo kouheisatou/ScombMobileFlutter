@@ -160,11 +160,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   onChanged: (checked) {
                     if (checked == true) {
                       updateSetting(SettingKeys.TIMETABLE_YEAR, null);
+                      updateSetting(SettingKeys.TIMETABLE_TERM,
+                          getCurrentTerm().toString());
                     } else {
-                      settings[SettingKeys.TIMETABLE_YEAR] =
-                          DateTime.now().year.toString();
-                      settings[SettingKeys.TIMETABLE_TERM] =
-                          getCurrentTerm().toString();
+                      updateSetting(SettingKeys.TIMETABLE_YEAR,
+                          DateTime.now().year.toString());
+                      updateSetting(SettingKeys.TIMETABLE_TERM,
+                          getCurrentTerm().toString());
                     }
 
                     setState(() {
