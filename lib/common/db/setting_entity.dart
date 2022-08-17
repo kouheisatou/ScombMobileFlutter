@@ -37,6 +37,9 @@ class SettingKeys {
   static String TIMETABLE_UPDATE_INTERVAL = "timetable_update_interval";
   static String TIMETABLE_YEAR = "timetable_year";
   static String TIMETABLE_TERM = "timetable_term";
+
+  static String NOTIFICATION_TIMING = "notification_timing";
+  static String TODAYS_TASK_NOTIFICATION_TIME = "todays_task_notification_time";
 }
 
 class SettingValues {
@@ -51,5 +54,15 @@ class SettingValues {
   static Map<String, String> TIMETABLE_TERM = {
     "前期": Term.FIRST,
     "後期": Term.SECOND,
+  };
+
+  static Map<String, int> NOTIFICATION_TIMING = {
+    "10分前": 60000 * 10,
+    "30分前": 60000 * 30,
+    "1時間前": 60000 * 60,
+    "2時間前": 60000 * 60 * 2,
+    "3時間前": 60000 * 60 * 3,
+    "6時間前": 60000 * 60 * 6,
+    "1日前": 60000 * 60 * 24,
   };
 }

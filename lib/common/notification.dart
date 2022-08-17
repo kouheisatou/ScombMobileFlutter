@@ -1,10 +1,24 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
+import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import 'db/task.dart';
 
 Future<void> registerTaskNotification(Task task) async {
+  var db = await AppDatabase.getDatabase();
+  var notificationTimingSetting =
+      await db.currentSettingDao.getSetting(SettingKeys.NOTIFICATION_TIMING);
+  int notifyBefore = int.parse(
+    notificationTimingSetting?.settingValue ?? (60000 * 60).toString(),
+  );
+
+  int notifyTime = task.deadline - notifyBefore;
+  if (notifyTime < DateTime.now().millisecondsSinceEpoch) {
+    notifyTime = DateTime.now().millisecondsSinceEpoch + 1000;
+  }
+
   final plugin = FlutterLocalNotificationsPlugin();
   return plugin.zonedSchedule(
     task.id.hashCode,
@@ -12,7 +26,7 @@ Future<void> registerTaskNotification(Task task) async {
     "${task.title} (${timeToString(task.deadline)})",
     tz.TZDateTime.fromMillisecondsSinceEpoch(
       tz.UTC,
-      task.deadline,
+      notifyTime,
     ),
     const NotificationDetails(
       android: AndroidNotificationDetails(

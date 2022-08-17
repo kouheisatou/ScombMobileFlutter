@@ -232,6 +232,33 @@ class _SettingScreenState extends State<SettingScreen> {
           tiles: [
             SettingsTile(
               title: const Text("課題締切通知"),
+              value: Text(
+                findMapKeyFromValue<int>(
+                      SettingValues.NOTIFICATION_TIMING,
+                      int.parse(
+                        settings[SettingKeys.NOTIFICATION_TIMING] ??
+                            (60000 * 60).toString(),
+                      ),
+                    ) ??
+                    "１時間前",
+              ),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectorDialog(
+                      SettingValues.NOTIFICATION_TIMING,
+                      (key, value) async {
+                        updateSetting(
+                            SettingKeys.NOTIFICATION_TIMING, value.toString());
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+            SettingsTile(
+              title: const Text("今日の課題通知時間"),
             ),
           ],
         ),
