@@ -169,16 +169,50 @@ class _SettingScreenState extends State<SettingScreen> {
               value: Text(
                 settings[SettingKeys.TIMETABLE_YEAR] ?? "最新",
               ),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectorDialog<int?>(
+                      buildYearSelection(),
+                      (key, value) async {
+                        updateSetting(
+                          SettingKeys.TIMETABLE_YEAR,
+                          value?.toString(),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
             SettingsTile(
               title: const Text("学期"),
               enabled: !isLatestTimetable,
-              value: Text((!isLatestTimetable
-                      ? (TERM_DISP_NAME_MAP[int.parse(
-                          settings[SettingKeys.TIMETABLE_TERM] ??
-                              getCurrentTerm().toString())])
-                      : "") ??
-                  ""),
+              value: Text(
+                findMapKeyFromValue(
+                        SettingValues.TIMETABLE_TERM,
+                        int.parse(settings[SettingKeys.TIMETABLE_TERM] ??
+                                getCurrentTerm().toString())
+                            .toString())
+                    .toString(),
+              ),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectorDialog(
+                      SettingValues.TIMETABLE_TERM,
+                      (key, value) async {
+                        updateSetting(
+                          SettingKeys.TIMETABLE_TERM,
+                          value.toString(),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),
@@ -355,5 +389,16 @@ class _SettingScreenState extends State<SettingScreen> {
         ],
       ),
     );
+  }
+
+  Map<String, int?> buildYearSelection() {
+    Map<String, int?> yearSelection = {};
+    var thisYear = DateTime.now().year;
+    yearSelection["最新"] = null;
+    for (int i = 0; i < 6; i++) {
+      var year = thisYear - i;
+      yearSelection[year.toString()] = year;
+    }
+    return yearSelection;
   }
 }

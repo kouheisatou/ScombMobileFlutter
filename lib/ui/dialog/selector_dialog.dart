@@ -9,30 +9,31 @@ class SelectorDialog<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      children: buildList(),
+      children: buildList(context),
     );
   }
 
-  List<Widget> buildList() {
+  List<Widget> buildList(BuildContext context) {
     List<Widget> listChildren = [
       const Divider(
         height: 1,
       ),
     ];
     selectionMap.forEach((key, value) {
-      listChildren.add(buildRow(key));
+      listChildren.add(buildRow(key, context));
     });
 
     return listChildren;
   }
 
-  Widget buildRow(String text) {
+  Widget buildRow(String text, BuildContext context) {
     return Column(
       children: [
         SizedBox(
           width: double.infinity,
           child: InkWell(
             onTap: () async {
+              Navigator.pop(context);
               await onPressed(text, selectionMap[text]);
             },
             child: Align(

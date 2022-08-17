@@ -1,5 +1,7 @@
 import 'package:floor/floor.dart';
 
+import '../values.dart';
+
 @Entity(tableName: "settings")
 class Setting {
   Setting(this.settingKey, this.settingValue);
@@ -44,5 +46,10 @@ class SettingValues {
     "1週間": 86400000 * 7,
     "2週間": 86400000 * 14,
     "4週間": 86400000 * 28,
+  };
+
+  static Map<String, int> TIMETABLE_TERM = {
+    "前期": Term.FIRST,
+    "後期": Term.SECOND,
   };
 }

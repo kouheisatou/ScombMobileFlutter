@@ -48,3 +48,15 @@ int getCurrentTerm() {
     return Term.SECOND;
   }
 }
+
+// return only last one
+T? findMapKeyFromValue<T>(Map<String, T> map, String targetKey) {
+  T? result;
+  map.forEach((key, value) {
+    if (targetKey == key) {
+      result = value;
+    }
+  });
+
+  return result;
+}
