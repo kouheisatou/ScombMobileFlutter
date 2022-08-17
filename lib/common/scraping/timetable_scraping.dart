@@ -12,7 +12,7 @@ import '../shared_resource.dart';
 Future<void> fetchTimetable(
   String? sessionId,
   int year,
-  int term,
+  String term,
 ) async {
   var url = "$SCOMB_TIMETABLE_URL?risyunen=$year&kikanCd=$term";
 
@@ -38,7 +38,8 @@ Future<void> fetchTimetable(
   await _constructTimetableArray(document, year, term);
 }
 
-Future<void> _constructTimetableArray(Document doc, int year, int term) async {
+Future<void> _constructTimetableArray(
+    Document doc, int year, String term) async {
   var db = await AppDatabase.getDatabase();
 
   var timetableRows = doc.getElementsByClassName(TIMETABLE_ROW_CSS_CLASS_NM);

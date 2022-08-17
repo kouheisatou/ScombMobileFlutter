@@ -40,10 +40,10 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
           (await db.currentSettingDao.getSetting(SettingKeys.TIMETABLE_YEAR))
                   ?.settingValue ??
               DateTime.now().year.toString());
-      timetableTerm = int.parse(
+      timetableTerm =
           (await db.currentSettingDao.getSetting(SettingKeys.TIMETABLE_TERM))
                   ?.settingValue ??
-              getCurrentTerm().toString());
+              getCurrentTerm();
       refreshInterval = int.parse((await db.currentSettingDao
                   .getSetting(SettingKeys.TIMETABLE_UPDATE_INTERVAL))
               ?.settingValue ??

@@ -13,7 +13,7 @@ class ClassCell {
   int dayOfWeek;
   int period;
   int year;
-  int term;
+  String term;
   int? customColorInt;
   late String url;
   @primaryKey

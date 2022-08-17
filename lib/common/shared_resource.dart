@@ -16,7 +16,7 @@ List<List<ClassCell?>> timetable = [
 ];
 bool timetableInitialized = false;
 int? timetableYear;
-int? timetableTerm;
+String? timetableTerm;
 void clearTimetable() {
   for (int r = 0; r < timetable.length; r++) {
     for (int c = 0; c < timetable[0].length; c++) {

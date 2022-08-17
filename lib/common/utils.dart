@@ -40,7 +40,7 @@ Color hexToColor(String hexString, {String alphaChannel = 'FF'}) {
   return Color(int.parse(hexString.replaceFirst('#', '0x$alphaChannel')));
 }
 
-int getCurrentTerm() {
+String getCurrentTerm() {
   var today = DateTime.now();
   if (3 < today.month && today.month < 9) {
     return Term.FIRST;

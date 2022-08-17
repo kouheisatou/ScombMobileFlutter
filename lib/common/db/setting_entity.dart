@@ -48,7 +48,7 @@ class SettingValues {
     "4週間": 86400000 * 28,
   };
 
-  static Map<String, int> TIMETABLE_TERM = {
+  static Map<String, String> TIMETABLE_TERM = {
     "前期": Term.FIRST,
     "後期": Term.SECOND,
   };

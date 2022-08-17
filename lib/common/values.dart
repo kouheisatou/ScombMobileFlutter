@@ -50,8 +50,8 @@ const TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline";
 const SURVEY_ROW_CSS_NM = "result-list";
 
 class Term {
-  static int FIRST = 10;
-  static int SECOND = 20;
+  static String FIRST = "10";
+  static String SECOND = "20";
 }
 
 class DayOfWeek {
