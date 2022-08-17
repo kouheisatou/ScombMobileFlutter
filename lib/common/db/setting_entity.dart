@@ -36,3 +36,13 @@ class SettingKeys {
   static String TIMETABLE_YEAR = "timetable_year";
   static String TIMETABLE_TERM = "timetable_term";
 }
+
+class SettingValues {
+  static Map<String, int> TIMETABLE_UPDATE_INTERVAL = {
+    "1日": 86400000 * 1,
+    "2日": 86400000 * 2,
+    "1週間": 86400000 * 7,
+    "2週間": 86400000 * 14,
+    "4週間": 86400000 * 28,
+  };
+}

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/utils.dart';
-import 'package:scomb_mobile/ui/screen/settings/login_setting_screen.dart';
+import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 import '../../common/values.dart';
@@ -80,23 +80,62 @@ class _SettingScreenState extends State<SettingScreen> {
           title: const Text("ログイン設定"),
           tiles: [
             SettingsTile(
-              title: const Text("ユーザ名"),
+              title: const Text("学籍番号"),
               value: Text(settings[SettingKeys.USERNAME] ?? ""),
               onPressed: (context) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => LoginSettingScreen(settings, db),
-                  ),
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("学籍番号"),
+                      content: TextFormField(
+                        initialValue: settings[SettingKeys.USERNAME],
+                        onChanged: (text) {
+                          updateSetting(SettingKeys.USERNAME, text);
+                        },
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("閉じる"),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             ),
             SettingsTile(
               title: const Text("パスワード"),
               value: Text(settings[SettingKeys.PASSWORD] ?? ""),
-            ),
-            SettingsTile(
-              title: const Text("自動ログイン"),
-              value: Text(settings[SettingKeys.ENABLED_AUTO_LOGIN] ?? "有効"),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("パスワード"),
+                      content: TextFormField(
+                        obscureText: true,
+                        initialValue: settings[SettingKeys.PASSWORD],
+                        onChanged: (text) {
+                          updateSetting(SettingKeys.PASSWORD, text);
+                        },
+                        decoration: const InputDecoration(hintText: "パスワード"),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("閉じる"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),
@@ -108,6 +147,22 @@ class _SettingScreenState extends State<SettingScreen> {
               value: Text(
                 settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ?? "1週間",
               ),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectorDialog(
+                      SettingValues.TIMETABLE_UPDATE_INTERVAL,
+                      (selectedText, selectedValue) async {
+                        updateSetting(
+                          SettingKeys.TIMETABLE_UPDATE_INTERVAL,
+                          selectedValue.toString(),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
             SettingsTile(
               title: const Text("年度"),
@@ -118,12 +173,12 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("学期"),
               enabled: !isLatestTimetable,
-              value: !isLatestTimetable
-                  ? Text(
-                      settings[SettingKeys.TIMETABLE_TERM] ??
-                          getCurrentTerm().toString(),
-                    )
-                  : const Text(""),
+              value: Text((!isLatestTimetable
+                      ? (TERM_DISP_NAME_MAP[int.parse(
+                          settings[SettingKeys.TIMETABLE_TERM] ??
+                              getCurrentTerm().toString())])
+                      : "") ??
+                  ""),
             ),
           ],
         ),

@@ -62,7 +62,6 @@ dependencies:
   # settings_ui
   settings_ui: ^2.0.2
 
-
 flutter_native_splash:
   image: "resources/splash.png"
   color: "F5F5F5"

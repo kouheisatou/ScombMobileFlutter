@@ -106,3 +106,8 @@ Map<int, String> PERIOD_TIME_MAP = {
   5: "18:50 ~ 20:30",
   6: "21:40 ~ 23:10",
 };
+
+Map<int, String> TERM_DISP_NAME_MAP = {
+  10: "前期",
+  20: "後期",
+};
