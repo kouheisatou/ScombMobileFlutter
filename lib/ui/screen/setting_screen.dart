@@ -275,8 +275,10 @@ class _SettingScreenState extends State<SettingScreen> {
                 var selectedTime = await showTimePicker(
                     context: context, initialTime: prevSetTime);
                 if (selectedTime == null) return;
-                updateSetting(SettingKeys.TODAYS_TASK_NOTIFICATION_TIME,
-                    "${selectedTime.hour}:${selectedTime.minute}");
+                updateSetting(
+                  SettingKeys.TODAYS_TASK_NOTIFICATION_TIME,
+                  "${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, "0")}",
+                );
 
                 // reset and resume notification
                 await cancelNotification();
