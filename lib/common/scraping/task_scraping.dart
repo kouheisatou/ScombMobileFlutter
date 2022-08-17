@@ -85,7 +85,5 @@ Future<void> _constructTasks(Document document) async {
 
     // if already exists
     addOrReplaceTask(newTask);
-
-    await db.currentTaskDao.insertTask(newTask);
   }
 }

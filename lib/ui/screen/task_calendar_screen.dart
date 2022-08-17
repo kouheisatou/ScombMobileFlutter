@@ -4,7 +4,6 @@ import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../common/db/task.dart';
-import '../../common/notification.dart';
 import '../dialog/add_task_dialog.dart';
 import 'network_screen.dart';
 
@@ -202,8 +201,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
     if (newTask == null) return;
     setState(() {
       addOrReplaceTask(newTask);
-      registerTaskNotification(taskList);
-      taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+      sortTasks();
     });
   }
 }

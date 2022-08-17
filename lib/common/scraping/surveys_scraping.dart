@@ -78,7 +78,5 @@ Future<void> _constructSurveys(Document document) async {
 
     // if already exists, merge task
     addOrReplaceTask(newSurvey);
-
-    await db.currentTaskDao.insertTask(newSurvey);
   }
 }

@@ -69,7 +69,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
           msg: "予期せぬエラーが発生しました。開発者に報告してください。\n$e,$stackTrace");
     } finally {
       // sort
-      taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+      sortTasks();
 
       // force to disable loading mode
       try {

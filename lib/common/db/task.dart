@@ -1,10 +1,11 @@
 import 'package:floor/floor.dart';
+import 'package:scomb_mobile/common/db/class_cell.dart';
 import 'package:scomb_mobile/common/utils.dart';
 
 @Entity(tableName: "task")
 class Task {
   String title;
-  String className;
+  late String className;
   late int taskType;
   int deadline;
   late String url;
@@ -14,7 +15,7 @@ class Task {
   @primaryKey
   late String id;
   int? customColor;
-  bool addManually;
+  late bool addManually;
 
   // for inflate survey
   Task(
@@ -28,9 +29,6 @@ class Task {
     this.customColor,
     this.addManually,
   ) {
-    if (classId == "") {
-      classId = className;
-    }
     id = "$taskType-$classId-$reportId";
   }
 
@@ -47,6 +45,21 @@ class Task {
     var uri = Uri.parse(url);
     classId = uri.queryParameters["idnumber"]!;
     reportId = uri.queryParameters["reportId"]!;
+    id = "$taskType-$classId-$reportId";
+  }
+
+  Task.userTask(
+    this.title,
+    ClassCell? relatedClass,
+    this.taskType,
+    this.deadline,
+  ) {
+    addManually = true;
+    url = relatedClass?.url ?? "";
+    className = relatedClass?.name ?? "";
+    classId = relatedClass?.name ?? "";
+    reportId = "usertask${DateTime.now().millisecondsSinceEpoch.hashCode}";
+    customColor = relatedClass?.customColorInt;
     id = "$taskType-$classId-$reportId";
   }
 

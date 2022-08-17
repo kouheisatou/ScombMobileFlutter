@@ -1,4 +1,7 @@
 // shared resource
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
+import 'package:scomb_mobile/common/notification.dart';
+
 import 'db/class_cell.dart';
 import 'db/task.dart';
 
@@ -25,8 +28,12 @@ void clearTimetable() {
   }
 }
 
+// ------------- task_list-----------
 List<Task> taskList = [];
 bool taskListInitialized = false;
+void sortTasks() {
+  taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
+}
 
 void addOrReplaceTask(Task newTask) {
   // deadline over
@@ -42,10 +49,34 @@ void addOrReplaceTask(Task newTask) {
 
   if (conflictedTaskIndex == null) {
     taskList.add(newTask);
+    print("task_db(add) : $newTask");
   }
   // on conflict, replace task
   else {
     taskList.removeAt(conflictedTaskIndex);
     taskList.add(newTask);
+    print("task_db(replace) : $newTask");
   }
+
+  _saveToDB(newTask);
+}
+
+Future<void> _saveToDB(Task newTask) async {
+  var db = await AppDatabase.getDatabase();
+
+  // does not exist in db, register notification
+  var tasksFromDB = await db.currentTaskDao.getAllTasks();
+  var isAlreadyExists = false;
+  for (var taskFromDb in tasksFromDB) {
+    if (taskFromDb.id == newTask.id) {
+      isAlreadyExists = true;
+      break;
+    }
+  }
+  if (!isAlreadyExists) {
+    registerTaskNotification(newTask, db: db);
+  }
+
+  // replace
+  db.currentTaskDao.insertTask(newTask);
 }

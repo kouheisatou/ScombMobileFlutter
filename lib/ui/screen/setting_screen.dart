@@ -279,9 +279,8 @@ class _SettingScreenState extends State<SettingScreen> {
                     "${selectedTime.hour}:${selectedTime.minute}");
 
                 // reset and resume notification
-                cancelNotification();
-                registerTodaysTaskNotification(taskList);
-                registerTaskNotification(taskList);
+                await cancelNotification();
+                registerAllTaskNotification(taskList);
               },
             ),
           ],

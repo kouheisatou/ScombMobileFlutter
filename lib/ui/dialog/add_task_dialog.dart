@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
@@ -207,20 +206,15 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                     return;
                   }
 
-                  var newTask = Task(
+                  var newTask = Task.userTask(
                     title,
-                    classDropDownValue?.name ?? "",
+                    classDropDownValue,
                     taskTypeDropDownValue,
                     selectedDate!.millisecondsSinceEpoch,
-                    classDropDownValue?.url ?? "",
-                    "usertask-${DateTime.now().millisecondsSinceEpoch.hashCode}",
-                    classDropDownValue?.classId ?? "null",
-                    classDropDownValue?.customColorInt,
-                    true,
                   );
 
-                  var db = await AppDatabase.getDatabase();
-                  await db.currentTaskDao.insertTask(newTask);
+                  addOrReplaceTask(newTask);
+
                   Navigator.pop(context, newTask);
                 },
                 child: const Text("追加"),
