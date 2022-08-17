@@ -45,8 +45,6 @@ class _SettingScreenState extends State<SettingScreen> {
     print("setting_inflated");
     print(settings);
 
-    isLatestTimetable = settings[SettingKeys.TIMETABLE_YEAR] == null;
-
     setState(() {
       isLoading = false;
     });
@@ -54,6 +52,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    isLatestTimetable = settings[SettingKeys.TIMETABLE_YEAR] == null;
     return Scaffold(
       appBar: AppBar(
         title: const Text("設定"),
@@ -109,7 +108,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SettingsTile(
               title: const Text("パスワード"),
-              value: Text(settings[SettingKeys.PASSWORD] ?? ""),
+              value: Text(genHiddenText(settings[SettingKeys.PASSWORD] ?? "")),
               onPressed: (context) {
                 showDialog(
                   context: context,
@@ -145,7 +144,14 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("取得間隔"),
               value: Text(
-                settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ?? "1週間",
+                findMapKeyFromValue(
+                      SettingValues.TIMETABLE_UPDATE_INTERVAL,
+                      int.parse(
+                        settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
+                            (86400000 * 7).toString(),
+                      ),
+                    ) ??
+                    "1週間",
               ),
               onPressed: (context) {
                 showDialog(
@@ -176,6 +182,12 @@ class _SettingScreenState extends State<SettingScreen> {
                     return SelectorDialog<int?>(
                       buildYearSelection(),
                       (key, value) async {
+                        if (value == null) {
+                          updateSetting(
+                            SettingKeys.TIMETABLE_TERM,
+                            getCurrentTerm(),
+                          );
+                        }
                         updateSetting(
                           SettingKeys.TIMETABLE_YEAR,
                           value?.toString(),
@@ -191,11 +203,10 @@ class _SettingScreenState extends State<SettingScreen> {
               enabled: !isLatestTimetable,
               value: Text(
                 findMapKeyFromValue(
-                        SettingValues.TIMETABLE_TERM,
-                        int.parse(settings[SettingKeys.TIMETABLE_TERM] ??
-                                getCurrentTerm().toString())
-                            .toString())
-                    .toString(),
+                      SettingValues.TIMETABLE_TERM,
+                      settings[SettingKeys.TIMETABLE_TERM] ?? getCurrentTerm(),
+                    ) ??
+                    getCurrentTerm(),
               ),
               onPressed: (context) {
                 showDialog(

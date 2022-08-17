@@ -50,13 +50,20 @@ String getCurrentTerm() {
 }
 
 // return only last one
-T? findMapKeyFromValue<T>(Map<String, T> map, String targetKey) {
-  T? result;
+String? findMapKeyFromValue<T>(Map<String, T> map, T targetValue) {
+  String? resultKey;
   map.forEach((key, value) {
-    if (targetKey == key) {
-      result = value;
+    if (targetValue == value) {
+      resultKey = key;
     }
   });
+  return resultKey;
+}
 
+String genHiddenText(String text) {
+  var result = "";
+  for (int i = 0; i < text.length; i++) {
+    result += "•";
+  }
   return result;
 }
