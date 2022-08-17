@@ -25,14 +25,19 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
     if (taskListInitialized) return;
 
-    // reset notification
-    await cancelNotification();
-
-    await inflateTasksFromDB();
-
-    // inflate tasks from server
-    await fetchSurveys(sessionId ?? savedSessionId);
-    await fetchTasks(sessionId ?? savedSessionId);
+    try {
+      // tasks from db
+      await inflateTasksFromDB();
+      // inflate tasks from server
+      await fetchSurveys(sessionId ?? savedSessionId);
+      await fetchTasks(sessionId ?? savedSessionId);
+    } catch (e) {
+      rethrow;
+    } finally {
+      // resume notification
+      registerTodaysTaskNotification(taskList);
+      registerTaskNotification(taskList);
+    }
 
     taskListInitialized = true;
   }
@@ -219,7 +224,12 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     if (newTask == null) return;
     setState(() {
       addOrReplaceTask(newTask);
-      registerTaskNotification(newTask);
+
+      // resume notification
+      registerTodaysTaskNotification(taskList);
+      registerTaskNotification(taskList);
+
+      // sort
       taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
     });
   }

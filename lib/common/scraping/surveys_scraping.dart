@@ -8,7 +8,6 @@ import 'package:scomb_mobile/common/values.dart';
 
 import '../db/scomb_mobile_database.dart';
 import '../db/task.dart';
-import '../notification.dart';
 import '../shared_resource.dart';
 
 Future<void> fetchSurveys(
@@ -77,7 +76,7 @@ Future<void> _constructSurveys(Document document) async {
 
     print("fetched_survey : $newSurvey");
 
-    // if already exists
+    // if already exists, merge task
     Task? duplicatedTask;
     for (var task in taskList) {
       if (task == newSurvey) {
@@ -90,6 +89,5 @@ Future<void> _constructSurveys(Document document) async {
     addOrReplaceTask(newSurvey);
 
     await db.currentTaskDao.insertTask(newSurvey);
-    await registerTaskNotification(newSurvey);
   }
 }

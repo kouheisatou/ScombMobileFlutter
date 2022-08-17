@@ -202,7 +202,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
     if (newTask == null) return;
     setState(() {
       addOrReplaceTask(newTask);
-      registerTaskNotification(newTask);
+      registerTaskNotification(taskList);
       taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
     });
   }

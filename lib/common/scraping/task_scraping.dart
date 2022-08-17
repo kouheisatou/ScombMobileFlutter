@@ -4,7 +4,6 @@ import 'package:html/parser.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/task.dart';
 import 'package:scomb_mobile/common/login_exception.dart';
-import 'package:scomb_mobile/common/notification.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 
@@ -97,6 +96,5 @@ Future<void> _constructTasks(Document document) async {
     addOrReplaceTask(newTask);
 
     await db.currentTaskDao.insertTask(newTask);
-    await registerTaskNotification(newTask);
   }
 }
