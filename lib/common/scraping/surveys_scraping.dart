@@ -77,15 +77,6 @@ Future<void> _constructSurveys(Document document) async {
     print("fetched_survey : $newSurvey");
 
     // if already exists, merge task
-    Task? duplicatedTask;
-    for (var task in taskList) {
-      if (task == newSurvey) {
-        duplicatedTask = task;
-      }
-    }
-    taskList.remove(duplicatedTask);
-    taskList.add(newSurvey);
-
     addOrReplaceTask(newSurvey);
 
     await db.currentTaskDao.insertTask(newSurvey);

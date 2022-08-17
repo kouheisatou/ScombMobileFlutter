@@ -9,6 +9,8 @@ const TASK_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/task";
 const SURVEY_LIST_PAGE_URL =
     "https://scombz.shibaura-it.ac.jp/portal/surveys/list";
 const SURVEY_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/surveys/take";
+const GIT_HUB_URL = "https://github.com/kouheisatou/ScombMobileFlutter";
+const PRIVACY_POLICY_URL = "https://kouheisatou.github.io/ScombMobileFlutter/";
 
 // ScombのCookieとして保存されているセッションIDのキー
 const SESSION_COOKIE_ID = "SESSION";

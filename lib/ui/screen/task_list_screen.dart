@@ -149,6 +149,9 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
                               await db.currentTaskDao
                                   .removeTask(currentTask.id);
                               taskList.remove(currentTask);
+                              cancelNotification(
+                                notificationId: currentTask.id.hashCode,
+                              );
                               setState(() {});
                               Navigator.pop(context);
                             },

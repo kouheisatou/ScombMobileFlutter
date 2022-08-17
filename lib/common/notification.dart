@@ -8,7 +8,6 @@ import 'package:timezone/timezone.dart' as tz;
 import 'db/task.dart';
 
 Future<void> registerTaskNotification(List<Task> tasks) async {
-  await cancelNotification();
   var db = await AppDatabase.getDatabase();
   final plugin = FlutterLocalNotificationsPlugin();
 
@@ -50,13 +49,17 @@ Future<void> registerTaskNotification(List<Task> tasks) async {
   }
 }
 
-Future<void> cancelNotification() async {
+void cancelNotification({int? notificationId}) {
   final plugin = FlutterLocalNotificationsPlugin();
-  await plugin.cancelAll();
+
+  if (notificationId == null) {
+    plugin.cancelAll();
+  } else {
+    plugin.cancel(notificationId);
+  }
 }
 
 Future<void> registerTodaysTaskNotification(List<Task> tasks) async {
-  await cancelNotification();
   var db = await AppDatabase.getDatabase();
   final plugin = FlutterLocalNotificationsPlugin();
 

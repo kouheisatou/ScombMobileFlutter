@@ -84,15 +84,6 @@ Future<void> _constructTasks(Document document) async {
     print("fetched_tasks : $newTask");
 
     // if already exists
-    Task? duplicatedTask;
-    for (var task in taskList) {
-      if (task == newTask) {
-        duplicatedTask = task;
-      }
-    }
-    taskList.remove(duplicatedTask);
-    taskList.add(newTask);
-
     addOrReplaceTask(newTask);
 
     await db.currentTaskDao.insertTask(newTask);

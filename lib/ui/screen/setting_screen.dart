@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/utils.dart';
+import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../common/notification.dart';
+import '../../common/shared_resource.dart';
 import '../scomb_mobile.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -273,6 +277,11 @@ class _SettingScreenState extends State<SettingScreen> {
                 if (selectedTime == null) return;
                 updateSetting(SettingKeys.TODAYS_TASK_NOTIFICATION_TIME,
                     "${selectedTime.hour}:${selectedTime.minute}");
+
+                // reset and resume notification
+                cancelNotification();
+                registerTodaysTaskNotification(taskList);
+                registerTaskNotification(taskList);
               },
             ),
           ],
@@ -281,11 +290,44 @@ class _SettingScreenState extends State<SettingScreen> {
           title: const Text("このアプリについて"),
           tiles: [
             SettingsTile(
+              title: const Text("ScombZ"),
+              onPressed: (context) async {
+                if (await canLaunchUrl(
+                  Uri.parse(SCOMB_HOME_URL),
+                )) {
+                  await launchUrl(
+                    Uri.parse(SCOMB_HOME_URL),
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+              },
+            ),
+            SettingsTile(
               title: const Text("GitHub"),
+              onPressed: (context) async {
+                if (await canLaunchUrl(
+                  Uri.parse(GIT_HUB_URL),
+                )) {
+                  await launchUrl(
+                    Uri.parse(GIT_HUB_URL),
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+              },
             ),
             SettingsTile(
               title: const Text("プライバシーポリシー"),
-            )
+              onPressed: (context) async {
+                if (await canLaunchUrl(
+                  Uri.parse(PRIVACY_POLICY_URL),
+                )) {
+                  await launchUrl(
+                    Uri.parse(PRIVACY_POLICY_URL),
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+              },
+            ),
           ],
         ),
       ],
