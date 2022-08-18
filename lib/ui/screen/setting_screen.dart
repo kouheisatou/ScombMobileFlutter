@@ -139,11 +139,38 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
               },
             ),
+            SettingsTile(
+              title: const Text("ログアウト"),
+              value: Text(settings[SettingKeys.SESSION_ID] ?? ""),
+              onPressed: (context) async {
+                sessionId = null;
+                updateSetting(SettingKeys.SESSION_ID, "");
+              },
+            )
           ],
         ),
         SettingsSection(
           title: const Text("時間割設定"),
           tiles: [
+            SettingsTile(
+              title: const Text("最終更新日時"),
+              value: settings[SettingKeys.TIMETABLE_LAST_UPDATE] != null
+                  ? Text(
+                      timeToString(
+                        int.parse(settings[SettingKeys.TIMETABLE_LAST_UPDATE]!),
+                      ),
+                    )
+                  : const Text("未取得"),
+              onPressed: (context) async {
+                updateSetting(
+                  SettingKeys.TIMETABLE_LAST_UPDATE,
+                  "0",
+                );
+                settings[SettingKeys.TIMETABLE_LAST_UPDATE] =
+                    DateTime.now().millisecondsSinceEpoch.toString();
+                timetableInitialized = false;
+              },
+            ),
             SettingsTile(
               title: const Text("取得間隔"),
               value: Text(

@@ -37,6 +37,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
     _userController.text = usernameSetting?.settingValue ?? "";
     _passwordController.text = passwordSetting?.settingValue ?? "";
+
+    if (usernameSetting != null && passwordSetting != null) {
+      // auto start login process
+      startLogin();
+    }
+  }
+
+  void startLogin() {
+    print(
+        "login : user=${_userController.text}, pass=${_passwordController.text}");
+    CookieManager cookieManager = CookieManager.instance();
+    cookieManager.deleteAllCookies();
+    webView?.loadUrl(
+      urlRequest: URLRequest(url: Uri.parse(SCOMB_LOGIN_PAGE_URL)),
+    );
   }
 
   @override
@@ -70,13 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              print(
-                  "login : user=${_userController.text}, pass=${_passwordController.text}");
-              CookieManager cookieManager = CookieManager.instance();
-              cookieManager.deleteAllCookies();
-              webView?.loadUrl(
-                urlRequest: URLRequest(url: Uri.parse(SCOMB_LOGIN_PAGE_URL)),
-              );
+              startLogin();
             },
             child: const Text("ログイン"),
           ),
