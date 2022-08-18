@@ -1,4 +1,4 @@
-package com.example.scomb_mobile
+package net.iobb.kohei.scombmobile
 
 import io.flutter.embedding.android.FlutterActivity
 

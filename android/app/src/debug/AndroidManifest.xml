@@ -2,7 +2,7 @@
     package="com.example.scomb_mobile">
     <application>
         <activity
-            android:name=".MainActivity"
+            android:name="net.iobb.kohei.scombmobile.MainActivity"
             android:showWhenLocked="true"
             android:turnScreenOn="true"/>
     </application>
