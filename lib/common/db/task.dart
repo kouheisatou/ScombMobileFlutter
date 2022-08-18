@@ -57,7 +57,7 @@ class Task {
     addManually = true;
     url = relatedClass?.url ?? "";
     className = relatedClass?.name ?? "";
-    classId = relatedClass?.name ?? "";
+    classId = relatedClass?.classId ?? "";
     reportId = "usertask${DateTime.now().millisecondsSinceEpoch.hashCode}";
     customColor = relatedClass?.customColorInt;
     id = "$taskType-$classId-$reportId";
