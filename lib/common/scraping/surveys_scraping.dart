@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +27,8 @@ Future<void> fetchSurveys(
       "https://${response.request?.url.host}${response.request?.url.path}";
   if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
     throw LoginException("セッションIDの有効期限切れ");
+  } else {
+    Fluttertoast.showToast(msg: "自動ログインしました");
   }
 
   await _constructSurveys(document);

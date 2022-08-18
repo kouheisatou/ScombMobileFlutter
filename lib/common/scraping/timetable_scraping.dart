@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
@@ -33,6 +34,8 @@ Future<void> fetchTimetable(
 
   if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
     throw LoginException("セッションIDの有効期限切れ");
+  } else {
+    Fluttertoast.showToast(msg: "自動ログインしました");
   }
 
   await _constructTimetableArray(document, year, term);

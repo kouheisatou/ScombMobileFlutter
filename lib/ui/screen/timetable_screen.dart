@@ -73,6 +73,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     } catch (e) {
       throw DatabaseException("不正な設定");
     }
+    widget.title = "$timetableYear年 ${TERM_DISP_NAME_MAP[timetableTerm]} 時間割";
 
     // on timetable year or term setting changed, force fetch from server
     var forceRefresh = false;
@@ -101,7 +102,6 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
         Setting(SettingKeys.TIMETABLE_LAST_UPDATE,
             DateTime.now().millisecondsSinceEpoch.toString()),
       );
-      Fluttertoast.showToast(msg: "ScombZから時間割を取得しました");
     } else {
       // recover from db
       var allClasses = await db.currentClassCellDao.getAllClasses();
@@ -110,7 +110,6 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
           timetable[c.period][c.dayOfWeek] = c;
         }
       }
-      Fluttertoast.showToast(msg: "保存済みの時間割を表示します");
     }
 
     timetableInitialized = true;

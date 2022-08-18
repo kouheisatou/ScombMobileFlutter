@@ -80,8 +80,6 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
         widget.isLoading = false;
       }
     }
-
-    Fluttertoast.showToast(msg: "保存したセッションIDで自動ログインしました");
   }
 
   Future<void> refreshData();

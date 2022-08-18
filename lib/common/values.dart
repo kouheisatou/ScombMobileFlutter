@@ -109,7 +109,7 @@ Map<int, String> PERIOD_TIME_MAP = {
   6: "21:40 ~ 23:10",
 };
 
-Map<int, String> TERM_DISP_NAME_MAP = {
-  10: "前期",
-  20: "後期",
+Map<String, String> TERM_DISP_NAME_MAP = {
+  "10": "前期",
+  "20": "後期",
 };
