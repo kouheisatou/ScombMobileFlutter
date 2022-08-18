@@ -97,9 +97,11 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
         timetableYear ?? DateTime.now().year,
         timetableTerm ?? getCurrentTerm(),
       );
-      db.currentSettingDao.insertSetting(Setting(
-          SettingKeys.TIMETABLE_LAST_UPDATE,
-          DateTime.now().millisecondsSinceEpoch.toString()));
+      db.currentSettingDao.insertSetting(
+        Setting(SettingKeys.TIMETABLE_LAST_UPDATE,
+            DateTime.now().millisecondsSinceEpoch.toString()),
+      );
+      Fluttertoast.showToast(msg: "ScombZから時間割を取得しました");
     } else {
       // recover from db
       var allClasses = await db.currentClassCellDao.getAllClasses();
@@ -108,6 +110,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
           timetable[c.period][c.dayOfWeek] = c;
         }
       }
+      Fluttertoast.showToast(msg: "保存済みの時間割を表示します");
     }
 
     timetableInitialized = true;
