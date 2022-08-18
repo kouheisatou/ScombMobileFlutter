@@ -35,20 +35,6 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     taskListInitialized = true;
   }
 
-  Future<void> inflateTasksFromDB() async {
-    var db = await AppDatabase.getDatabase();
-    var tasksFromDB = await db.currentTaskDao.getAllTasks();
-    for (var task in tasksFromDB) {
-      print("task_from_db : $task");
-      var relatedClass =
-          await db.currentClassCellDao.getClassCellByClassId(task.classId);
-      if (relatedClass != null) {
-        task.customColor = relatedClass.customColorInt;
-      }
-      addOrReplaceTask(task);
-    }
-  }
-
   @override
   Future<void> getDataOffLine() async {
     await inflateTasksFromDB();
@@ -225,5 +211,19 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
       addOrReplaceTask(newTask);
       sortTasks();
     });
+  }
+}
+
+Future<void> inflateTasksFromDB() async {
+  var db = await AppDatabase.getDatabase();
+  var tasksFromDB = await db.currentTaskDao.getAllTasks();
+  for (var task in tasksFromDB) {
+    print("task_from_db : $task");
+    var relatedClass =
+        await db.currentClassCellDao.getClassCellByClassId(task.classId);
+    if (relatedClass != null) {
+      task.customColor = relatedClass.customColorInt;
+    }
+    addOrReplaceTask(task);
   }
 }

@@ -8,7 +8,10 @@ import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/dialog/class_detail_dialog.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
+import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
 
+import '../../common/scraping/surveys_scraping.dart';
+import '../../common/scraping/task_scraping.dart';
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
@@ -26,8 +29,23 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
   bool saturdayClassExists = true;
 
+  Future<void> fetchAllTasks(String savedSessionId) async {
+    if (taskListInitialized) return;
+
+    // tasks from db
+    inflateTasksFromDB();
+
+    // inflate tasks from server
+    fetchSurveys(sessionId ?? savedSessionId);
+    fetchTasks(sessionId ?? savedSessionId);
+
+    taskListInitialized = true;
+  }
+
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
+    fetchAllTasks(savedSessionId);
+
     var db = await AppDatabase.getDatabase();
 
     var prevTimetableYear = timetableYear;
