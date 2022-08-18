@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SelectorDialog<T> extends StatelessWidget {
-  SelectorDialog(this.selectionMap, this.onPressed);
+  SelectorDialog(this.selectionMap, this.onPressed, {this.description});
+
+  String? description;
 
   Map<String, T> selectionMap;
   Future<void> Function(String key, T? value) onPressed;
@@ -14,11 +16,25 @@ class SelectorDialog<T> extends StatelessWidget {
   }
 
   List<Widget> buildList(BuildContext context) {
-    List<Widget> listChildren = [
+    List<Widget> listChildren = [];
+
+    if (description != null) {
+      listChildren.add(
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text(
+            description!,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    listChildren.add(
       const Divider(
         height: 1,
       ),
-    ];
+    );
     selectionMap.forEach((key, value) {
       listChildren.add(buildRow(key, context));
     });

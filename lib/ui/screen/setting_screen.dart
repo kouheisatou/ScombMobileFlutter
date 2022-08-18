@@ -139,69 +139,13 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
               },
             ),
-            SettingsTile(
-              title: const Text("ログアウト"),
-              value: Text(settings[SettingKeys.SESSION_ID] ?? ""),
-              onPressed: (context) async {
-                sessionId = null;
-                updateSetting(SettingKeys.SESSION_ID, "");
-              },
-            )
           ],
         ),
         SettingsSection(
           title: const Text("時間割設定"),
           tiles: [
             SettingsTile(
-              title: const Text("最終更新日時"),
-              value: settings[SettingKeys.TIMETABLE_LAST_UPDATE] != null
-                  ? Text(
-                      timeToString(
-                        int.parse(settings[SettingKeys.TIMETABLE_LAST_UPDATE]!),
-                      ),
-                    )
-                  : const Text("未取得"),
-              onPressed: (context) async {
-                updateSetting(
-                  SettingKeys.TIMETABLE_LAST_UPDATE,
-                  "0",
-                );
-                settings[SettingKeys.TIMETABLE_LAST_UPDATE] =
-                    DateTime.now().millisecondsSinceEpoch.toString();
-                timetableInitialized = false;
-              },
-            ),
-            SettingsTile(
-              title: const Text("取得間隔"),
-              value: Text(
-                findMapKeyFromValue(
-                      SettingValues.TIMETABLE_UPDATE_INTERVAL,
-                      int.parse(
-                        settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
-                            (86400000 * 7).toString(),
-                      ),
-                    ) ??
-                    "1週間",
-              ),
-              onPressed: (context) {
-                showDialog(
-                  context: context,
-                  builder: (_) {
-                    return SelectorDialog(
-                      SettingValues.TIMETABLE_UPDATE_INTERVAL,
-                      (selectedText, selectedValue) async {
-                        updateSetting(
-                          SettingKeys.TIMETABLE_UPDATE_INTERVAL,
-                          selectedValue.toString(),
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-            SettingsTile(
-              title: const Text("年度"),
+              title: const Text("表示年度"),
               value: Text(
                 settings[SettingKeys.TIMETABLE_YEAR] ?? "最新",
               ),
@@ -229,7 +173,7 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
             SettingsTile(
-              title: const Text("学期"),
+              title: const Text("表示学期"),
               enabled: !isLatestTimetable,
               value: Text(
                 findMapKeyFromValue(
@@ -253,6 +197,56 @@ class _SettingScreenState extends State<SettingScreen> {
                     );
                   },
                 );
+              },
+            ),
+            SettingsTile(
+              title: const Text("自動更新間隔"),
+              value: Text(
+                findMapKeyFromValue(
+                      SettingValues.TIMETABLE_UPDATE_INTERVAL,
+                      int.parse(
+                        settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
+                            (86400000 * 7).toString(),
+                      ),
+                    ) ??
+                    "1週間",
+              ),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectorDialog(
+                      SettingValues.TIMETABLE_UPDATE_INTERVAL,
+                      (selectedText, selectedValue) async {
+                        updateSetting(
+                          SettingKeys.TIMETABLE_UPDATE_INTERVAL,
+                          selectedValue.toString(),
+                        );
+                      },
+                      description:
+                          "時間割は一度ScombZから取得すると、しばらく本体に保存されます。\n\n保存する期間を選択してください。",
+                    );
+                  },
+                );
+              },
+            ),
+            SettingsTile(
+              title: const Text("最終更新日時"),
+              value: settings[SettingKeys.TIMETABLE_LAST_UPDATE] != null
+                  ? Text(
+                      timeToString(
+                        int.parse(settings[SettingKeys.TIMETABLE_LAST_UPDATE]!),
+                      ),
+                    )
+                  : const Text("未取得"),
+              onPressed: (context) async {
+                updateSetting(
+                  SettingKeys.TIMETABLE_LAST_UPDATE,
+                  "0",
+                );
+                settings[SettingKeys.TIMETABLE_LAST_UPDATE] =
+                    DateTime.now().millisecondsSinceEpoch.toString();
+                timetableInitialized = false;
               },
             ),
           ],
@@ -288,7 +282,7 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
             SettingsTile(
-              title: const Text("今日の課題通知時間"),
+              title: const Text("\"今日の課題\"通知時刻"),
               value: Text(settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ??
                   "8:00"),
               onPressed: (context) async {
