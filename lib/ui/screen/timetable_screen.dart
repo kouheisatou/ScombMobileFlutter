@@ -44,7 +44,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
-    fetchAllTasks(savedSessionId);
+    // fetchAllTasks(savedSessionId);
 
     var db = await AppDatabase.getDatabase();
 

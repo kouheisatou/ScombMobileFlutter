@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/notification.dart';
 import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
@@ -28,9 +29,18 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     // tasks from db
     await inflateTasksFromDB();
 
+    int dbTaskCount = taskList.length;
+
     // inflate tasks from server
     await fetchSurveys(sessionId ?? savedSessionId);
     await fetchTasks(sessionId ?? savedSessionId);
+
+    int allTaskCount = taskList.length;
+    int newlyAddedTasksCount = allTaskCount - dbTaskCount;
+
+    if (newlyAddedTasksCount > 0) {
+      Fluttertoast.showToast(msg: "$newlyAddedTasksCount件のタスクを通知に登録しました");
+    }
 
     taskListInitialized = true;
   }
