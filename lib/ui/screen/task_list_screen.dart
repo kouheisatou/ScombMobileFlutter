@@ -62,54 +62,62 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   }
 
   Widget buildList(List<Task> currentTaskList) {
-    return Stack(
-      children: [
-        RefreshIndicator(
-          onRefresh: refreshData,
-          child: ListView.builder(
-            itemCount: currentTaskList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return buildListTile(index, currentTaskList);
-            },
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10, bottom: 10),
-            child: ElevatedButton(
-              onPressed: () {
-                showAddNewTaskDialog();
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(5),
-              ),
-              child: const Icon(
-                Icons.add,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+    List<Widget> list = [];
+    for (int i = 0; i < currentTaskList.length; i++) {
+      list.add(buildListTile(i, currentTaskList));
+    }
+    list.add(TextButton(
+        onPressed: () {
+          showAddNewTaskDialog();
+        },
+        child: const Text("todoタスク追加")));
+
+    return RefreshIndicator(
+        onRefresh: refreshData,
+        child: ListView(
+          children: list,
+        ));
   }
 
   Widget buildListTile(int index, List<Task> currentTaskList) {
     var currentTask = currentTaskList[index];
-    late Icon icon;
+    late Widget icon;
     switch (currentTask.taskType) {
       case TaskType.TASK:
-        icon = const Icon(Icons.assignment);
+        icon = Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.assignment),
+            Text("課題"),
+          ],
+        );
         break;
       case TaskType.TEST:
-        icon = const Icon(Icons.checklist);
+        icon = Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.checklist),
+            Text("テスト"),
+          ],
+        );
         break;
       case TaskType.SURVEY:
-        icon = const Icon(Icons.question_mark_rounded);
+        icon = Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.question_answer),
+            Text("アンケート"),
+          ],
+        );
         break;
       case TaskType.OTHERS:
-        icon = const Icon(Icons.task);
+        icon = Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.question_mark_rounded),
+            Text("その他"),
+          ],
+        );
         break;
     }
 
