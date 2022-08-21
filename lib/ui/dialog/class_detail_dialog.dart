@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
@@ -128,6 +129,95 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                     ),
                   ),
                 ],
+              ),
+              const Divider(
+                height: 20,
+                color: Colors.transparent,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text("遅刻回数 : "),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () async {
+                      var db = await AppDatabase.getDatabase();
+                      if (widget.classCell.lateCount > 0) {
+                        widget.classCell.lateCount--;
+                        await db.currentClassCellDao
+                            .insertClassCell(widget.classCell);
+                        setState(() {});
+                      }
+                    },
+                    icon: const Text(
+                      "<",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                  Text(widget.classCell.lateCount.toString()),
+                  IconButton(
+                    onPressed: () async {
+                      var db = await AppDatabase.getDatabase();
+                      widget.classCell.lateCount++;
+                      await db.currentClassCellDao
+                          .insertClassCell(widget.classCell);
+                      print(await db.currentClassCellDao
+                          .getClassCellByClassId(widget.classCell.classId));
+                      setState(() {});
+                    },
+                    icon: const Text(
+                      ">",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text("欠席回数 : "),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () async {
+                      var db = await AppDatabase.getDatabase();
+                      if (widget.classCell.absentCount > 0) {
+                        widget.classCell.absentCount--;
+                        await db.currentClassCellDao
+                            .insertClassCell(widget.classCell);
+                        setState(() {});
+                      }
+                    },
+                    icon: const Text(
+                      "<",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                  Text(widget.classCell.absentCount.toString()),
+                  IconButton(
+                    onPressed: () async {
+                      var db = await AppDatabase.getDatabase();
+                      widget.classCell.absentCount++;
+                      await db.currentClassCellDao
+                          .insertClassCell(widget.classCell);
+                      setState(() {});
+                    },
+                    icon: const Text(
+                      ">",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+              TextFormField(
+                initialValue: widget.classCell.note,
+                decoration: const InputDecoration(labelText: "メモ"),
+                onChanged: (text) async {
+                  var db = await AppDatabase.getDatabase();
+                  widget.classCell.note = text;
+                  await db.currentClassCellDao
+                      .insertClassCell(widget.classCell);
+                  setState(() {});
+                },
               ),
             ],
           ),

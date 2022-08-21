@@ -75,14 +75,30 @@ Future<void> _constructTimetableArray(
       }
 
       if (id == null || room == null) continue;
-      var newCell = ClassCell(id, name, teachers, room, c, r, year, term, null);
+      var newCell = ClassCell(
+        id,
+        name,
+        teachers,
+        room,
+        c,
+        r,
+        year,
+        term,
+        null,
+        null,
+        0,
+        0,
+      );
       timetable[r][c] = newCell;
 
-      // load custom color from db
+      // merge old timetable and new one
       var classCellFromDB =
           await db.currentClassCellDao.getClassCellByClassId(newCell.classId);
       print("class_from_db : $classCellFromDB");
       newCell.customColorInt = classCellFromDB?.customColorInt;
+      newCell.note = classCellFromDB?.note;
+      newCell.lateCount = classCellFromDB?.lateCount ?? 0;
+      newCell.absentCount = classCellFromDB?.absentCount ?? 0;
       await db.currentClassCellDao.insertClassCell(newCell);
 
       print("class_from_server : $newCell");

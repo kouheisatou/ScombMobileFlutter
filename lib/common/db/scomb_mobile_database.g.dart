@@ -88,7 +88,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `settings` (`settingKey` TEXT NOT NULL, `settingValue` TEXT, PRIMARY KEY (`settingKey`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `name` TEXT NOT NULL, `teachers` TEXT NOT NULL, `room` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `period` INTEGER NOT NULL, `year` INTEGER NOT NULL, `term` TEXT NOT NULL, `customColorInt` INTEGER, `url` TEXT NOT NULL, `cellId` TEXT NOT NULL, PRIMARY KEY (`cellId`))');
+            'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `name` TEXT NOT NULL, `teachers` TEXT NOT NULL, `room` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `period` INTEGER NOT NULL, `year` INTEGER NOT NULL, `term` TEXT NOT NULL, `customColorInt` INTEGER, `url` TEXT NOT NULL, `cellId` TEXT NOT NULL, `note` TEXT, `lateCount` INTEGER NOT NULL, `absentCount` INTEGER NOT NULL, PRIMARY KEY (`cellId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, `addManually` INTEGER NOT NULL, `done` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
@@ -185,7 +185,10 @@ class _$ClassCellDao extends ClassCellDao {
                   'term': item.term,
                   'customColorInt': item.customColorInt,
                   'url': item.url,
-                  'cellId': item.cellId
+                  'cellId': item.cellId,
+                  'note': item.note,
+                  'lateCount': item.lateCount,
+                  'absentCount': item.absentCount
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -208,7 +211,10 @@ class _$ClassCellDao extends ClassCellDao {
             row['period'] as int,
             row['year'] as int,
             row['term'] as String,
-            row['customColorInt'] as int?));
+            row['customColorInt'] as int?,
+            row['note'] as String?,
+            row['lateCount'] as int,
+            row['absentCount'] as int));
   }
 
   @override
@@ -224,7 +230,10 @@ class _$ClassCellDao extends ClassCellDao {
             row['period'] as int,
             row['year'] as int,
             row['term'] as String,
-            row['customColorInt'] as int?),
+            row['customColorInt'] as int?,
+            row['note'] as String?,
+            row['lateCount'] as int,
+            row['absentCount'] as int),
         arguments: [classId]);
   }
 

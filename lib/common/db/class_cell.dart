@@ -18,6 +18,9 @@ class ClassCell {
   late String url;
   @primaryKey
   late String cellId;
+  String? note;
+  late int lateCount;
+  late int absentCount;
 
   ClassCell(
     this.classId,
@@ -29,6 +32,9 @@ class ClassCell {
     this.year,
     this.term,
     this.customColorInt,
+    this.note,
+    this.lateCount,
+    this.absentCount,
   ) {
     url = "$CLASS_PAGE_URL?idnumber=$classId";
     cellId = "$year:$term-$period:$dayOfWeek-$classId";
@@ -59,6 +65,6 @@ class ClassCell {
 
   @override
   String toString() {
-    return "ClassCell { classId=$classId, name=$name, teachers=$teachers, room=$room, dayOfWeek=$dayOfWeek, period=$period, year=$year, term=$term, customColor=$customColorInt }";
+    return "ClassCell { classId=$classId, name=$name, teachers=$teachers, room=$room, dayOfWeek=$dayOfWeek, period=$period, year=$year, term=$term, customColor=$customColorInt, absentCount=$absentCount, lateCount=$lateCount, note=$note }";
   }
 }
