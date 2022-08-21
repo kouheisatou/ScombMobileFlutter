@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/database_exception.dart';
@@ -157,7 +159,13 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     List<Widget> dayOfWeekCells = [];
     // day of week row
     dayOfWeekCells.add(
-      const Text(" 　"),
+      const Text(
+        "0限",
+        style: TextStyle(
+          color: Colors.transparent,
+          fontFeatures: [FontFeature.tabularFigures()],
+        ),
+      ),
     );
     DAY_OF_WEEK_MAP.forEach(
       (key, value) {
@@ -166,7 +174,13 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
           dayOfWeekCells.add(
             Expanded(
               child: Center(
-                child: Text(value),
+                child: Container(
+                  width: double.infinity,
+                  color: (DateTime.now().weekday - 1) == key
+                      ? Colors.black12
+                      : null,
+                  child: Text(value),
+                ),
               ),
             ),
           );
@@ -182,7 +196,13 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     // period column
     tableCells.add(
       Center(
-        child: Text(textAlign: TextAlign.center, PERIOD_MAP[row] ?? ""),
+        child: Text(
+          textAlign: TextAlign.center,
+          PERIOD_MAP[row] ?? "",
+          style: const TextStyle(
+            fontFeatures: [FontFeature.tabularFigures()],
+          ),
+        ),
       ),
     );
 
@@ -199,6 +219,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   Widget buildTableCell(int row, int col) {
     return Expanded(
       child: Container(
+        color: (DateTime.now().weekday - 1) == col ? Colors.black12 : null,
         width: double.infinity,
         height: double.infinity,
         child: timetable[row][col] == null
