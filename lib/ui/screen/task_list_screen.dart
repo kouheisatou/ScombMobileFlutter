@@ -220,6 +220,12 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
+                    style: isSameDay(
+                      DateTime.fromMillisecondsSinceEpoch(currentTask.deadline),
+                      DateTime.now(),
+                    )
+                        ? const TextStyle(color: Colors.red)
+                        : const TextStyle(),
                     timeToString(currentTask.deadline),
                   ),
                 ),
