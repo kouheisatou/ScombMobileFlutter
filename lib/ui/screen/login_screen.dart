@@ -108,9 +108,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 },
                 onLoadStop: (controller, url) async {
-                  setState(() {
-                    loggingIn = false;
-                  });
                   CookieManager cookieManager = CookieManager.instance();
                   Cookie? cookie = await cookieManager.getCookie(
                     url: Uri.parse(SCOMBZ_DOMAIN),
@@ -153,6 +150,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   // login failed
                   if (requestSendCount > 0) {
                     webView?.stopLoading();
+                    setState(() {
+                      loggingIn = false;
+                    });
                   }
                   requestSendCount++;
                   return HttpAuthResponse(
