@@ -150,13 +150,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
                 onReceivedHttpAuthRequest: (controller, challenge) async {
-                  setState(() {
-                    // login failed
-                    if (requestSendCount > 0) {
-                      loggingIn = false;
-                      webView?.stopLoading();
-                    }
-                  });
+                  // login failed
+                  if (requestSendCount > 0) {
+                    webView?.stopLoading();
+                  }
                   requestSendCount++;
                   return HttpAuthResponse(
                     username: _userController.text,

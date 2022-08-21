@@ -44,7 +44,13 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
               title: const Text("免責事項"),
               actions: [
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    db.currentSettingDao.insertSetting(
+                      Setting(
+                        SettingKeys.SESSION_ID,
+                        "",
+                      ),
+                    );
                     Navigator.pop(context);
                   },
                   child: const Text("同意する"),
