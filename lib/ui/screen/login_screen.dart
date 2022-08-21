@@ -10,10 +10,18 @@ import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen(this.parent, {Key? key}) : super(key: key) {
-    setUserAndPass();
-  }
+  LoginScreen(this.parent, {Key? key}) : super(key: key);
 
+  ScombMobileState parent;
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  InAppWebViewController? webView;
+  bool loggingIn = false;
+  int requestSendCount = 0;
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -29,28 +37,23 @@ class LoginScreen extends StatefulWidget {
     _userController.text = usernameSetting?.settingValue ?? "";
     _passwordController.text = passwordSetting?.settingValue ?? "";
 
-    // if (usernameSetting != null &&
-    //     passwordSetting != null &&
-    //     savedSessionID != null) {
-    //   // auto start login process
-    //   startLogin();
-    // }
+    if (usernameSetting != null &&
+        passwordSetting != null &&
+        savedSessionID != null) {
+      // auto start login process
+      startLogin();
+    }
   }
 
-  ScombMobileState parent;
-
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  InAppWebViewController? webView;
-  bool loggingIn = false;
-  int requestSendCount = 0;
+  void initState() {
+    setUserAndPass();
+    super.initState();
+  }
 
   void startLogin() {
     print(
-        "login : user=${widget._userController.text}, pass=${genHiddenText(widget._passwordController.text)}");
+        "login : user=${_userController.text}, pass=${genHiddenText(_passwordController.text)}");
     CookieManager cookieManager = CookieManager.instance();
     cookieManager.deleteAllCookies();
     webView?.loadUrl(
@@ -69,12 +72,12 @@ class _LoginScreenState extends State<LoginScreen> {
           TextField(
             autofocus: true,
             decoration: const InputDecoration(labelText: "学籍番号"),
-            controller: widget._userController,
+            controller: _userController,
           ),
           TextField(
             decoration: const InputDecoration(labelText: "パスワード"),
             obscureText: true,
-            controller: widget._passwordController,
+            controller: _passwordController,
           ),
           ElevatedButton(
             onPressed: loggingIn ? null : startLogin,
@@ -134,11 +137,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           Setting(SettingKeys.SESSION_ID, sessionId!));
                       db.currentSettingDao.insertSetting(Setting(
                         SettingKeys.PASSWORD,
-                        widget._passwordController.text,
+                        _passwordController.text,
                       ));
                       db.currentSettingDao.insertSetting(Setting(
                         SettingKeys.USERNAME,
-                        widget._userController.text,
+                        _userController.text,
                       ));
 
                       // set bottom navigation timetable
@@ -156,8 +159,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                   requestSendCount++;
                   return HttpAuthResponse(
-                    username: widget._userController.text,
-                    password: widget._passwordController.text,
+                    username: _userController.text,
+                    password: _passwordController.text,
                     action: HttpAuthResponseAction.PROCEED,
                   );
                 },
