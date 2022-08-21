@@ -40,7 +40,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       await getFromServerAndSaveToSharedResource(savedSessionId);
 
       // saved session id passed
-      if (sessionId == null) {
+      if (sessionId == null && taskListInitialized) {
         sessionId = savedSessionId;
         Fluttertoast.showToast(msg: "自動ログインしました");
       }

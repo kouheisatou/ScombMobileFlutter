@@ -48,9 +48,9 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
     var db = await AppDatabase.getDatabase();
 
+    // inflate last update settings
     var prevTimetableYear = timetableYear;
     var prevTimetableTerm = timetableTerm;
-
     late int refreshInterval;
     late int lastUpdate;
     try {
@@ -84,6 +84,8 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       timetableInitialized = false;
     }
     print("start to fetch timetable ($timetableYear-$timetableTerm)");
+
+    saturdayClassExists = checkSaturdayClassExists();
 
     if (timetableInitialized) return;
 
