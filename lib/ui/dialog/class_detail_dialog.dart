@@ -210,6 +210,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               ),
               TextFormField(
                 initialValue: widget.classCell.note,
+                maxLines: null,
                 decoration: const InputDecoration(labelText: "メモ"),
                 onChanged: (text) async {
                   var db = await AppDatabase.getDatabase();
