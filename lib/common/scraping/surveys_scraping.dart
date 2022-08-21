@@ -75,9 +75,7 @@ Future<void> _constructSurveys(Document document) async {
       false,
     );
 
-    print("fetched_survey : $newSurvey");
-
     // if already exists, merge task
-    addOrReplaceTask(newSurvey);
+    addOrReplaceTask(newSurvey, true);
   }
 }

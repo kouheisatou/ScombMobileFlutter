@@ -16,7 +16,7 @@ class Task {
   late String id;
   int? customColor;
   late bool addManually;
-  bool done = false;
+  late bool done;
 
   // for inflate survey
   Task(
@@ -48,6 +48,7 @@ class Task {
     classId = uri.queryParameters["idnumber"]!;
     reportId = uri.queryParameters["reportId"]!;
     id = "$taskType-$classId-$reportId";
+    done = false;
   }
 
   Task.userTask(
@@ -63,6 +64,7 @@ class Task {
     reportId = "usertask${DateTime.now().millisecondsSinceEpoch.hashCode}";
     customColor = relatedClass?.customColorInt;
     id = "$taskType-$classId-$reportId";
+    done = false;
   }
 
   @override
@@ -76,6 +78,6 @@ class Task {
 
   @override
   String toString() {
-    return "Task { id=$id, title=$title, className=$className, taskType=$taskType, deadline=${timeToString(deadline)}, url=$url, classId=$classId, reportId=$reportId, customColor=$customColor } ";
+    return "Task { id=$id, title=$title, className=$className, taskType=$taskType, deadline=${timeToString(deadline)}, url=$url, classId=$classId, reportId=$reportId, customColor=$customColor, done=$done } ";
   }
 }

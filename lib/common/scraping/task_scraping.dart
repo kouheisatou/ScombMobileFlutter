@@ -81,9 +81,7 @@ Future<void> _constructTasks(Document document) async {
         await db.currentClassCellDao.getClassCellByClassId(newTask.classId);
     newTask.customColor = classCellFromDB?.customColorInt;
 
-    print("fetched_tasks : $newTask");
-
     // if already exists
-    addOrReplaceTask(newTask);
+    addOrReplaceTask(newTask, true);
   }
 }

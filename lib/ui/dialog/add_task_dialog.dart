@@ -213,8 +213,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                     selectedDate!.millisecondsSinceEpoch,
                   );
 
-                  addOrReplaceTask(newTask);
-
                   Navigator.pop(context, newTask);
                 },
                 child: const Text("追加"),

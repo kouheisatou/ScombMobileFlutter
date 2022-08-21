@@ -35,7 +35,7 @@ void sortTasks() {
   taskList.sort((a, b) => a.deadline.compareTo(b.deadline));
 }
 
-void addOrReplaceTask(Task newTask) {
+void addOrReplaceTask(Task newTask, bool fromServer) {
   // deadline over
   if (newTask.deadline < DateTime.now().millisecondsSinceEpoch) return;
 
@@ -47,15 +47,35 @@ void addOrReplaceTask(Task newTask) {
     }
   }
 
-  if (conflictedTaskIndex == null) {
-    taskList.add(newTask);
-    print("task(add) : $newTask");
-  }
-  // on conflict, replace task
-  else {
-    taskList.removeAt(conflictedTaskIndex);
-    taskList.add(newTask);
-    print("task(replace) : $newTask");
+  if (fromServer) {
+    if (conflictedTaskIndex == null) {
+      taskList.add(newTask);
+      print("task_from_scomb(add) : $newTask");
+      newTask.done = false;
+    }
+    // on conflict, replace task
+    else {
+      taskList.removeAt(conflictedTaskIndex);
+      taskList.add(newTask);
+      // add from server and replace -> scomb task is done
+      newTask.done = false;
+      print("task_from_scomb(replace) : $newTask");
+    }
+  } else {
+    if (conflictedTaskIndex == null) {
+      taskList.add(newTask);
+      // for judging if scomb task done
+      if (!newTask.addManually) {
+        newTask.done = true;
+      }
+      print("task_from_db(add) : $newTask");
+    }
+    // on conflict, replace task
+    else {
+      taskList.removeAt(conflictedTaskIndex);
+      taskList.add(newTask);
+      print("task_from_db(replace) : $newTask");
+    }
   }
 
   _saveToDB(newTask);

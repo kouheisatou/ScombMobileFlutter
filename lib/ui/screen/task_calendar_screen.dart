@@ -200,7 +200,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
     );
     if (newTask == null) return;
     setState(() {
-      addOrReplaceTask(newTask);
+      addOrReplaceTask(newTask, false);
       sortTasks();
     });
   }

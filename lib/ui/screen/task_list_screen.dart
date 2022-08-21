@@ -3,14 +3,14 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/notification.dart';
-import 'package:scomb_mobile/common/scraping/surveys_scraping.dart';
-import 'package:scomb_mobile/common/scraping/task_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/dialog/add_task_dialog.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
 import '../../common/db/task.dart';
+import '../../common/scraping/surveys_scraping.dart';
+import '../../common/scraping/task_scraping.dart';
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
@@ -151,6 +151,16 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
                     );
                   },
                 ),
+                Checkbox(
+                  onChanged: (bool? value) async {
+                    currentTask.done = value ?? false;
+                    var db = await AppDatabase.getDatabase();
+                    db.currentTaskDao.insertTask(currentTask);
+
+                    setState(() {});
+                  },
+                  value: currentTask.done,
+                )
               ],
             )
           : null,
@@ -159,10 +169,17 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         children: [
           ListTile(
             leading: icon,
-            title: Text(
-              currentTask.title,
-              textAlign: TextAlign.left,
-            ),
+            title: !currentTask.done
+                ? Text(
+                    currentTask.title,
+                    textAlign: TextAlign.left,
+                  )
+                : Text(
+                    "(提出済み) ${currentTask.title}",
+                    style: const TextStyle(
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
             onLongPress: () {
               print(currentTask);
             },
@@ -218,7 +235,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     );
     if (newTask == null) return;
     setState(() {
-      addOrReplaceTask(newTask);
+      addOrReplaceTask(newTask, false);
       sortTasks();
     });
   }
@@ -234,6 +251,6 @@ Future<void> inflateTasksFromDB() async {
     if (relatedClass != null) {
       task.customColor = relatedClass.customColorInt;
     }
-    addOrReplaceTask(task);
+    addOrReplaceTask(task, false);
   }
 }
