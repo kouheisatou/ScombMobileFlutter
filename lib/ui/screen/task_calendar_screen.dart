@@ -49,6 +49,10 @@ class _TaskCalendarScreenState extends TaskListScreenState {
     return Column(
       children: [
         TableCalendar<Task>(
+          availableCalendarFormats: const {
+            CalendarFormat.month: "展開する",
+            CalendarFormat.week: "折りたたむ",
+          },
           firstDay: calendarFirstDay,
           lastDay: calendarLastDay,
           focusedDay: _focusedDay,
