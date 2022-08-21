@@ -3,13 +3,39 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
+import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/scomb_mobile.dart';
 
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen(this.parent, {Key? key}) : super(key: key);
+  LoginScreen(this.parent, {Key? key}) : super(key: key) {
+    setUserAndPass();
+  }
+
+  final _userController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  Future<void> setUserAndPass() async {
+    var db = await AppDatabase.getDatabase();
+    var usernameSetting =
+        await db.currentSettingDao.getSetting(SettingKeys.USERNAME);
+    var passwordSetting =
+        await db.currentSettingDao.getSetting(SettingKeys.PASSWORD);
+    var savedSessionID =
+        await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
+
+    _userController.text = usernameSetting?.settingValue ?? "";
+    _passwordController.text = passwordSetting?.settingValue ?? "";
+
+    // if (usernameSetting != null &&
+    //     passwordSetting != null &&
+    //     savedSessionID != null) {
+    //   // auto start login process
+    //   startLogin();
+    // }
+  }
 
   ScombMobileState parent;
 
@@ -19,34 +45,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   InAppWebViewController? webView;
-  final _userController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    setUserAndPass();
-    super.initState();
-  }
-
-  Future<void> setUserAndPass() async {
-    var db = await AppDatabase.getDatabase();
-    var usernameSetting =
-        await db.currentSettingDao.getSetting(SettingKeys.USERNAME);
-    var passwordSetting =
-        await db.currentSettingDao.getSetting(SettingKeys.PASSWORD);
-
-    _userController.text = usernameSetting?.settingValue ?? "";
-    _passwordController.text = passwordSetting?.settingValue ?? "";
-
-    if (usernameSetting != null && passwordSetting != null) {
-      // auto start login process
-      startLogin();
-    }
-  }
+  bool loggingIn = false;
+  int requestSendCount = 0;
 
   void startLogin() {
     print(
-        "login : user=${_userController.text}, pass=${_passwordController.text}");
+        "login : user=${widget._userController.text}, pass=${genHiddenText(widget._passwordController.text)}");
     CookieManager cookieManager = CookieManager.instance();
     cookieManager.deleteAllCookies();
     webView?.loadUrl(
@@ -56,7 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    setUserAndPass();
     return Scaffold(
       appBar: AppBar(
         title: const Text("ログイン"),
@@ -66,27 +69,15 @@ class _LoginScreenState extends State<LoginScreen> {
           TextField(
             autofocus: true,
             decoration: const InputDecoration(labelText: "学籍番号"),
-            controller: _userController,
-            onChanged: (text) async {
-              var db = await AppDatabase.getDatabase();
-              db.currentSettingDao
-                  .insertSetting(Setting(SettingKeys.USERNAME, text));
-            },
+            controller: widget._userController,
           ),
           TextField(
             decoration: const InputDecoration(labelText: "パスワード"),
             obscureText: true,
-            controller: _passwordController,
-            onChanged: (text) async {
-              var db = await AppDatabase.getDatabase();
-              db.currentSettingDao
-                  .insertSetting(Setting(SettingKeys.PASSWORD, text));
-            },
+            controller: widget._passwordController,
           ),
           ElevatedButton(
-            onPressed: () {
-              startLogin();
-            },
+            onPressed: loggingIn ? null : startLogin,
             child: const Text("ログイン"),
           ),
           Expanded(
@@ -99,25 +90,29 @@ class _LoginScreenState extends State<LoginScreen> {
                   webView = controller;
                 },
                 onLoadError: (controller, url, code, message) {
-                  if (message == "net::ERR_NAME_NOT_RESOLVED") {
+                  if (code == -2) {
                     Fluttertoast.showToast(msg: "オフライン");
+                  } else if (code == -999) {
+                    Fluttertoast.showToast(msg: "ログイン失敗");
                   } else {
                     Fluttertoast.showToast(msg: "ERROR : $message ($code)");
                   }
                   widget.parent.setBottomNavIndex(0);
                 },
+                onLoadStart: (controller, url) {
+                  setState(() {
+                    loggingIn = true;
+                  });
+                },
                 onLoadStop: (controller, url) async {
+                  setState(() {
+                    loggingIn = false;
+                  });
                   CookieManager cookieManager = CookieManager.instance();
                   Cookie? cookie = await cookieManager.getCookie(
                     url: Uri.parse(SCOMBZ_DOMAIN),
                     name: SESSION_COOKIE_ID,
                   );
-
-                  var currentUrl = "https://${url?.host}${url?.path}";
-                  // login failed
-                  if (currentUrl == SCOMB_LOGGED_OUT_PAGE_URL) {
-                    initState();
-                  }
 
                   // two step auth page
                   if (cookie == null) {
@@ -137,20 +132,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       var db = await AppDatabase.getDatabase();
                       db.currentSettingDao.insertSetting(
                           Setting(SettingKeys.SESSION_ID, sessionId!));
+                      db.currentSettingDao.insertSetting(Setting(
+                        SettingKeys.PASSWORD,
+                        widget._passwordController.text,
+                      ));
+                      db.currentSettingDao.insertSetting(Setting(
+                        SettingKeys.USERNAME,
+                        widget._userController.text,
+                      ));
 
                       // set bottom navigation timetable
                       widget.parent.setBottomNavIndex(0);
                     }
-                    // login failed
-                    else {
-                      initState();
-                    }
                   }
                 },
                 onReceivedHttpAuthRequest: (controller, challenge) async {
+                  setState(() {
+                    // login failed
+                    if (requestSendCount > 0) {
+                      loggingIn = false;
+                      webView?.stopLoading();
+                    }
+                  });
+                  requestSendCount++;
                   return HttpAuthResponse(
-                    username: _userController.text,
-                    password: _passwordController.text,
+                    username: widget._userController.text,
+                    password: widget._passwordController.text,
                     action: HttpAuthResponseAction.PROCEED,
                   );
                 },

@@ -35,7 +35,28 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
           await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
       var savedSessionId = sessionIdSetting?.settingValue;
 
-      if (savedSessionId == null) throw LoginException("ログインが必要です");
+      // first launch
+      if (savedSessionId == null) {
+        await showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: const Text("免責事項"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("同意する"),
+                )
+              ],
+              content: const Text(
+                  "このアプリはScomb上の情報を確認することを目的に作成されました。\nアプリ内に表示されるWebページ内でテスト受験やアンケート解答、課題提出することは可能ですが、推奨されません。\nこのアプリ内からテスト受験やアンケート解答、課題提出する場合は、自己責任で行ってください。"),
+            );
+          },
+        );
+        throw LoginException("ログインが必要です");
+      }
 
       await getFromServerAndSaveToSharedResource(savedSessionId);
 
