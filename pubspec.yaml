@@ -61,6 +61,8 @@ dependencies:
   flutter_slidable: ^2.0.0
   # settings_ui
   settings_ui: ^2.0.2
+  # app review
+  app_review: ^2.0.1
 
 flutter_native_splash:
   image: "resources/splash.png"

@@ -1,3 +1,4 @@
+import 'package:app_review/app_review.dart';
 import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
@@ -311,6 +312,14 @@ class _SettingScreenState extends State<SettingScreen> {
         SettingsSection(
           title: const Text("このアプリについて"),
           tiles: [
+            SettingsTile(
+              title: const Text("レビューを送信"),
+              onPressed: (context) async {
+                AppReview.requestReview.then((onValue) {
+                  print(onValue);
+                });
+              },
+            ),
             SettingsTile(
               title: const Text("ScombZ"),
               onPressed: (context) async {
