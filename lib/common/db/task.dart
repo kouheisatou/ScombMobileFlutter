@@ -16,6 +16,7 @@ class Task {
   late String id;
   int? customColor;
   late bool addManually;
+  bool done = false;
 
   // for inflate survey
   Task(
@@ -28,6 +29,7 @@ class Task {
     this.classId,
     this.customColor,
     this.addManually,
+    this.done,
   ) {
     id = "$taskType-$classId-$reportId";
   }

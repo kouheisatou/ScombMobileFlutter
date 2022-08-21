@@ -49,13 +49,13 @@ void addOrReplaceTask(Task newTask) {
 
   if (conflictedTaskIndex == null) {
     taskList.add(newTask);
-    print("task_db(add) : $newTask");
+    print("task(add) : $newTask");
   }
   // on conflict, replace task
   else {
     taskList.removeAt(conflictedTaskIndex);
     taskList.add(newTask);
-    print("task_db(replace) : $newTask");
+    print("task(replace) : $newTask");
   }
 
   _saveToDB(newTask);

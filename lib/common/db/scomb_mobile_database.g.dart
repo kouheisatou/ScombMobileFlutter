@@ -90,7 +90,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `name` TEXT NOT NULL, `teachers` TEXT NOT NULL, `room` TEXT NOT NULL, `dayOfWeek` INTEGER NOT NULL, `period` INTEGER NOT NULL, `year` INTEGER NOT NULL, `term` TEXT NOT NULL, `customColorInt` INTEGER, `url` TEXT NOT NULL, `cellId` TEXT NOT NULL, PRIMARY KEY (`cellId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, `addManually` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, `addManually` INTEGER NOT NULL, `done` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -251,7 +251,8 @@ class _$TaskDao extends TaskDao {
                   'reportId': item.reportId,
                   'id': item.id,
                   'customColor': item.customColor,
-                  'addManually': item.addManually ? 1 : 0
+                  'addManually': item.addManually ? 1 : 0,
+                  'done': item.done ? 1 : 0
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -274,7 +275,8 @@ class _$TaskDao extends TaskDao {
             row['reportId'] as String,
             row['classId'] as String,
             row['customColor'] as int?,
-            (row['addManually'] as int) != 0));
+            (row['addManually'] as int) != 0,
+            (row['done'] as int) != 0));
   }
 
   @override
@@ -289,7 +291,8 @@ class _$TaskDao extends TaskDao {
             row['reportId'] as String,
             row['classId'] as String,
             row['customColor'] as int?,
-            (row['addManually'] as int) != 0),
+            (row['addManually'] as int) != 0,
+            (row['done'] as int) != 0),
         arguments: [id]);
   }
 

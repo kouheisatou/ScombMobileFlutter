@@ -72,6 +72,7 @@ Future<void> _constructSurveys(Document document) async {
       classId,
       customColor,
       false,
+      false,
     );
 
     print("fetched_survey : $newSurvey");
