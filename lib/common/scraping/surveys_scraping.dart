@@ -44,9 +44,15 @@ Future<void> _constructSurveys(Document document) async {
     if (surveyId == null || classId == null) continue;
 
     // if this survey is done, skip this
-    if (row.children[2]
+    var isDone = false;
+    row.children[2]
         .getElementsByClassName("portal-surveys-status")
-        .isNotEmpty) continue;
+        .forEach((tag) {
+      if (tag.text == "済み") {
+        isDone = true;
+      }
+    });
+    if (isDone) continue;
 
     var title = row.children[2].children[0].text;
 
