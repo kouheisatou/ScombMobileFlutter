@@ -197,7 +197,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SinglePageScomb(
-                    currentTask.url,
+                    Uri.parse(currentTask.url),
                     currentTask.title,
                   ),
                   fullscreenDialog: true,

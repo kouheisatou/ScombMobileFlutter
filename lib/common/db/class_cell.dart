@@ -36,7 +36,7 @@ class ClassCell {
     this.lateCount,
     this.absentCount,
   ) {
-    url = "$CLASS_PAGE_URL?idnumber=$classId";
+    url = CLASS_PAGE_URL.replaceFirst("\${classId}", classId);
     cellId = "$year:$term-$period:$dayOfWeek-$classId";
   }
 

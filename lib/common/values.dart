@@ -4,13 +4,16 @@ const SCOMB_LOGIN_PAGE_URL =
 const SCOMB_HOME_URL = "https://scombz.shibaura-it.ac.jp/portal/home";
 const SCOMB_LOGGED_OUT_PAGE_URL = "https://scombz.shibaura-it.ac.jp/login";
 const SCOMB_TIMETABLE_URL = "https://scombz.shibaura-it.ac.jp/lms/timetable";
-const CLASS_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course";
+const CLASS_PAGE_URL =
+    "https://scombz.shibaura-it.ac.jp/lms/course?idnumber=\${classId}";
 const TASK_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/task";
 const SURVEY_LIST_PAGE_URL =
     "https://scombz.shibaura-it.ac.jp/portal/surveys/list";
 const SURVEY_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/surveys/take";
 const TWITTER_URL = "https://twitter.com/ScombMobile";
 const PRIVACY_POLICY_URL = "https://kouheisatou.github.io/ScombMobileFlutter/";
+const SYLLABUS_SEARCH_URL =
+    "http://syllabus.sic.shibaura-it.ac.jp/namazu/namazu.cgi?ajaxmode=true&query=\${className}&whence=0&idxname=\${admissionYearAndSection}&max=20&result=normal&sort=score#:~:text=%E6%A4%9C%E7%B4%A2%E7%B5%90%E6%9E%9C,-%E5%8F%82%E8%80%83%E3%83%92%E3%83%83%E3%83%88%E6%95%B0";
 
 // ScombのCookieとして保存されているセッションIDのキー
 const SESSION_COOKIE_ID = "SESSION";

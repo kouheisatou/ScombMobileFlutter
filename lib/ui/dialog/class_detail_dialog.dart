@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
+import 'package:scomb_mobile/common/db/setting_entity.dart';
+import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
 import '../../common/db/class_cell.dart';
 import 'color_picker_dialog.dart';
@@ -98,18 +101,36 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 ),
               ],
             ),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 120),
+              child: TextFormField(
+                initialValue: widget.classCell.note,
+                maxLines: null,
+                decoration: const InputDecoration(labelText: "メモ"),
+                onChanged: (text) async {
+                  await widget.classCell.setNoteText(text);
+                  setState(() {});
+                },
+              ),
+            ),
             const Divider(
               height: 20,
               color: Colors.transparent,
             ),
-            InkWell(
-              onTap: () async {
-                if (await canLaunchUrl(Uri.parse(widget.classCell.url))) {
-                  await launchUrl(
-                    Uri.parse(widget.classCell.url),
-                    mode: LaunchMode.externalApplication,
-                  );
-                }
+            OutlinedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (builder) {
+                      return SinglePageScomb(
+                        Uri.parse(widget.classCell.url),
+                        widget.classCell.name,
+                      );
+                    },
+                    fullscreenDialog: true,
+                  ),
+                );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -117,28 +138,51 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 children: const [
                   Text(
                     "授業ページを開く ",
-                    style: TextStyle(color: Colors.blue),
                   ),
+                  Spacer(),
                   Icon(
-                    Icons.open_in_new,
-                    color: Colors.blue,
+                    Icons.keyboard_arrow_right,
                     size: 16,
                   )
                 ],
               ),
             ),
-            const Divider(
-              height: 10,
-              color: Colors.transparent,
-            ),
-            InkWell(
-              onTap: () async {
-                if (await canLaunchUrl(Uri.parse(widget.classCell.url))) {
-                  await launchUrl(
-                    Uri.parse(widget.classCell.url),
-                    mode: LaunchMode.externalApplication,
-                  );
+            OutlinedButton(
+              onPressed: () async {
+                var db = await AppDatabase.getDatabase();
+                var section =
+                    (await db.currentSettingDao.getSetting(SettingKeys.Section))
+                        ?.settingValue;
+                if (section == null) {
+                  Fluttertoast.showToast(msg: "設定で学部と入学年を設定してください");
                 }
+
+                // encode url query
+                var queryString = await convertUrlQueryString(
+                  widget.classCell.name,
+                  encode: "EUC-JP",
+                );
+
+                var syllabusUrl = SYLLABUS_SEARCH_URL
+                    .replaceFirst("\${className}", queryString)
+                    .replaceFirst("\${admissionYearAndSection}",
+                        "${DateTime.now().year}%2F$section");
+
+                print(syllabusUrl);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (builder) {
+                      return SinglePageScomb(
+                        Uri.parse(syllabusUrl),
+                        widget.classCell.name,
+                        javascript: "document.getElementById('hit_1').click();",
+                      );
+                    },
+                    fullscreenDialog: true,
+                  ),
+                );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -146,28 +190,18 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 children: const [
                   Text(
                     "シラバスを表示 ",
-                    style: TextStyle(color: Colors.blue),
                   ),
+                  Spacer(),
                   Icon(
-                    Icons.open_in_new,
-                    color: Colors.blue,
+                    Icons.keyboard_arrow_right,
                     size: 16,
                   )
                 ],
               ),
             ),
-            const Divider(
-              height: 20,
-              color: Colors.transparent,
-            ),
-            TextFormField(
-              initialValue: widget.classCell.note,
-              maxLines: null,
-              decoration: const InputDecoration(labelText: "メモ"),
-              onChanged: (text) async {
-                await widget.classCell.setNoteText(text);
-                setState(() {});
-              },
+            const Text(
+              "授業名で自動検索しているので、異なる授業が開かれる場合があります。",
+              style: TextStyle(color: Colors.grey, fontSize: 10),
             ),
           ],
         ),

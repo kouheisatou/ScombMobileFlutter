@@ -140,6 +140,25 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
               },
             ),
+            SettingsTile(
+              title: const Text("学部"),
+              value: Text(findMapKeyFromValue(
+                      SettingValues.SECTION, settings[SettingKeys.Section]) ??
+                  ""),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectorDialog(
+                      SettingValues.SECTION,
+                      (key, value) async {
+                        updateSetting(SettingKeys.Section, value.toString());
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           ],
         ),
         SettingsSection(
@@ -155,7 +174,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   context: context,
                   builder: (_) {
                     return SelectorDialog<int?>(
-                      buildYearSelection(),
+                      buildYearSelection(6, true),
                       (key, value) async {
                         // on "最新" selected
                         if (value == null) {
@@ -373,11 +392,13 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  Map<String, int?> buildYearSelection() {
+  Map<String, int?> buildYearSelection(int range, bool allowNull) {
     Map<String, int?> yearSelection = {};
     var thisYear = DateTime.now().year;
-    yearSelection["最新"] = null;
-    for (int i = 0; i < 6; i++) {
+    if (allowNull) {
+      yearSelection["最新"] = null;
+    }
+    for (int i = 0; i < range; i++) {
       var year = thisYear - i;
       yearSelection[year.toString()] = year;
     }

@@ -3,7 +3,8 @@
    <application
         android:label="Scomb Mobile"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+       android:usesCleartextTraffic="true">
         <activity
             android:showWhenLocked="true"
             android:turnScreenOn="true"

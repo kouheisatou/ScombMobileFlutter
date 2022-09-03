@@ -63,6 +63,8 @@ dependencies:
   settings_ui: ^2.0.2
   # app review
   app_review: ^2.0.1
+  # charset_converter:
+  charset_converter: ^2.1.0
 
 flutter_native_splash:
   image: "resources/splash.png"

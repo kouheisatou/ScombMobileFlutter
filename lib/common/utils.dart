@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:charset_converter/charset_converter.dart';
 import 'package:intl/intl.dart';
 import 'package:scomb_mobile/common/values.dart';
 
@@ -70,4 +71,16 @@ String genHiddenText(String text) {
 
 bool isSameDay(DateTime d1, DateTime d2) {
   return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
+}
+
+Future<String> convertUrlQueryString(String queryValue,
+    {String encode = "utf-8"}) async {
+  var charArray = await CharsetConverter.encode(encode, queryValue);
+  var queryString = "";
+  charArray.forEach((element) {
+    var hexChar = element.toRadixString(16).toUpperCase();
+    queryString += "%$hexChar";
+  });
+
+  return queryString;
 }
