@@ -7,6 +7,7 @@ import 'package:scomb_mobile/common/database_exception.dart';
 import 'package:scomb_mobile/common/login_exception.dart';
 import 'package:scomb_mobile/common/shared_resource.dart';
 import 'package:scomb_mobile/ui/scomb_mobile.dart';
+import 'package:scomb_mobile/ui/screen/login_screen.dart';
 
 import '../../common/db/scomb_mobile_database.dart';
 import '../../common/db/setting_entity.dart';
@@ -81,7 +82,15 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
 
     // if fetch failed, auto nav to login screen
     on LoginException catch (e, stackTrace) {
-      widget.parent.navToLoginScreen();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (builder) {
+            return LoginScreen();
+          },
+          fullscreenDialog: true,
+        ),
+      );
       print("login_fail $e\n$stackTrace");
       Fluttertoast.showToast(msg: "ログインが必要です");
     }

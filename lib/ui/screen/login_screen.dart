@@ -4,15 +4,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/utils.dart';
-import 'package:scomb_mobile/ui/scomb_mobile.dart';
 
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen(this.parent, {Key? key}) : super(key: key);
-
-  ScombMobileState parent;
+  LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -100,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     Fluttertoast.showToast(msg: "ERROR : $message ($code)");
                   }
-                  widget.parent.setBottomNavIndex(0);
                 },
                 onLoadStart: (controller, url) {
                   setState(() {
@@ -142,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ));
 
                       // set bottom navigation timetable
-                      widget.parent.setBottomNavIndex(0);
+                      Navigator.pop(context);
                     }
                   }
                 },
