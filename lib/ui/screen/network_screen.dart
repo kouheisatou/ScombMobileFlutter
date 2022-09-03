@@ -11,6 +11,7 @@ import 'package:scomb_mobile/ui/screen/login_screen.dart';
 
 import '../../common/db/scomb_mobile_database.dart';
 import '../../common/db/setting_entity.dart';
+import '../dialog/selector_dialog.dart';
 
 abstract class NetworkScreen extends StatefulWidget {
   NetworkScreen(this.parent, this.title, {Key? key}) : super(key: key);
@@ -59,6 +60,22 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
               ],
               content: const Text(
                   "このアプリはScomb上の情報を確認することを目的に作成されました。\nアプリ内に表示されるWebページ内でテスト受験やアンケート解答、課題提出することは可能ですが、推奨されません。\nこのアプリ内からテスト受験やアンケート解答、課題提出する場合は、自己責任で行ってください。"),
+            );
+          },
+        );
+        await showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) {
+            return SelectorDialog(
+              SettingValues.SECTION,
+              (key, value) async {
+                (await AppDatabase.getDatabase())
+                    .currentSettingDao
+                    .insertSetting(
+                        Setting(SettingKeys.Section, value.toString()));
+              },
+              description: "学部を選択してください",
             );
           },
         );
