@@ -157,12 +157,14 @@ class _SettingScreenState extends State<SettingScreen> {
                     return SelectorDialog<int?>(
                       buildYearSelection(),
                       (key, value) async {
+                        // on "最新" selected
                         if (value == null) {
                           updateSetting(
                             SettingKeys.TIMETABLE_TERM,
-                            getCurrentTerm(),
+                            null,
                           );
                         }
+                        // on custom year selected
                         updateSetting(
                           SettingKeys.TIMETABLE_YEAR,
                           value?.toString(),
@@ -179,9 +181,9 @@ class _SettingScreenState extends State<SettingScreen> {
               value: Text(
                 findMapKeyFromValue(
                       SettingValues.TIMETABLE_TERM,
-                      settings[SettingKeys.TIMETABLE_TERM] ?? getCurrentTerm(),
+                      settings[SettingKeys.TIMETABLE_TERM] ?? "",
                     ) ??
-                    getCurrentTerm(),
+                    "",
               ),
               onPressed: (context) {
                 showDialog(
