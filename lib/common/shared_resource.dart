@@ -28,6 +28,15 @@ void clearTimetable() {
   }
 }
 
+Future<void> applyToAllCells(
+    void Function(ClassCell? classCell) process) async {
+  for (int r = 0; r < timetable.length; r++) {
+    for (int c = 0; c < timetable[0].length; c++) {
+      process(timetable[r][c]);
+    }
+  }
+}
+
 // ------------- task_list-----------
 List<Task> taskList = [];
 bool taskListInitialized = false;

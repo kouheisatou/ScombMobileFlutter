@@ -40,7 +40,7 @@ class ClassCell {
     cellId = "$year:$term-$period:$dayOfWeek-$classId";
   }
 
-  Future<void> setColor(int? colorInt) async {
+  Future<void> setColor(int? colorInt, {bool applyToChildren = true}) async {
     if (colorInt == null) return;
     var db = await AppDatabase.getDatabase();
     customColorInt = colorInt;
@@ -51,6 +51,35 @@ class ClassCell {
       if (element.classId == classId) {
         element.customColor = colorInt;
       }
+    }
+
+    // apply color to same class
+    if (applyToChildren) {
+      return await applyToAllCells((classCell) async {
+        if (classCell != null) {
+          if (classCell.classId == classId) {
+            await classCell.setColor(customColorInt, applyToChildren: false);
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> setNoteText(String text, {bool applyToChildren = true}) async {
+    var db = await AppDatabase.getDatabase();
+    note = text;
+    await db.currentClassCellDao.insertClassCell(this);
+
+    // apply text to same class
+    if (applyToChildren) {
+      await applyToAllCells((classCell) async {
+        if (classCell != null) {
+          if (classCell.classId == classId) {
+            await classCell.setNoteText(note ?? "", applyToChildren: false);
+            print("${classCell.cellId.toString()}, ${classCell.note}");
+          }
+        }
+      });
     }
   }
 
