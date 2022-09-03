@@ -95,7 +95,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
                           ),
                           color: dailyTasks[i].customColor != null
                               ? Color(dailyTasks[i].customColor!)
-                              : Colors.white,
+                              : Colors.red,
                         ),
                       ),
                     ),
