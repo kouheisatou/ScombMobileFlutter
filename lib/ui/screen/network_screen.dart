@@ -63,7 +63,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
         );
         await showDialog(
           context: context,
-          barrierDismissible: true,
+          barrierDismissible: false,
           builder: (_) {
             return SelectorDialog(
               SettingValues.SECTION,

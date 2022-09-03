@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/ui/dialog/loading_dialog.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,6 +22,8 @@ class SinglePageScombState extends NetworkScreenState<SinglePageScomb> {
   late Uri currentUrl = widget.initUrl;
   bool error = false;
   InAppWebViewController? webView;
+
+  var loadingDialog = LoadingDialog();
 
   @override
   Widget build(context) {
@@ -48,6 +51,14 @@ class SinglePageScombState extends NetworkScreenState<SinglePageScomb> {
         onWebViewCreated: (controller) {
           webView = controller;
           getFromServerAndSaveToSharedResource("");
+          widget.isLoading = true;
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) {
+              return loadingDialog;
+            },
+          );
         },
         onLoadError: (controller, url, code, msg) {
           Fluttertoast.showToast(msg: "ロードエラー\n学内ネットからのみアクセス可能なページの可能性があります");
@@ -70,6 +81,10 @@ class SinglePageScombState extends NetworkScreenState<SinglePageScomb> {
             await controller.evaluateJavascript(
               source: widget.javascript!,
             );
+          }
+          widget.isLoading = false;
+          if (loadingDialog.isLoading) {
+            loadingDialog.close();
           }
         },
       ),
