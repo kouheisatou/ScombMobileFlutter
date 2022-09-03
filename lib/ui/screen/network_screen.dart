@@ -82,7 +82,9 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
 
     // if fetch failed, auto nav to login screen
     on LoginException catch (e, stackTrace) {
-      Navigator.push(
+      print("login_fail $e\n$stackTrace");
+      Fluttertoast.showToast(msg: "ログインが必要です");
+      bool canceled = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (builder) {
@@ -91,8 +93,10 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
           fullscreenDialog: true,
         ),
       );
-      print("login_fail $e\n$stackTrace");
-      Fluttertoast.showToast(msg: "ログインが必要です");
+      if (!canceled) {
+        refreshData();
+      }
+      return;
     }
 
     // inflate invalid setting

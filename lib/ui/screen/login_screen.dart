@@ -10,6 +10,7 @@ import '../../common/values.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
+  int requestSendCount = 0;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -18,7 +19,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   InAppWebViewController? webView;
   bool loggingIn = false;
-  int requestSendCount = 0;
   final _userController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -77,8 +77,13 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: _passwordController,
           ),
           ElevatedButton(
-            onPressed: loggingIn ? null : startLogin,
-            child: const Text("ログイン"),
+            onPressed: loggingIn
+                ? null
+                : () {
+                    widget.requestSendCount = 0;
+                    startLogin();
+                  },
+            child: loggingIn ? const Text("ログイン中") : const Text(" ログイン "),
           ),
           Expanded(
             child: SizedBox(
@@ -138,19 +143,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       ));
 
                       // set bottom navigation timetable
-                      Navigator.pop(context);
+                      Navigator.pop(context, false);
                     }
                   }
                 },
                 onReceivedHttpAuthRequest: (controller, challenge) async {
                   // login failed
-                  if (requestSendCount > 0) {
-                    webView?.stopLoading();
+                  if (widget.requestSendCount > 0) {
                     setState(() {
+                      print(widget.requestSendCount);
                       loggingIn = false;
                     });
+                    Fluttertoast.showToast(msg: "学籍番号またはパスワードが違います");
+                    webView?.stopLoading();
                   }
-                  requestSendCount++;
+                  widget.requestSendCount++;
                   return HttpAuthResponse(
                     username: _userController.text,
                     password: _passwordController.text,
