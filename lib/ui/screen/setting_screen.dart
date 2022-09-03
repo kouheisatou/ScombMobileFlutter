@@ -165,6 +165,12 @@ class _SettingScreenState extends State<SettingScreen> {
                           );
                         }
                         // on custom year selected
+                        else {
+                          updateSetting(
+                            SettingKeys.TIMETABLE_TERM,
+                            getCurrentTerm(),
+                          );
+                        }
                         updateSetting(
                           SettingKeys.TIMETABLE_YEAR,
                           value?.toString(),
