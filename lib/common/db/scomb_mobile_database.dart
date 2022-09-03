@@ -31,6 +31,5 @@ abstract class AppDatabase extends FloorDatabase {
 
 final migration1to2 = Migration(1, 2, (database) {
   print("migration_1_to_2");
-  return database
-      .execute("ALTER TABLE class_cell ADD COLUMN syllabusUrl TEXT;");
+  return database.execute("ALTER TABLE class_cell ADD COLUMN syllabusUrl TEXT");
 });
