@@ -1,6 +1,8 @@
 PODS:
   - app_review (1.0.1):
     - Flutter
+  - charset_converter (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_inappwebview (0.0.1):
     - Flutter
@@ -31,6 +33,7 @@ PODS:
 
 DEPENDENCIES:
   - app_review (from `.symlinks/plugins/app_review/ios`)
+  - charset_converter (from `.symlinks/plugins/charset_converter/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
@@ -49,6 +52,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   app_review:
     :path: ".symlinks/plugins/app_review/ios"
+  charset_converter:
+    :path: ".symlinks/plugins/charset_converter/ios"
   Flutter:
     :path: Flutter
   flutter_inappwebview:
@@ -68,6 +73,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_review: 6f51001269c59a2f4a5b5ae68b7d106401152764
+  charset_converter: 215c7b04932ec2b9ba43be96a9bc34afed3e5322
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
