@@ -101,6 +101,10 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 ),
               ],
             ),
+            const Divider(
+              height: 10,
+              color: Colors.transparent,
+            ),
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 120),
               child: TextFormField(
@@ -150,25 +154,33 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
             OutlinedButton(
               onPressed: () async {
                 var db = await AppDatabase.getDatabase();
-                var section =
-                    (await db.currentSettingDao.getSetting(SettingKeys.Section))
-                        ?.settingValue;
-                if (section == null) {
-                  Fluttertoast.showToast(msg: "設定で学部と入学年を設定してください");
+
+                String syllabusUrl = "";
+
+                if (widget.classCell.syllabusUrl != null &&
+                    widget.classCell.syllabusUrl != "") {
+                  syllabusUrl = widget.classCell.syllabusUrl!;
+                } else {
+                  var section = (await db.currentSettingDao
+                          .getSetting(SettingKeys.Section))
+                      ?.settingValue;
+                  if (section == null) {
+                    Fluttertoast.showToast(msg: "設定で学部と入学年を設定してください");
+                  }
+
+                  // encode url query
+                  var queryString = await convertUrlQueryString(
+                    widget.classCell.name,
+                    encode: "EUC-JP",
+                  );
+
+                  syllabusUrl = SYLLABUS_SEARCH_URL
+                      .replaceFirst("\${className}", queryString)
+                      .replaceFirst("\${admissionYearAndSection}",
+                          "${DateTime.now().year}%2F$section");
+
+                  print(syllabusUrl);
                 }
-
-                // encode url query
-                var queryString = await convertUrlQueryString(
-                  widget.classCell.name,
-                  encode: "EUC-JP",
-                );
-
-                var syllabusUrl = SYLLABUS_SEARCH_URL
-                    .replaceFirst("\${className}", queryString)
-                    .replaceFirst("\${admissionYearAndSection}",
-                        "${DateTime.now().year}%2F$section");
-
-                print(syllabusUrl);
 
                 Navigator.push(
                   context,
@@ -176,7 +188,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                     builder: (builder) {
                       return SinglePageScomb(
                         Uri.parse(syllabusUrl),
-                        widget.classCell.name,
+                        "${widget.classCell.name} - シラバス",
                         javascript: "document.getElementById('hit_1').click();",
                       );
                     },
@@ -199,9 +211,49 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 ],
               ),
             ),
-            const Text(
-              "授業名で自動検索しているので、異なる授業が開かれる場合があります。",
-              style: TextStyle(color: Colors.grey, fontSize: 10),
+            InkWell(
+              onTap: () async {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("シラバスのURL設定"),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                              "授業名で自動検索しているため、異なるシラバスが開かれる場合があります。\n\n正しいシラバスのリンクを入力してください。"),
+                          TextFormField(
+                            initialValue: widget.classCell.syllabusUrl,
+                            onChanged: (text) {
+                              widget.classCell.setCustomSyllabusUrl(text);
+                            },
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("閉じる"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                child: const Text(
+                  "違う授業のシラバスが開かれたら...",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 10,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
             ),
           ],
         ),

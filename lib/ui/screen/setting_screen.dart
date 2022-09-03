@@ -140,25 +140,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
               },
             ),
-            SettingsTile(
-              title: const Text("学部"),
-              value: Text(findMapKeyFromValue(
-                      SettingValues.SECTION, settings[SettingKeys.Section]) ??
-                  ""),
-              onPressed: (context) {
-                showDialog(
-                  context: context,
-                  builder: (_) {
-                    return SelectorDialog(
-                      SettingValues.SECTION,
-                      (key, value) async {
-                        updateSetting(SettingKeys.Section, value.toString());
-                      },
-                    );
-                  },
-                );
-              },
-            ),
           ],
         ),
         SettingsSection(
@@ -221,6 +202,25 @@ class _SettingScreenState extends State<SettingScreen> {
                           SettingKeys.TIMETABLE_TERM,
                           value.toString(),
                         );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+            SettingsTile(
+              title: const Text("学部"),
+              value: Text(findMapKeyFromValue(
+                      SettingValues.SECTION, settings[SettingKeys.Section]) ??
+                  ""),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectorDialog(
+                      SettingValues.SECTION,
+                      (key, value) async {
+                        updateSetting(SettingKeys.Section, value.toString());
                       },
                     );
                   },

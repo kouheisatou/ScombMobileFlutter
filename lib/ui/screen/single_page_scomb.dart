@@ -13,6 +13,7 @@ class SinglePageScomb extends StatelessWidget {
   late Uri currentUrl = initUrl;
   String title = "";
   String? javascript;
+  bool error = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,10 @@ class SinglePageScomb extends StatelessWidget {
         ),
         onLoadError: (controller, url, code, msg) {
           Fluttertoast.showToast(msg: "ロードエラー\n学内ネットからのみアクセス可能なページの可能性があります");
-          controller.loadUrl(urlRequest: URLRequest(url: initUrl));
+          if (!error) {
+            controller.loadUrl(urlRequest: URLRequest(url: initUrl));
+            error = true;
+          }
         },
         onLoadStop: (controller, currentUrl) async {
           this.currentUrl = currentUrl ?? initUrl;

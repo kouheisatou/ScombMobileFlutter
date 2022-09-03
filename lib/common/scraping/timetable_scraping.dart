@@ -88,6 +88,7 @@ Future<void> _constructTimetableArray(
         null,
         0,
         0,
+        null,
       );
       timetable[r][c] = newCell;
 

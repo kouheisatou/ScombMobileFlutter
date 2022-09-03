@@ -21,6 +21,7 @@ class ClassCell {
   String? note;
   late int lateCount;
   late int absentCount;
+  late String? syllabusUrl;
 
   ClassCell(
     this.classId,
@@ -35,6 +36,7 @@ class ClassCell {
     this.note,
     this.lateCount,
     this.absentCount,
+    this.syllabusUrl,
   ) {
     url = CLASS_PAGE_URL.replaceFirst("\${classId}", classId);
     cellId = "$year:$term-$period:$dayOfWeek-$classId";
@@ -77,6 +79,25 @@ class ClassCell {
           if (classCell.classId == classId) {
             await classCell.setNoteText(note ?? "", applyToChildren: false);
             print("${classCell.cellId.toString()}, ${classCell.note}");
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> setCustomSyllabusUrl(String? url,
+      {bool applyToChildren = true}) async {
+    var db = await AppDatabase.getDatabase();
+    syllabusUrl = url;
+    await db.currentClassCellDao.insertClassCell(this);
+
+    // apply text to same class
+    if (applyToChildren) {
+      await applyToAllCells((classCell) async {
+        if (classCell != null) {
+          if (classCell.classId == classId) {
+            await classCell.setCustomSyllabusUrl(url, applyToChildren: false);
+            print("${classCell.cellId.toString()}, ${classCell.syllabusUrl}");
           }
         }
       });
