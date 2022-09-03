@@ -18,9 +18,9 @@ class ScombMobileState extends State<ScombMobile> {
   final List<StatefulWidget> _screens = [];
 
   ScombMobileState() {
-    _screens.add(TimetableScreen(this, "時間割"));
-    _screens.add(TaskListScreen(this, "課題・テスト一覧"));
-    _screens.add(TaskCalendarScreen(this, "締切カレンダー"));
+    _screens.add(TimetableScreen("時間割"));
+    _screens.add(TaskListScreen("課題・テスト一覧"));
+    _screens.add(TaskCalendarScreen("締切カレンダー"));
     _screens.add(SettingScreen(this));
   }
 

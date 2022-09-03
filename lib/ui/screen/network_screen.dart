@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/database_exception.dart';
 import 'package:scomb_mobile/common/login_exception.dart';
 import 'package:scomb_mobile/common/shared_resource.dart';
-import 'package:scomb_mobile/ui/scomb_mobile.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
 
 import '../../common/db/scomb_mobile_database.dart';
@@ -14,9 +13,8 @@ import '../../common/db/setting_entity.dart';
 import '../dialog/selector_dialog.dart';
 
 abstract class NetworkScreen extends StatefulWidget {
-  NetworkScreen(this.parent, this.title, {Key? key}) : super(key: key);
+  NetworkScreen(this.title, {Key? key}) : super(key: key);
 
-  ScombMobileState parent;
   String title;
   bool isLoading = false;
 

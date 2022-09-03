@@ -8,7 +8,7 @@ import '../dialog/add_task_dialog.dart';
 import 'network_screen.dart';
 
 class TaskCalendarScreen extends TaskListScreen {
-  TaskCalendarScreen(super.parent, super.title, {Key? key}) : super(key: key);
+  TaskCalendarScreen(super.title, {Key? key}) : super(key: key);
 
   @override
   NetworkScreenState<TaskListScreen> createState() =>

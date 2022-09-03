@@ -17,7 +17,7 @@ import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class TimetableScreen extends NetworkScreen {
-  TimetableScreen(super.parent, super.title, {Key? key}) : super(key: key);
+  TimetableScreen(super.title, {Key? key}) : super(key: key);
 
   @override
   NetworkScreenState<TimetableScreen> createState() {

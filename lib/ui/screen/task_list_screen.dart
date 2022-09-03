@@ -15,7 +15,7 @@ import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class TaskListScreen extends NetworkScreen {
-  TaskListScreen(super.parent, super.title, {Key? key}) : super(key: key);
+  TaskListScreen(super.title, {Key? key}) : super(key: key);
 
   @override
   NetworkScreenState<TaskListScreen> createState() => TaskListScreenState();
