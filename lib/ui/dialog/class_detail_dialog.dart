@@ -165,7 +165,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                           .getSetting(SettingKeys.Section))
                       ?.settingValue;
                   if (section == null) {
-                    Fluttertoast.showToast(msg: "設定で学部と入学年を設定してください");
+                    Fluttertoast.showToast(msg: "設定で学部を設定してください");
                   }
 
                   // encode url query

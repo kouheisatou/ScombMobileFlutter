@@ -48,6 +48,8 @@ class SinglePageScomb extends StatelessWidget {
           Fluttertoast.showToast(msg: "ロードエラー\n学内ネットからのみアクセス可能なページの可能性があります");
           if (!error) {
             controller.loadUrl(urlRequest: URLRequest(url: initUrl));
+            print("error_code : $code");
+            print("error_msg : $msg");
             error = true;
           }
         },
