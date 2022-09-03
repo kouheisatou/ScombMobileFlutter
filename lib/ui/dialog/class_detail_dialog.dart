@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/values.dart';
-import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/db/class_cell.dart';
 import 'color_picker_dialog.dart';
@@ -22,136 +22,162 @@ class ClassDetailDialog extends StatefulWidget {
 class _ClassDetailDialogState extends State<ClassDetailDialog> {
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
+    return AlertDialog(
       title: Center(
-        child: Text(
-          widget.classCell.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+        child: Column(
+          children: [
+            Text(
+              widget.classCell.name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const Divider(
+              height: 10,
+              color: Colors.transparent,
+            ),
+            Text(
+              "${PERIOD_MAP[widget.classCell.period]}  ${PERIOD_TIME_MAP[widget.classCell.period]}",
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+            ),
+          ],
         ),
       ),
-      children: [
-        Center(
-          child: Text(
-            "${PERIOD_MAP[widget.classCell.period]}  ${PERIOD_TIME_MAP[widget.classCell.period]}",
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              const Divider(
-                height: 10,
-                color: Colors.transparent,
-              ),
-              Row(
-                children: [
-                  const Text("科目ID : "),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SinglePageScomb(
-                              widget.classCell.url,
-                              widget.classCell.name,
-                            ),
-                            fullscreenDialog: true,
-                          ),
-                        );
-                      },
-                      child: Text(
-                        widget.classCell.classId,
-                        textAlign: TextAlign.right,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: const TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
+      contentTextStyle: const TextStyle(
+          fontSize: 12, color: Colors.black, fontWeight: FontWeight.normal),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            buildClassDetailRow(
+              "教室 : ",
+              widget.classCell.room,
+              (value) {
+                Fluttertoast.showToast(msg: value);
+              },
+            ),
+            const Divider(
+              height: 20,
+              color: Colors.transparent,
+            ),
+            buildClassDetailRow(
+              "教員 : ",
+              widget.classCell.teachers,
+              (value) {
+                Fluttertoast.showToast(msg: value);
+              },
+            ),
+            const Divider(
+              height: 20,
+              color: Colors.transparent,
+            ),
+            Row(
+              children: [
+                const Text("色設定 : "),
+                const Spacer(),
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: widget.selectedColor != null
+                          ? Color(widget.selectedColor!)
+                          : Colors.white70,
+                      onPrimary: Colors.black,
+                      shape: const CircleBorder(),
                     ),
+                    onPressed: () async {
+                      widget.selectedColor = await showDialog<int>(
+                        context: context,
+                        builder: (builder) {
+                          return ColorPickerDialog();
+                        },
+                      );
+                      setState(() {});
+                    },
+                    child: const Text(""),
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              height: 20,
+              color: Colors.transparent,
+            ),
+            InkWell(
+              onTap: () async {
+                if (await canLaunchUrl(Uri.parse(widget.classCell.url))) {
+                  await launchUrl(
+                    Uri.parse(widget.classCell.url),
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Text(
+                    "授業ページを開く ",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  Icon(
+                    Icons.open_in_new,
+                    color: Colors.blue,
+                    size: 16,
                   )
                 ],
               ),
-              const Divider(
-                height: 20,
-                color: Colors.transparent,
-              ),
-              buildClassDetailRow(
-                "教室 : ",
-                widget.classCell.room,
-                (value) {
-                  Fluttertoast.showToast(msg: value);
-                },
-              ),
-              const Divider(
-                height: 20,
-                color: Colors.transparent,
-              ),
-              buildClassDetailRow(
-                "教員 : ",
-                widget.classCell.teachers,
-                (value) {
-                  Fluttertoast.showToast(msg: value);
-                },
-              ),
-              const Divider(
-                height: 20,
-                color: Colors.transparent,
-              ),
-              Row(
-                children: [
-                  const Text("色設定 : "),
-                  const Spacer(),
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: widget.selectedColor != null
-                            ? Color(widget.selectedColor!)
-                            : Colors.white70,
-                        onPrimary: Colors.black,
-                        shape: const CircleBorder(),
-                      ),
-                      onPressed: () async {
-                        widget.selectedColor = await showDialog<int>(
-                          context: context,
-                          builder: (builder) {
-                            return ColorPickerDialog();
-                          },
-                        );
-                        setState(() {});
-                      },
-                      child: const Text(""),
-                    ),
+            ),
+            const Divider(
+              height: 10,
+              color: Colors.transparent,
+            ),
+            InkWell(
+              onTap: () async {
+                if (await canLaunchUrl(Uri.parse(widget.classCell.url))) {
+                  await launchUrl(
+                    Uri.parse(widget.classCell.url),
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Text(
+                    "シラバスを表示 ",
+                    style: TextStyle(color: Colors.blue),
                   ),
+                  Icon(
+                    Icons.open_in_new,
+                    color: Colors.blue,
+                    size: 16,
+                  )
                 ],
               ),
-              TextFormField(
-                initialValue: widget.classCell.note,
-                maxLines: null,
-                decoration: const InputDecoration(labelText: "メモ"),
-                onChanged: (text) async {
-                  await widget.classCell.setNoteText(text);
-                  setState(() {});
-                },
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                Navigator.pop(context, widget.selectedColor);
-              },
-              child: const Text("閉じる"),
             ),
-          ),
+            const Divider(
+              height: 20,
+              color: Colors.transparent,
+            ),
+            TextFormField(
+              initialValue: widget.classCell.note,
+              maxLines: null,
+              decoration: const InputDecoration(labelText: "メモ"),
+              onChanged: (text) async {
+                await widget.classCell.setNoteText(text);
+                setState(() {});
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, widget.selectedColor);
+          },
+          child: const Text("閉じる"),
         ),
       ],
     );

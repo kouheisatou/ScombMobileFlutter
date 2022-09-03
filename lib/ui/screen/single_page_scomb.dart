@@ -25,7 +25,7 @@ class SinglePageScomb extends StatelessWidget {
                 );
               }
             },
-            icon: const Icon(Icons.open_in_browser),
+            icon: const Icon(Icons.open_in_new),
           )
         ],
         title: Text(
