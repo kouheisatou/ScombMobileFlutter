@@ -2,26 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/ui/dialog/loading_dialog.dart';
-import 'package:scomb_mobile/ui/screen/network_screen.dart';
+import 'package:scomb_mobile/ui/screen/login_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
-class SinglePageScomb extends NetworkScreen {
-  SinglePageScomb(this.initUrl, String title, {this.javascript}) : super(title);
+class SinglePageScomb extends StatelessWidget {
+  SinglePageScomb(this.initUrl, this.title, {Key? key, this.javascript})
+      : super(key: key);
 
   Uri initUrl;
+  String title;
   String? javascript;
-
-  @override
-  NetworkScreenState<SinglePageScomb> createState() => SinglePageScombState();
-}
-
-class SinglePageScombState extends NetworkScreenState<SinglePageScomb> {
-  late Uri currentUrl = widget.initUrl;
+  late Uri currentUrl = initUrl;
   bool error = false;
-  InAppWebViewController? webView;
 
   var loadingDialog = LoadingDialog();
 
@@ -43,15 +38,12 @@ class SinglePageScombState extends NetworkScreenState<SinglePageScomb> {
           )
         ],
         title: Text(
-          widget.title,
+          title,
           overflow: TextOverflow.ellipsis,
         ),
       ),
       body: InAppWebView(
         onWebViewCreated: (controller) {
-          webView = controller;
-          getFromServerAndSaveToSharedResource("");
-          widget.isLoading = true;
           showDialog(
             barrierDismissible: false,
             context: context,
@@ -60,58 +52,54 @@ class SinglePageScombState extends NetworkScreenState<SinglePageScomb> {
             },
           );
         },
+        initialUrlRequest: URLRequest(
+          url: initUrl,
+          headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
+        ),
         onLoadError: (controller, url, code, msg) {
           Fluttertoast.showToast(msg: "ロードエラー\n学内ネットからのみアクセス可能なページの可能性があります");
           if (!error) {
-            controller.loadUrl(urlRequest: URLRequest(url: widget.initUrl));
+            controller.loadUrl(urlRequest: URLRequest(url: initUrl));
             print("error_code : $code");
             print("error_msg : $msg");
             error = true;
           }
         },
         onLoadStop: (controller, currentUrl) async {
-          this.currentUrl = currentUrl ?? widget.initUrl;
+          if (currentUrl != null) {
+            var currentUrlString =
+                "https://${currentUrl.host}${currentUrl.path}";
+            if (currentUrlString == SCOMB_LOGGED_OUT_PAGE_URL) {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (builder) {
+                    return LoginScreen();
+                  },
+                  fullscreenDialog: true,
+                ),
+              );
+              controller.loadUrl(urlRequest: URLRequest(url: initUrl));
+            }
+          }
+
+          this.currentUrl = currentUrl ?? initUrl;
           await controller.evaluateJavascript(
             source: "document.getElementById('$HEADER_ELEMENT_ID').remove();",
           );
           await controller.evaluateJavascript(
             source: "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
           );
-          if (widget.javascript != null) {
+          if (javascript != null) {
             await controller.evaluateJavascript(
-              source: widget.javascript!,
+              source: javascript!,
             );
           }
-          widget.isLoading = false;
           if (loadingDialog.isLoading) {
             loadingDialog.close();
           }
         },
       ),
     );
-  }
-
-  @override
-  Future<void> getDataOffLine() async {}
-
-  @override
-  Future<void> getFromServerAndSaveToSharedResource(
-      String savedSessionId) async {
-    webView?.loadUrl(
-      urlRequest: URLRequest(
-        url: widget.initUrl,
-        headers: {
-          "Cookie": "$SESSION_COOKIE_ID=$sessionId",
-        },
-      ),
-    );
-  }
-
-  @override
-  Future<void> refreshData() async {}
-
-  @override
-  Widget innerBuild() {
-    return const Text("");
   }
 }
