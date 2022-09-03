@@ -81,41 +81,46 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
 
   Widget buildListTile(int index, List<Task> currentTaskList) {
     var currentTask = currentTaskList[index];
+    var textStyle = const TextStyle(
+      color: Colors.blueGrey,
+      fontSize: 10,
+      fontWeight: FontWeight.w300,
+    );
     late Widget icon;
     switch (currentTask.taskType) {
       case TaskType.TASK:
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.assignment),
-            Text("課題"),
+          children: [
+            const Icon(Icons.text_snippet_outlined, color: Colors.blueGrey),
+            Text("課題", style: textStyle),
           ],
         );
         break;
       case TaskType.TEST:
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.checklist),
-            Text("テスト"),
+          children: [
+            const Icon(Icons.task_outlined, color: Colors.blueGrey),
+            Text("テスト", style: textStyle),
           ],
         );
         break;
       case TaskType.SURVEY:
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.question_answer),
-            Text("アンケート"),
+          children: [
+            const Icon(Icons.question_mark_rounded, color: Colors.blueGrey),
+            Text("アンケート", style: textStyle),
           ],
         );
         break;
       case TaskType.OTHERS:
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.question_mark_rounded),
-            Text("その他"),
+          children: [
+            const Icon(Icons.checklist_outlined, color: Colors.blueGrey),
+            Text("その他", style: textStyle),
           ],
         );
         break;
@@ -175,61 +180,68 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
       key: Key(currentTask.id),
       child: Column(
         children: [
-          ListTile(
-            leading: icon,
-            title: !currentTask.done
-                ? Text(
-                    currentTask.title,
-                    textAlign: TextAlign.left,
-                  )
-                : Text(
-                    "(提出済み) ${currentTask.title}",
-                    style: const TextStyle(
-                      decoration: TextDecoration.lineThrough,
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: ListTile(
+              leading: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 45),
+                child: icon,
+              ),
+              title: !currentTask.done
+                  ? Text(
+                      currentTask.title,
+                      textAlign: TextAlign.left,
+                    )
+                  : Text(
+                      "(提出済み) ${currentTask.title}",
+                      style: const TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+              onLongPress: () {
+                print(currentTask);
+              },
+              onTap: () {
+                if (currentTask.url == "") return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SinglePageScomb(
+                      Uri.parse(currentTask.url),
+                      currentTask.title,
+                    ),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              subtitle: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      currentTask.className,
+                      style: currentTask.customColor != null
+                          ? TextStyle(
+                              color: Color(currentTask.customColor!),
+                            )
+                          : const TextStyle(),
                     ),
                   ),
-            onLongPress: () {
-              print(currentTask);
-            },
-            onTap: () {
-              if (currentTask.url == "") return;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SinglePageScomb(
-                    Uri.parse(currentTask.url),
-                    currentTask.title,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      style: isSameDay(
+                        DateTime.fromMillisecondsSinceEpoch(
+                            currentTask.deadline),
+                        DateTime.now(),
+                      )
+                          ? const TextStyle(color: Colors.red)
+                          : const TextStyle(),
+                      timeToString(currentTask.deadline),
+                    ),
                   ),
-                  fullscreenDialog: true,
-                ),
-              );
-            },
-            subtitle: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    currentTask.className,
-                    style: currentTask.customColor != null
-                        ? TextStyle(
-                            color: Color(currentTask.customColor!),
-                          )
-                        : const TextStyle(),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    style: isSameDay(
-                      DateTime.fromMillisecondsSinceEpoch(currentTask.deadline),
-                      DateTime.now(),
-                    )
-                        ? const TextStyle(color: Colors.red)
-                        : const TextStyle(),
-                    timeToString(currentTask.deadline),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           const Divider(
