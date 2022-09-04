@@ -182,7 +182,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
       child: Column(
         children: [
           ListTile(
-            contentPadding: const EdgeInsets.only(top: 10, bottom: 10),
+            contentPadding: const EdgeInsets.all(14),
             leading: ConstrainedBox(
               constraints: const BoxConstraints(minWidth: 45),
               child: icon,

@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
+import 'package:scomb_mobile/common/shared_resource.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
@@ -177,7 +178,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                   syllabusUrl = SYLLABUS_SEARCH_URL
                       .replaceFirst("\${className}", queryString)
                       .replaceFirst("\${admissionYearAndSection}",
-                          "${DateTime.now().year}%2F$section");
+                          "$timetableYear%2F$section");
 
                   print(syllabusUrl);
                 }
