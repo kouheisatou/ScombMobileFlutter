@@ -59,11 +59,6 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       loading = false;
                     });
                   },
-                  onLoadStart: (controller, uri) {
-                    setState(() {
-                      loading = true;
-                    });
-                  },
                   onLoadStop: (controller, currentUrl) async {
                     if (currentUrl != null) {
                       var currentUrlString =
@@ -132,31 +127,17 @@ class _SinglePageScombState extends State<SinglePageScomb> {
               IconButton(
                 onPressed: () async {
                   var canGoBack = await webView.canGoBack();
-                  setState(() {
-                    loading = true;
-                  });
                   if (canGoBack) {
                     await webView.goBack();
-                  } else {
-                    setState(() {
-                      loading = false;
-                    });
                   }
                 },
                 icon: const Icon(Icons.arrow_back),
               ),
               IconButton(
                 onPressed: () async {
-                  setState(() {
-                    loading = true;
-                  });
                   var canGoBack = await webView.canGoForward();
                   if (canGoBack) {
                     await webView.goForward();
-                  } else {
-                    setState(() {
-                      loading = false;
-                    });
                   }
                 },
                 icon: const Icon(Icons.arrow_forward),
