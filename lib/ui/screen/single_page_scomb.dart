@@ -122,71 +122,78 @@ class _SinglePageScombState extends State<SinglePageScomb> {
               ],
             ),
           ),
-          Row(
+          Column(
             children: [
-              IconButton(
-                onPressed: () async {
-                  var canGoBack = await webView.canGoBack();
-                  if (canGoBack) {
-                    await webView.goBack();
-                  }
-                },
-                icon: const Icon(Icons.arrow_back),
-              ),
-              IconButton(
-                onPressed: () async {
-                  var canGoBack = await webView.canGoForward();
-                  if (canGoBack) {
-                    await webView.goForward();
-                  }
-                },
-                icon: const Icon(Icons.arrow_forward),
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkResponse(
-                  borderRadius: BorderRadius.circular(1000),
-                  onTap: () async {
-                    final data = ClipboardData(text: currentUrl.toString());
-                    await Clipboard.setData(data);
-                    Fluttertoast.showToast(msg: "URLをクリップボードにコピーしました");
-                  },
-                  child: Column(
-                    children: const [
-                      Icon(Icons.copy),
-                      Text(
-                        "URLをコピー",
-                        style: TextStyle(fontSize: 10),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      var canGoBack = await webView.canGoBack();
+                      if (canGoBack) {
+                        await webView.goBack();
+                      }
+                    },
+                    icon: const Icon(Icons.arrow_back),
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkResponse(
-                  onTap: () async {
-                    if (await canLaunchUrl(currentUrl)) {
-                      await launchUrl(
-                        currentUrl,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    }
-                  },
-                  child: Column(
-                    children: const [
-                      Icon(Icons.open_in_new),
-                      Text(
-                        "ブラウザで開く",
-                        style: TextStyle(fontSize: 10),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                  IconButton(
+                    onPressed: () async {
+                      var canGoBack = await webView.canGoForward();
+                      if (canGoBack) {
+                        await webView.goForward();
+                      }
+                    },
+                    icon: const Icon(Icons.arrow_forward),
                   ),
-                ),
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkResponse(
+                      borderRadius: BorderRadius.circular(1000),
+                      onTap: () async {
+                        final data = ClipboardData(text: currentUrl.toString());
+                        await Clipboard.setData(data);
+                        Fluttertoast.showToast(msg: "URLをクリップボードにコピーしました");
+                      },
+                      child: Column(
+                        children: const [
+                          Icon(Icons.copy),
+                          Text(
+                            "URLをコピー",
+                            style: TextStyle(fontSize: 10),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkResponse(
+                      onTap: () async {
+                        if (await canLaunchUrl(currentUrl)) {
+                          await launchUrl(
+                            currentUrl,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                      },
+                      child: Column(
+                        children: const [
+                          Icon(Icons.open_in_new),
+                          Text(
+                            "ブラウザで開く",
+                            style: TextStyle(fontSize: 10),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              const SizedBox(
+                height: 20,
+              )
             ],
           )
         ],
