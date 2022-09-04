@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.scomb_mobile">
+    package="net.iobb.koheinoapp.scombmobile">
    <application
         android:label="Scomb Mobile"
         android:name="${applicationName}"
