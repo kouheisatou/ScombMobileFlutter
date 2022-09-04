@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
@@ -22,106 +23,191 @@ class SinglePageScomb extends StatefulWidget {
 class _SinglePageScombState extends State<SinglePageScomb> {
   late Uri currentUrl = widget.initUrl;
 
-  bool error = false;
+  String? errorMsg;
   bool loading = false;
+  late InAppWebViewController webView;
 
   @override
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () async {
-              if (await canLaunchUrl(currentUrl)) {
-                await launchUrl(
-                  currentUrl,
-                  mode: LaunchMode.externalApplication,
-                );
-              }
-            },
-            icon: const Icon(Icons.open_in_new),
-          )
-        ],
         title: Text(
           widget.title,
           overflow: TextOverflow.ellipsis,
         ),
       ),
-      body: Stack(
+      body: Column(
         children: [
-          InAppWebView(
-            onWebViewCreated: (controller) {
-              setState(() {
-                loading = true;
-              });
-            },
-            initialUrlRequest: URLRequest(
-              url: widget.initUrl,
-              headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
-            ),
-            onLoadError: (controller, url, code, msg) {
-              Fluttertoast.showToast(
-                  msg: "ロードエラー\n学内ネットからのみアクセス可能なページの可能性があります");
-              if (!error) {
-                controller.loadUrl(urlRequest: URLRequest(url: widget.initUrl));
-                print("error_code : $code");
-                print("error_msg : $msg");
-                error = true;
-              }
-              setState(() {
-                loading = false;
-              });
-            },
-            onLoadStart: (controller, uri) {
-              setState(() {
-                loading = true;
-              });
-            },
-            onLoadStop: (controller, currentUrl) async {
-              error = false;
-              if (currentUrl != null) {
-                var currentUrlString =
-                    "https://${currentUrl.host}${currentUrl.path}";
-                if (currentUrlString == SCOMB_LOGGED_OUT_PAGE_URL) {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (builder) {
-                        return LoginScreen();
-                      },
-                      fullscreenDialog: true,
-                    ),
-                  );
-                  controller.loadUrl(
-                      urlRequest: URLRequest(url: widget.initUrl));
-                }
-              }
+          Expanded(
+            child: Stack(
+              children: [
+                InAppWebView(
+                  onWebViewCreated: (controller) {
+                    webView = controller;
+                    setState(() {
+                      loading = true;
+                    });
+                  },
+                  initialUrlRequest: URLRequest(
+                    url: widget.initUrl,
+                    headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
+                  ),
+                  onLoadError: (controller, url, code, msg) {
+                    setState(() {
+                      errorMsg =
+                          "[ロードエラー]\n\n\n・学内ネットからのみアクセス可能なページの可能性があります。\n\n・カスタマイズしたシラバスのURLが間違えている可能性があります。";
+                      loading = false;
+                    });
+                  },
+                  onLoadStart: (controller, uri) {
+                    setState(() {
+                      loading = true;
+                    });
+                  },
+                  onLoadStop: (controller, currentUrl) async {
+                    if (currentUrl != null) {
+                      var currentUrlString =
+                          "https://${currentUrl.host}${currentUrl.path}";
+                      if (currentUrlString == SCOMB_LOGGED_OUT_PAGE_URL) {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (builder) {
+                              return LoginScreen();
+                            },
+                            fullscreenDialog: true,
+                          ),
+                        );
+                        controller.loadUrl(
+                            urlRequest: URLRequest(url: widget.initUrl));
+                      }
+                    }
 
-              this.currentUrl = currentUrl ?? widget.initUrl;
-              await controller.evaluateJavascript(
-                source:
-                    "document.getElementById('$HEADER_ELEMENT_ID').remove();",
-              );
-              await controller.evaluateJavascript(
-                source:
-                    "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
-              );
-              if (widget.javascript != null) {
-                await controller.evaluateJavascript(
-                  source: widget.javascript!,
-                );
-              }
-              setState(() {
-                loading = false;
-              });
-            },
-          ),
-          Visibility(
-            visible: loading,
-            child: const Center(
-              child: CircularProgressIndicator(),
+                    this.currentUrl = currentUrl ?? widget.initUrl;
+                    await controller.evaluateJavascript(
+                      source:
+                          "document.getElementById('$HEADER_ELEMENT_ID').remove();",
+                    );
+                    await controller.evaluateJavascript(
+                      source:
+                          "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
+                    );
+                    if (widget.javascript != null) {
+                      await controller.evaluateJavascript(
+                        source: widget.javascript!,
+                      );
+                    }
+                    setState(() {
+                      loading = false;
+                    });
+                  },
+                ),
+                Visibility(
+                  visible: (errorMsg != null || loading),
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.white,
+                  ),
+                ),
+                Visibility(
+                  visible: loading,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                Visibility(
+                  visible: errorMsg != null,
+                  child: Center(
+                    child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(errorMsg ?? "")),
+                  ),
+                )
+              ],
             ),
           ),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  var canGoBack = await webView.canGoBack();
+                  setState(() {
+                    loading = true;
+                  });
+                  if (canGoBack) {
+                    await webView.goBack();
+                  } else {
+                    setState(() {
+                      loading = false;
+                    });
+                  }
+                },
+                icon: const Icon(Icons.arrow_back),
+              ),
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    loading = true;
+                  });
+                  var canGoBack = await webView.canGoForward();
+                  if (canGoBack) {
+                    await webView.goForward();
+                  } else {
+                    setState(() {
+                      loading = false;
+                    });
+                  }
+                },
+                icon: const Icon(Icons.arrow_forward),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkResponse(
+                  borderRadius: BorderRadius.circular(1000),
+                  onTap: () async {
+                    final data = ClipboardData(text: currentUrl.toString());
+                    await Clipboard.setData(data);
+                    Fluttertoast.showToast(msg: "URLをクリップボードにコピーしました");
+                  },
+                  child: Column(
+                    children: const [
+                      Icon(Icons.copy),
+                      Text(
+                        "URLをコピー",
+                        style: TextStyle(fontSize: 10),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkResponse(
+                  onTap: () async {
+                    if (await canLaunchUrl(currentUrl)) {
+                      await launchUrl(
+                        currentUrl,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                  },
+                  child: Column(
+                    children: const [
+                      Icon(Icons.open_in_new),
+                      Text(
+                        "ブラウザで開く",
+                        style: TextStyle(fontSize: 10),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );

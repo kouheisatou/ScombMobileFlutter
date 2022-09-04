@@ -181,68 +181,65 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
       key: Key(currentTask.id),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: ListTile(
-              leading: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 45),
-                child: icon,
-              ),
-              title: !currentTask.done
-                  ? Text(
-                      currentTask.title,
-                      textAlign: TextAlign.left,
+          ListTile(
+            contentPadding: const EdgeInsets.only(top: 10, bottom: 10),
+            leading: ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 45),
+              child: icon,
+            ),
+            title: !currentTask.done
+                ? Text(
+                    currentTask.title,
+                    textAlign: TextAlign.left,
+                  )
+                : Text(
+                    "(提出済み) ${currentTask.title}",
+                    style: const TextStyle(
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+            onLongPress: () {
+              print(currentTask);
+            },
+            onTap: () {
+              if (currentTask.url == "") return;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SinglePageScomb(
+                    Uri.parse(currentTask.url),
+                    currentTask.title,
+                  ),
+                  fullscreenDialog: true,
+                ),
+              );
+            },
+            subtitle: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    currentTask.className,
+                    style: currentTask.customColor != null
+                        ? TextStyle(
+                            color: Color(currentTask.customColor!),
+                          )
+                        : const TextStyle(),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    style: isSameDay(
+                      DateTime.fromMillisecondsSinceEpoch(currentTask.deadline),
+                      DateTime.now(),
                     )
-                  : Text(
-                      "(提出済み) ${currentTask.title}",
-                      style: const TextStyle(
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-              onLongPress: () {
-                print(currentTask);
-              },
-              onTap: () {
-                if (currentTask.url == "") return;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SinglePageScomb(
-                      Uri.parse(currentTask.url),
-                      currentTask.title,
-                    ),
-                    fullscreenDialog: true,
+                        ? const TextStyle(color: Colors.red)
+                        : const TextStyle(),
+                    timeToString(currentTask.deadline),
                   ),
-                );
-              },
-              subtitle: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      currentTask.className,
-                      style: currentTask.customColor != null
-                          ? TextStyle(
-                              color: Color(currentTask.customColor!),
-                            )
-                          : const TextStyle(),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      style: isSameDay(
-                        DateTime.fromMillisecondsSinceEpoch(
-                            currentTask.deadline),
-                        DateTime.now(),
-                      )
-                          ? const TextStyle(color: Colors.red)
-                          : const TextStyle(),
-                      timeToString(currentTask.deadline),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           const Divider(
