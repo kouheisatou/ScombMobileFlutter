@@ -93,7 +93,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.text_snippet_outlined, color: Colors.blueGrey),
-            Text("課題", style: textStyle),
+            Text("課 題", style: textStyle),
           ],
         );
         break;
@@ -102,7 +102,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.task_outlined, color: Colors.blueGrey),
-            Text("テスト", style: textStyle),
+            Text("テ ス ト", style: textStyle),
           ],
         );
         break;
@@ -119,8 +119,9 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.checklist_outlined, color: Colors.blueGrey),
-            Text("その他", style: textStyle),
+            const Icon(Icons.playlist_add_check_outlined,
+                color: Colors.blueGrey),
+            Text("そ の 他", style: textStyle),
           ],
         );
         break;

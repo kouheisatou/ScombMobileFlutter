@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scomb_mobile/ui/screen/setting_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_calendar_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
@@ -24,25 +23,7 @@ class ScombMobileState extends State<ScombMobile> {
     _screens.add(SettingScreen(this));
   }
 
-  // bottom nav selection
-  // null : login screen
   int selectedIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // init notification
-    FlutterLocalNotificationsPlugin().initialize(
-      const InitializationSettings(
-        iOS: IOSInitializationSettings(),
-        android: AndroidInitializationSettings("@drawable/ic_notification"),
-      ),
-      onSelectNotification: (_) {
-        // launchUrl()
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

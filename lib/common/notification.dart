@@ -44,8 +44,9 @@ Future<void> registerTaskNotification(Task task, {AppDatabase? db}) async {
       android: AndroidNotificationDetails(
         "SCOMB_MOBILE_TASK_NOTIFICATION",
         "課題締め切り通知",
-        importance: Importance.high,
-        priority: Priority.high,
+        channelDescription: "締め切り時刻の近い課題を通知します",
+        importance: Importance.max,
+        priority: Priority.max,
       ),
       iOS: IOSNotificationDetails(),
     ),
@@ -92,10 +93,11 @@ Future<void> registerTaskNotification(Task task, {AppDatabase? db}) async {
     ),
     const NotificationDetails(
       android: AndroidNotificationDetails(
-        "SCOMB_MOBILE_TASK_NOTIFICATION",
+        "SCOMB_MOBILE_TODAYS_TASK_NOTIFICATION",
         "今日締切の課題",
-        importance: Importance.high,
-        priority: Priority.high,
+        channelDescription: "今日締め切りの全ての課題を指定時刻に通知します",
+        importance: Importance.max,
+        priority: Priority.max,
       ),
       iOS: IOSNotificationDetails(),
     ),

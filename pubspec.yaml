@@ -53,7 +53,7 @@ dependencies:
   # calendar
   table_calendar: ^3.0.6
   # notification
-  flutter_local_notifications: ^9.7.0
+  flutter_local_notifications: ^9.9.1
   timezone: ^0.8.0
   # data time picker
   flutter_datetime_picker: ^1.2.1
@@ -62,7 +62,7 @@ dependencies:
   # settings_ui
   settings_ui: ^2.0.2
   # app review
-  app_review: ^2.0.1
+  app_review: ^2.1.2+1
   # charset_converter:
   charset_converter: ^2.1.0
 
