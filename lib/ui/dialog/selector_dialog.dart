@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SelectorDialog<T> extends StatelessWidget {
-  SelectorDialog(this.selectionMap, this.onPressed, {this.description});
+  SelectorDialog(this.selectionMap, this.onPressed,
+      {this.description, this.selectedKey});
 
   String? description;
 
   Map<String, T> selectionMap;
+  String? selectedKey;
   Future<void> Function(String key, T? value) onPressed;
 
   @override
@@ -56,7 +58,14 @@ class SelectorDialog<T> extends StatelessWidget {
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: Text(text),
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontWeight: (selectedKey == text)
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                ),
               ),
             ),
           ),

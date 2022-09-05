@@ -156,6 +156,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   builder: (_) {
                     return SelectorDialog<int?>(
                       buildYearSelection(6, true),
+                      selectedKey: settings[SettingKeys.TIMETABLE_YEAR] ?? "最新",
                       (key, value) async {
                         // on "最新" selected
                         if (value == null) {
@@ -171,9 +172,16 @@ class _SettingScreenState extends State<SettingScreen> {
                             getCurrentTerm(),
                           );
                         }
+
                         updateSetting(
                           SettingKeys.TIMETABLE_YEAR,
                           value?.toString(),
+                        );
+
+                        // force refresh next time
+                        updateSetting(
+                          SettingKeys.TIMETABLE_LAST_UPDATE,
+                          null,
                         );
                       },
                     );
@@ -197,10 +205,20 @@ class _SettingScreenState extends State<SettingScreen> {
                   builder: (_) {
                     return SelectorDialog(
                       SettingValues.TIMETABLE_TERM,
+                      selectedKey: findMapKeyFromValue(
+                        SettingValues.TIMETABLE_TERM,
+                        settings[SettingKeys.TIMETABLE_TERM],
+                      ),
                       (key, value) async {
                         updateSetting(
                           SettingKeys.TIMETABLE_TERM,
                           value.toString(),
+                        );
+
+                        // force refresh next time
+                        updateSetting(
+                          SettingKeys.TIMETABLE_LAST_UPDATE,
+                          null,
                         );
                       },
                     );
@@ -219,6 +237,8 @@ class _SettingScreenState extends State<SettingScreen> {
                   builder: (_) {
                     return SelectorDialog(
                       SettingValues.SECTION,
+                      selectedKey: findMapKeyFromValue(
+                          SettingValues.SECTION, settings[SettingKeys.Section]),
                       (key, value) async {
                         updateSetting(SettingKeys.Section, value.toString());
                       },
@@ -234,10 +254,10 @@ class _SettingScreenState extends State<SettingScreen> {
                       SettingValues.TIMETABLE_UPDATE_INTERVAL,
                       int.parse(
                         settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
-                            (86400000 * 7).toString(),
+                            (86400000 * 1).toString(),
                       ),
                     ) ??
-                    "1週間",
+                    "1日",
               ),
               onPressed: (context) {
                 showDialog(
@@ -253,6 +273,14 @@ class _SettingScreenState extends State<SettingScreen> {
                       },
                       description:
                           "時間割は一度ScombZから取得すると、しばらく本体に保存されます。\n\n保存する期間を選択してください。",
+                      selectedKey: findMapKeyFromValue(
+                            SettingValues.TIMETABLE_UPDATE_INTERVAL,
+                            int.parse(
+                              settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
+                                  (86400000 * 1).toString(),
+                            ),
+                          ) ??
+                          "1日",
                     );
                   },
                 );
@@ -266,14 +294,12 @@ class _SettingScreenState extends State<SettingScreen> {
                         int.parse(settings[SettingKeys.TIMETABLE_LAST_UPDATE]!),
                       ),
                     )
-                  : const Text("未取得"),
+                  : const Text("次に表示した時に取得します"),
               onPressed: (context) async {
                 updateSetting(
                   SettingKeys.TIMETABLE_LAST_UPDATE,
-                  "0",
+                  null,
                 );
-                settings[SettingKeys.TIMETABLE_LAST_UPDATE] =
-                    DateTime.now().millisecondsSinceEpoch.toString();
                 timetableInitialized = false;
               },
             ),
@@ -300,6 +326,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   builder: (_) {
                     return SelectorDialog(
                       SettingValues.NOTIFICATION_TIMING,
+                      selectedKey: findMapKeyFromValue<int>(
+                        SettingValues.NOTIFICATION_TIMING,
+                        int.parse(
+                          settings[SettingKeys.NOTIFICATION_TIMING] ??
+                              (60000 * 60).toString(),
+                        ),
+                      ),
                       (key, value) async {
                         updateSetting(
                             SettingKeys.NOTIFICATION_TIMING, value.toString());
