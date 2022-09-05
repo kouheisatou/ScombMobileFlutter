@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
@@ -22,6 +23,12 @@ class TaskListScreen extends NetworkScreen {
 }
 
 class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
+  bool showDoneTasks = false;
+  bool showTasks = true;
+  bool showTests = true;
+  bool showSurveys = true;
+  bool showOthers = true;
+
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
     if (taskListInitialized) return;
@@ -58,25 +65,113 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
 
   @override
   Widget innerBuild() {
-    return buildList(taskList);
+    return Column(
+      children: [
+        // chip list
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.only(right: 6, left: 6),
+                  child: Text("絞り込み")),
+              buildChip(
+                showTasks,
+                onTap: () {
+                  showTasks = !showTasks;
+                },
+                text: "課題",
+              ),
+              buildChip(
+                showTests,
+                onTap: () {
+                  showTests = !showTests;
+                },
+                text: "テスト",
+              ),
+              buildChip(
+                showSurveys,
+                onTap: () {
+                  showSurveys = !showSurveys;
+                },
+                text: "アンケート",
+              ),
+              buildChip(
+                showOthers,
+                onTap: () {
+                  showOthers = !showOthers;
+                },
+                text: "その他",
+              ),
+              buildChip(
+                showDoneTasks,
+                onTap: () {
+                  showDoneTasks = !showDoneTasks;
+                },
+                text: "完了したタスクを含める",
+              ),
+            ],
+          ),
+        ),
+        // task list
+        Expanded(child: buildList(taskList)),
+      ],
+    );
+  }
+
+  Widget buildChip(
+    bool enabled, {
+    required Function onTap,
+    required String text,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: InkResponse(
+        onTap: () {
+          setState(() {
+            onTap();
+          });
+        },
+        child: Chip(
+          backgroundColor: enabled ? Colors.blueGrey : Colors.black12,
+          label: Text(
+            text,
+            style: TextStyle(color: enabled ? Colors.white : Colors.black),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildList(List<Task> currentTaskList) {
     List<Widget> list = [];
     for (int i = 0; i < currentTaskList.length; i++) {
-      list.add(buildListTile(i, currentTaskList));
+      if (((showTasks && currentTaskList[i].taskType == TaskType.TASK) ||
+              (showTests && currentTaskList[i].taskType == TaskType.TEST) ||
+              (showOthers && currentTaskList[i].taskType == TaskType.OTHERS) ||
+              (showSurveys &&
+                  currentTaskList[i].taskType == TaskType.SURVEY)) &&
+          (showDoneTasks || !currentTaskList[i].done)) {
+        list.add(buildListTile(i, currentTaskList));
+      }
     }
-    list.add(TextButton(
+    list.add(
+      TextButton(
         onPressed: () {
           showAddNewTaskDialog();
         },
-        child: const Text("todoタスク追加")));
+        child: const Text("todoタスク追加"),
+      ),
+    );
 
     return RefreshIndicator(
-        onRefresh: refreshData,
-        child: ListView(
-          children: list,
-        ));
+      onRefresh: refreshData,
+      child: ListView(
+        children: list,
+      ),
+    );
   }
 
   Widget buildListTile(int index, List<Task> currentTaskList) {
@@ -196,6 +291,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
                     "(提出済み) ${currentTask.title}",
                     style: const TextStyle(
                       decoration: TextDecoration.lineThrough,
+                      color: Colors.grey,
                     ),
                   ),
             onLongPress: () {

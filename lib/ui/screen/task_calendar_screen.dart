@@ -46,6 +46,7 @@ class _TaskCalendarScreenState extends TaskListScreenState {
 
   @override
   Widget innerBuild() {
+    showDoneTasks = true;
     return Column(
       children: [
         TableCalendar<Task>(
