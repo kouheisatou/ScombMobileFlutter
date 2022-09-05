@@ -77,46 +77,88 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               children: [
                 const Text("色設定 : "),
                 const Spacer(),
-                SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: widget.selectedColor != null
+                InkResponse(
+                  onTap: () async {
+                    widget.selectedColor = await showDialog<int>(
+                      context: context,
+                      builder: (builder) {
+                        return ColorPickerDialog();
+                      },
+                    );
+                    setState(() {});
+                  },
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                        )
+                      ],
+                      color: widget.selectedColor != null
                           ? Color(widget.selectedColor!)
                           : Colors.white70,
-                      onPrimary: Colors.black,
-                      shape: const CircleBorder(),
                     ),
-                    onPressed: () async {
-                      widget.selectedColor = await showDialog<int>(
-                        context: context,
-                        builder: (builder) {
-                          return ColorPickerDialog();
-                        },
-                      );
-                      setState(() {});
-                    },
-                    child: const Text(""),
                   ),
                 ),
               ],
             ),
             const Divider(
-              height: 10,
+              height: 20,
               color: Colors.transparent,
             ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 120),
-              child: TextFormField(
-                initialValue: widget.classCell.note,
-                maxLines: null,
-                decoration: const InputDecoration(labelText: "メモ"),
-                onChanged: (text) async {
-                  await widget.classCell.setNoteText(text);
-                  setState(() {});
-                },
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: widget.classCell.note == ""
+                        ? const Text("メモ")
+                        : Text(
+                            widget.classCell.note ?? "メモ",
+                          ),
+                  ),
+                ),
+                InkResponse(
+                  onTap: () async {
+                    showDialog(
+                      context: context,
+                      builder: (_) {
+                        return AlertDialog(
+                          title: const Text("メモ"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("閉じる"),
+                            )
+                          ],
+                          content: TextFormField(
+                            autofocus: true,
+                            initialValue: widget.classCell.note,
+                            maxLines: null,
+                            onChanged: (text) async {
+                              setState(() {
+                                widget.classCell.setNoteText(text);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: const Icon(
+                    Icons.edit,
+                    size: 20,
+                  ),
+                ),
+              ],
             ),
             const Divider(
               height: 20,
@@ -246,6 +288,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               },
               child: Container(
                 width: double.infinity,
+                alignment: Alignment.centerRight,
                 child: const Text(
                   "違う授業のシラバスが開かれたら...",
                   style: TextStyle(
