@@ -68,51 +68,54 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     return Column(
       children: [
         // chip list
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const Padding(
-                  padding: EdgeInsets.only(right: 6, left: 6),
-                  child: Text("絞り込み")),
-              buildChip(
-                showTasks,
-                onTap: () {
-                  showTasks = !showTasks;
-                },
-                text: "課題",
-              ),
-              buildChip(
-                showTests,
-                onTap: () {
-                  showTests = !showTests;
-                },
-                text: "テスト",
-              ),
-              buildChip(
-                showSurveys,
-                onTap: () {
-                  showSurveys = !showSurveys;
-                },
-                text: "アンケート",
-              ),
-              buildChip(
-                showOthers,
-                onTap: () {
-                  showOthers = !showOthers;
-                },
-                text: "その他",
-              ),
-              buildChip(
-                showDoneTasks,
-                onTap: () {
-                  showDoneTasks = !showDoneTasks;
-                },
-                text: "完了したタスクを含める",
-              ),
-            ],
+        Container(
+          color: Colors.blueGrey.shade50,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const Padding(
+                    padding: EdgeInsets.only(right: 6, left: 6),
+                    child: Text("絞り込み")),
+                buildChip(
+                  showTasks,
+                  onTap: () {
+                    showTasks = !showTasks;
+                  },
+                  text: "課題",
+                ),
+                buildChip(
+                  showTests,
+                  onTap: () {
+                    showTests = !showTests;
+                  },
+                  text: "テスト",
+                ),
+                buildChip(
+                  showSurveys,
+                  onTap: () {
+                    showSurveys = !showSurveys;
+                  },
+                  text: "アンケート",
+                ),
+                buildChip(
+                  showOthers,
+                  onTap: () {
+                    showOthers = !showOthers;
+                  },
+                  text: "その他",
+                ),
+                buildChip(
+                  showDoneTasks,
+                  onTap: () {
+                    showDoneTasks = !showDoneTasks;
+                  },
+                  text: "完了したタスクを含める",
+                ),
+              ],
+            ),
           ),
         ),
         // task list
