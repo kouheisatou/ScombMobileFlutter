@@ -35,18 +35,18 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const Divider(
-              height: 10,
+              height: 8,
               color: Colors.transparent,
             ),
             Text(
               "${PERIOD_MAP[widget.classCell.period]}  ${PERIOD_TIME_MAP[widget.classCell.period]}",
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+              style: const TextStyle(fontSize: 14),
             ),
           ],
         ),
       ),
       contentTextStyle: const TextStyle(
-          fontSize: 12, color: Colors.black, fontWeight: FontWeight.normal),
+          fontSize: 14, color: Colors.black, fontWeight: FontWeight.normal),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -87,21 +87,24 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                     );
                     setState(() {});
                   },
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          spreadRadius: 1,
-                          blurRadius: 10,
-                        )
-                      ],
-                      color: widget.selectedColor != null
-                          ? Color(widget.selectedColor!)
-                          : Colors.white70,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 5),
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                          )
+                        ],
+                        color: widget.selectedColor != null
+                            ? Color(widget.selectedColor!)
+                            : Colors.white70,
+                      ),
                     ),
                   ),
                 ),
@@ -124,44 +127,47 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                           ),
                   ),
                 ),
-                InkResponse(
-                  onTap: () async {
-                    showDialog(
-                      context: context,
-                      builder: (_) {
-                        return AlertDialog(
-                          title: const Text("メモ"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: InkResponse(
+                    onTap: () async {
+                      showDialog(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            title: const Text("メモ"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("閉じる"),
+                              )
+                            ],
+                            content: TextFormField(
+                              autofocus: true,
+                              initialValue: widget.classCell.note,
+                              maxLines: null,
+                              onChanged: (text) async {
+                                setState(() {
+                                  widget.classCell.setNoteText(text);
+                                });
                               },
-                              child: const Text("閉じる"),
-                            )
-                          ],
-                          content: TextFormField(
-                            autofocus: true,
-                            initialValue: widget.classCell.note,
-                            maxLines: null,
-                            onChanged: (text) async {
-                              setState(() {
-                                widget.classCell.setNoteText(text);
-                              });
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: const Icon(
-                    Icons.edit,
-                    size: 20,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: const Icon(
+                      Icons.edit,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
             ),
             const Divider(
-              height: 20,
+              height: 40,
               color: Colors.transparent,
             ),
             OutlinedButton(
@@ -183,9 +189,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: const [
-                  Text(
-                    "授業ページを開く ",
-                  ),
+                  Text("授業ページを開く "),
                   Spacer(),
                   Icon(
                     Icons.keyboard_arrow_right,
@@ -243,9 +247,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: const [
-                  Text(
-                    "シラバスを表示 ",
-                  ),
+                  Text("シラバスを表示 "),
                   Spacer(),
                   Icon(
                     Icons.keyboard_arrow_right,

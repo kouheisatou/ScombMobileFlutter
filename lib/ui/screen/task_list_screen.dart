@@ -168,8 +168,10 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
 
     return RefreshIndicator(
       onRefresh: refreshData,
-      child: ListView(
-        children: list,
+      child: Scrollbar(
+        child: ListView(
+          children: list,
+        ),
       ),
     );
   }
