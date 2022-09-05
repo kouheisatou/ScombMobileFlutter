@@ -52,7 +52,6 @@ Future<void> _constructSurveys(Document document) async {
         isDone = true;
       }
     });
-    if (isDone) continue;
 
     var title = row.children[2].children[0].text;
 
@@ -78,7 +77,7 @@ Future<void> _constructSurveys(Document document) async {
       classId,
       customColor,
       false,
-      false,
+      isDone,
     );
 
     // if already exists, merge task
