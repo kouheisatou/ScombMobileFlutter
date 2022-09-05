@@ -116,7 +116,24 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                   child: Center(
                     child: Padding(
                         padding: const EdgeInsets.all(20),
-                        child: Text(errorMsg ?? "")),
+                        child: Column(
+                          children: [
+                            Text(errorMsg ?? ""),
+                            const Divider(
+                              height: 20,
+                              color: Colors.transparent,
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                errorMsg = null;
+                                webView.loadUrl(
+                                  urlRequest: URLRequest(url: widget.initUrl),
+                                );
+                              },
+                              child: const Text("初期ページに戻る"),
+                            )
+                          ],
+                        )),
                   ),
                 )
               ],
@@ -128,6 +145,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                 children: [
                   IconButton(
                     onPressed: () async {
+                      errorMsg = null;
                       var canGoBack = await webView.canGoBack();
                       if (canGoBack) {
                         await webView.goBack();
@@ -137,8 +155,9 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      var canGoBack = await webView.canGoForward();
-                      if (canGoBack) {
+                      errorMsg = null;
+                      var canGoForward = await webView.canGoForward();
+                      if (canGoForward) {
                         await webView.goForward();
                       }
                     },
