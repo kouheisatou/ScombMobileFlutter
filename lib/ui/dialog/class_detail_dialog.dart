@@ -111,63 +111,87 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               ],
             ),
             const Divider(
-              height: 20,
+              height: 15,
               color: Colors.transparent,
             ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
+            Stack(
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: widget.classCell.note == ""
-                        ? const Text("メモ")
-                        : Text(
-                            widget.classCell.note ?? "メモ",
-                          ),
-                  ),
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 5),
-                  child: InkResponse(
-                    onTap: () async {
-                      showDialog(
-                        context: context,
-                        builder: (_) {
-                          return AlertDialog(
-                            title: const Text("メモ"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("閉じる"),
-                              )
-                            ],
-                            content: TextFormField(
-                              autofocus: true,
-                              initialValue: widget.classCell.note,
-                              maxLines: null,
-                              onChanged: (text) async {
-                                setState(() {
-                                  widget.classCell.setNoteText(text);
-                                });
-                              },
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.classCell.note ?? "",
                             ),
-                          );
-                        },
-                      );
-                    },
-                    child: const Icon(
-                      Icons.edit,
-                      size: 20,
+                          ),
+                          InkResponse(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return AlertDialog(
+                                    title: const Text("メモ"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("閉じる"),
+                                      )
+                                    ],
+                                    content: TextFormField(
+                                      autofocus: true,
+                                      initialValue: widget.classCell.note,
+                                      maxLines: null,
+                                      onChanged: (text) async {
+                                        setState(() {
+                                          widget.classCell.setNoteText(text);
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Icon(
+                                Icons.edit,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
+                Align(
+                  alignment: const Alignment(-0.85, 0),
+                  child: Container(
+                    color: Colors.white,
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 5, left: 5),
+                      child: Text(
+                        "メモ",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
             const Divider(
-              height: 40,
+              height: 20,
               color: Colors.transparent,
             ),
             OutlinedButton(
