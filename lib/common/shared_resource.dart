@@ -60,14 +60,12 @@ void addOrReplaceTask(Task newTask, bool fromServer) {
     if (conflictedTaskIndex == null) {
       taskList.add(newTask);
       print("task_from_scomb(add) : $newTask");
-      newTask.done = false;
     }
     // on conflict, replace task
     else {
       taskList.removeAt(conflictedTaskIndex);
       taskList.add(newTask);
       // add from server and replace -> scomb task is done
-      newTask.done = false;
       print("task_from_scomb(replace) : $newTask");
     }
   } else {
