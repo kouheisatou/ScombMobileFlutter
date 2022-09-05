@@ -5,10 +5,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scomb_mobile/ui/scomb_mobile.dart';
 
 void main() {
-  initNotification();
-
   runApp(const ScombMobile());
   // runApp(TestApp());
+  initNotification();
 }
 
 Future<void> initNotification() async {
