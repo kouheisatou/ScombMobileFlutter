@@ -328,13 +328,13 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 ],
               ),
             ),
-            InkWell(
-              onTap: () async {
-                showSyllabusUrlCustomizeDialog();
-              },
-              child: Container(
-                width: double.infinity,
-                alignment: Alignment.centerRight,
+            Container(
+              width: double.infinity,
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () {
+                  showSyllabusUrlCustomizeDialog();
+                },
                 child: const Text(
                   "違う授業のシラバスが開かれたら...",
                   style: TextStyle(
@@ -394,11 +394,24 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
             children: [
               const Text(
                   "大学のシラバス検索システムで授業名を自動検索しているため、異なるシラバスが開かれる場合があります。\n\n正しいシラバスのリンクを入力してください。"),
-              TextFormField(
-                controller: controller,
-                onChanged: (text) async {
-                  await widget.classCell.setCustomSyllabusUrl(text);
-                },
+              Row(
+                children: [
+                  Flexible(
+                    child: TextFormField(
+                      controller: controller,
+                      onChanged: (text) async {
+                        await widget.classCell.setCustomSyllabusUrl(text);
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      controller.text = "";
+                      await widget.classCell.setCustomSyllabusUrl("");
+                    },
+                    icon: const Icon(Icons.close),
+                  )
+                ],
               ),
             ],
           ),
@@ -407,7 +420,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               onPressed: () {
                 Navigator.pop(context, controller.text);
               },
-              child: const Text("閉じる"),
+              child: const Text("保存"),
             ),
           ],
         );
