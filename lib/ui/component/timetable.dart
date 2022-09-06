@@ -13,10 +13,11 @@ class TimetableComponent extends StatefulWidget {
   List<List<ClassCell?>> timetable;
   bool showSaturday = true;
   bool isEditMode = false;
+  bool shouldEmphasizeToday;
   String title;
 
   TimetableComponent(this.timetable, this.showSaturday, this.title,
-      {super.key, required this.isEditMode});
+      {super.key, required this.isEditMode, this.shouldEmphasizeToday = true});
 
   @override
   State<TimetableComponent> createState() => _TimetableComponentState();
@@ -27,7 +28,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 10, color: Colors.black),
+      style: const TextStyle(fontSize: 10, color: Colors.grey),
       child: buildTable(),
     );
   }
@@ -67,7 +68,8 @@ class _TimetableComponentState extends State<TimetableComponent> {
               child: Center(
                 child: Container(
                   width: double.infinity,
-                  color: (DateTime.now().weekday - 1) == key
+                  color: ((DateTime.now().weekday - 1) == key &&
+                          widget.shouldEmphasizeToday)
                       ? Colors.black12
                       : null,
                   child: Text(value),
@@ -110,7 +112,10 @@ class _TimetableComponentState extends State<TimetableComponent> {
   Widget buildTableCell(int row, int col) {
     return Expanded(
       child: Container(
-        color: (DateTime.now().weekday - 1) == col ? Colors.black12 : null,
+        color:
+            ((DateTime.now().weekday - 1) == col && widget.shouldEmphasizeToday)
+                ? Colors.black12
+                : null,
         width: double.infinity,
         height: double.infinity,
         child: widget.timetable[row][col] == null

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 
 import '../../common/db/class_cell.dart';
 import 'color_picker_dialog.dart';
@@ -62,6 +63,8 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
               return;
             }
 
+            insertClassCell();
+
             // close dialog
             Navigator.pop(context, widget.editingClassCell);
           },
@@ -76,7 +79,7 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
               initialValue: widget.editingClassCell.name,
               onChanged: (text) {
                 widget.editingClassCell.name = text;
-                widget.editingClassCell.classId = text;
+                widget.editingClassCell.classId = "userClass.$text";
               },
             ),
             TextFormField(
@@ -146,5 +149,10 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
         ),
       ),
     );
+  }
+
+  Future<void> insertClassCell() async {
+    var db = await AppDatabase.getDatabase();
+    db.currentClassCellDao.insertClassCell(widget.editingClassCell);
   }
 }
