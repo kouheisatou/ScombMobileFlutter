@@ -1,6 +1,7 @@
 // shared resource
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/notification.dart';
+import 'package:scomb_mobile/ui/component/timetable.dart';
 
 import 'db/class_cell.dart';
 import 'db/task.dart';
@@ -8,15 +9,7 @@ import 'db/task.dart';
 String? sessionId;
 String? userName;
 
-List<List<ClassCell?>> timetable = [
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-];
+List<List<ClassCell?>> timetable = createEmptyTimetable();
 bool timetableInitialized = false;
 int? timetableYear;
 String? timetableTerm;

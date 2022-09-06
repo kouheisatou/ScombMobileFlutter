@@ -11,8 +11,10 @@ import '../dialog/class_detail_dialog.dart';
 class TimetableComponent extends StatefulWidget {
   List<List<ClassCell?>> timetable;
   bool showSaturday = true;
+  bool isEditMode = false;
 
-  TimetableComponent(this.timetable, this.showSaturday, {super.key});
+  TimetableComponent(this.timetable, this.showSaturday,
+      {super.key, required this.isEditMode});
 
   @override
   State<TimetableComponent> createState() => _TimetableComponentState();
@@ -21,7 +23,11 @@ class TimetableComponent extends StatefulWidget {
 class _TimetableComponentState extends State<TimetableComponent> {
   @override
   Widget build(BuildContext context) {
-    return buildTable();
+    return DefaultTextStyle(
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 10, color: Colors.black),
+      child: buildTable(),
+    );
   }
 
   Widget buildTable() {
@@ -170,4 +176,17 @@ class _TimetableComponentState extends State<TimetableComponent> {
       textAlign: TextAlign.center,
     );
   }
+}
+
+List<List<ClassCell?>> createEmptyTimetable() {
+  List<List<ClassCell?>> timetable = [
+    [null, null, null, null, null, null],
+    [null, null, null, null, null, null],
+    [null, null, null, null, null, null],
+    [null, null, null, null, null, null],
+    [null, null, null, null, null, null],
+    [null, null, null, null, null, null],
+    [null, null, null, null, null, null],
+  ];
+  return timetable;
 }

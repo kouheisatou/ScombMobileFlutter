@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/database_exception.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
@@ -9,11 +7,12 @@ import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/component/timetable.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
+import 'package:scomb_mobile/ui/screen/timetable/my_timetable_list_screen.dart';
 
-import '../../common/scraping/surveys_scraping.dart';
-import '../../common/scraping/task_scraping.dart';
-import '../../common/shared_resource.dart';
-import '../../common/values.dart';
+import '../../../common/scraping/surveys_scraping.dart';
+import '../../../common/scraping/task_scraping.dart';
+import '../../../common/shared_resource.dart';
+import '../../../common/values.dart';
 
 class TimetableScreen extends NetworkScreen {
   TimetableScreen(super.title, {Key? key}) : super(key: key);
@@ -132,10 +131,10 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
   @override
   Widget innerBuild() {
-    return DefaultTextStyle(
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 10, color: Colors.black),
-      child: TimetableComponent(timetable, checkSaturdayClassExists()),
+    return TimetableComponent(
+      timetable,
+      checkSaturdayClassExists(),
+      isEditMode: false,
     );
   }
 
@@ -159,7 +158,11 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   List<Widget> buildAppBarActions() {
     List<Widget> result = [
       IconButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (builder) {
+            return MyTimetableListScreen();
+          }));
+        },
         icon: const Icon(Icons.list),
       ),
     ];
