@@ -190,6 +190,27 @@ class _$ClassCellDao extends ClassCellDao {
                   'lateCount': item.lateCount,
                   'absentCount': item.absentCount,
                   'syllabusUrl': item.syllabusUrl
+                }),
+        _classCellDeletionAdapter = DeletionAdapter(
+            database,
+            'class_cell',
+            ['cellId'],
+            (ClassCell item) => <String, Object?>{
+                  'classId': item.classId,
+                  'name': item.name,
+                  'teachers': item.teachers,
+                  'room': item.room,
+                  'dayOfWeek': item.dayOfWeek,
+                  'period': item.period,
+                  'year': item.year,
+                  'term': item.term,
+                  'customColorInt': item.customColorInt,
+                  'url': item.url,
+                  'cellId': item.cellId,
+                  'note': item.note,
+                  'lateCount': item.lateCount,
+                  'absentCount': item.absentCount,
+                  'syllabusUrl': item.syllabusUrl
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -199,6 +220,8 @@ class _$ClassCellDao extends ClassCellDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<ClassCell> _classCellInsertionAdapter;
+
+  final DeletionAdapter<ClassCell> _classCellDeletionAdapter;
 
   @override
   Future<List<ClassCell>> getAllClasses() async {
@@ -246,6 +269,11 @@ class _$ClassCellDao extends ClassCellDao {
   Future<void> insertClassCell(ClassCell classCell) async {
     await _classCellInsertionAdapter.insert(
         classCell, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> removeClassCell(ClassCell classCell) async {
+    await _classCellDeletionAdapter.delete(classCell);
   }
 }
 

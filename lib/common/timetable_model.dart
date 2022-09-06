@@ -1,3 +1,5 @@
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
+
 import 'db/class_cell.dart';
 
 class TimetableModel {
@@ -46,5 +48,15 @@ class TimetableModel {
       [null, null, null, null, null, null],
     ];
     return timetable;
+  }
+
+  Future<void> remove() async {
+    var db = await AppDatabase.getDatabase();
+
+    await applyToAllCells((classCell) {
+      if (classCell != null) {
+        db.currentClassCellDao.removeClassCell(classCell);
+      }
+    });
   }
 }

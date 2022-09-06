@@ -108,6 +108,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemCount: timetables.length,
         itemBuilder: (context, index) {
+          var currentTimetable = timetables[index];
           return Padding(
             padding: const EdgeInsets.all(3.0),
             child: Container(
@@ -120,13 +121,13 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TimetableComponent(
-                      timetables[index],
+                      currentTimetable,
                       true,
                       isEditMode: false,
                       shouldEmphasizeToday: false,
                     ),
                   ),
-                  Center(child: Text(timetables[index].title)),
+                  Center(child: Text(currentTimetable.title)),
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -134,12 +135,38 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                         MaterialPageRoute(
                           builder: (builder) {
                             return CustomizedTimetableScreen(
-                              timetables[index],
+                              currentTimetable,
                               isEditMode: false,
                             );
                           },
                         ),
                       );
+                    },
+                    onLongPress: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return AlertDialog(
+                              title: const Text("削除"),
+                              content: const Text("本当に削除しますか？"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("キャンセル")),
+                                TextButton(
+                                    onPressed: () {
+                                      currentTimetable.remove();
+                                      setState(() {
+                                        timetables.removeAt(index);
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("削除")),
+                              ],
+                            );
+                          });
                     },
                   )
                 ],

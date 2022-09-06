@@ -12,4 +12,7 @@ abstract class ClassCellDao {
 
   @insert
   Future<void> insertClassCell(ClassCell classCell);
+
+  @delete
+  Future<void> removeClassCell(ClassCell classCell);
 }

@@ -20,7 +20,9 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.timetable.title),
+        title: Text(
+          widget.timetable.title + (widget.isEditMode ? "（編集中）" : ""),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -28,8 +30,7 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
                 widget.isEditMode = !widget.isEditMode;
               });
             },
-            icon: Icon(Icons.edit,
-                color: widget.isEditMode ? Colors.red : Colors.grey),
+            icon: const Icon(Icons.edit),
           ),
         ],
       ),
