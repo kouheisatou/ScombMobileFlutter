@@ -73,8 +73,13 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                             fullscreenDialog: true,
                           ),
                         );
-                        controller.loadUrl(
-                            urlRequest: URLRequest(url: widget.initUrl));
+                        try {
+                          controller.loadUrl(
+                            urlRequest: URLRequest(url: widget.initUrl),
+                          );
+                        } catch (e) {
+                          print(e);
+                        }
                       }
                     }
 
@@ -126,9 +131,13 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                             OutlinedButton(
                               onPressed: () {
                                 errorMsg = null;
-                                webView.loadUrl(
-                                  urlRequest: URLRequest(url: widget.initUrl),
-                                );
+                                try {
+                                  webView.loadUrl(
+                                    urlRequest: URLRequest(url: widget.initUrl),
+                                  );
+                                } catch (e) {
+                                  print(e);
+                                }
                               },
                               child: const Text("初期ページに戻る"),
                             )

@@ -73,7 +73,6 @@ class _SettingScreenState extends State<SettingScreen> {
     settings[settingKey] = settingValue;
     db.currentSettingDao.insertSetting(Setting(settingKey, settingValue));
     setState(() {});
-    print("update_setting : $settingKey=$settingValue");
   }
 
   Widget innerBuild() {

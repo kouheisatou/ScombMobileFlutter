@@ -78,7 +78,6 @@ class ClassCell {
         if (classCell != null) {
           if (classCell.classId == classId) {
             await classCell.setNoteText(note ?? "", applyToChildren: false);
-            print("${classCell.cellId.toString()}, ${classCell.note}");
           }
         }
       });

@@ -253,19 +253,29 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                   print(syllabusUrl);
                 }
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (builder) {
-                      return SinglePageScomb(
-                        Uri.parse(syllabusUrl),
-                        "${widget.classCell.name} - シラバス",
-                        javascript: "document.getElementById('hit_1').click();",
-                      );
-                    },
-                    fullscreenDialog: true,
-                  ),
-                );
+                late Uri uri;
+                try {
+                  uri = Uri.parse(syllabusUrl);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (builder) {
+                        return SinglePageScomb(
+                          uri,
+                          "${widget.classCell.name} - シラバス",
+                          javascript:
+                              "document.getElementById('hit_1').click();",
+                        );
+                      },
+                      fullscreenDialog: true,
+                    ),
+                  );
+                } catch (e) {
+                  Fluttertoast.showToast(
+                    msg: "無効なURL\nURLに日本語を含めることはできません",
+                  );
+                }
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -291,7 +301,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                              "授業名で自動検索しているため、異なるシラバスが開かれる場合があります。\n\n正しいシラバスのリンクを入力してください。"),
+                              "大学のシラバス検索システムで授業名を自動検索しているため、異なるシラバスが開かれる場合があります。\n\n正しいシラバスのリンクを入力してください。"),
                           TextFormField(
                             initialValue: widget.classCell.syllabusUrl,
                             onChanged: (text) {
