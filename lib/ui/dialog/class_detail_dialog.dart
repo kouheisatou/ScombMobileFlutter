@@ -269,8 +269,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
 
                   // no matched name
                   if (noMatch) {
-                    String selection = await showDialog(
-                      barrierDismissible: false,
+                    String? selection = await showDialog(
                       context: context,
                       builder: (_) {
                         return SelectorDialog<String>(
@@ -281,11 +280,18 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                         );
                       },
                     );
-                    if (selection == "この選択肢の中にない") {
-                      syllabusUrl = await showSyllabusUrlCustomizeDialog();
-                    } else {
-                      syllabusUrl = results[selection] ??
+                    if (selection == null) {
+                      return;
+                    } else if (selection == "この選択肢の中にない") {
+                      String? customUrl =
                           await showSyllabusUrlCustomizeDialog();
+                      if (customUrl == null || customUrl == "") {
+                        return;
+                      } else {
+                        syllabusUrl = customUrl;
+                      }
+                    } else {
+                      syllabusUrl = results[selection] ?? "";
                     }
                   }
                   widget.classCell.setCustomSyllabusUrl(syllabusUrl);
@@ -381,10 +387,9 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
     );
   }
 
-  Future<String> showSyllabusUrlCustomizeDialog() async {
+  Future<String?> showSyllabusUrlCustomizeDialog() async {
     var controller = TextEditingController(text: widget.classCell.syllabusUrl);
     return await showDialog(
-      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
