@@ -70,6 +70,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         // chip list
         Container(
           color: Colors.blueGrey.shade50,
+          width: double.infinity,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
