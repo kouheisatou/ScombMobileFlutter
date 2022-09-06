@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
+import 'package:scomb_mobile/common/scraping/syllabus_scraping.dart';
 import 'package:scomb_mobile/common/shared_resource.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
+import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
 import '../../common/db/class_cell.dart';
@@ -225,13 +228,11 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
             OutlinedButton(
               onPressed: () async {
                 var db = await AppDatabase.getDatabase();
+                var syllabusUrl = "";
 
-                String syllabusUrl = "";
-
-                if (widget.classCell.syllabusUrl != null &&
-                    widget.classCell.syllabusUrl != "") {
-                  syllabusUrl = widget.classCell.syllabusUrl!;
-                } else {
+                if (widget.classCell.syllabusUrl == null ||
+                    widget.classCell.syllabusUrl == "") {
+                  // recover section setting from db
                   var section = (await db.currentSettingDao
                           .getSetting(SettingKeys.Section))
                       ?.settingValue;
@@ -245,17 +246,56 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                     encode: "EUC-JP",
                   );
 
-                  syllabusUrl = SYLLABUS_SEARCH_URL
+                  // construct syllabus url
+                  var syllabusResultUrl = SYLLABUS_SEARCH_URL
                       .replaceFirst("\${className}", queryString)
                       .replaceFirst("\${admissionYearAndSection}",
                           "$timetableYear%2F$section");
 
-                  print(syllabusUrl);
+                  // syllabus search result
+                  var results = await fetchAllSyllabusSearchResult(
+                    syllabusResultUrl,
+                  );
+                  results["この選択肢の中にない"] = "";
+
+                  // select same name class
+                  bool noMatch = true;
+                  results.forEach((key, value) {
+                    if (key == widget.classCell.name) {
+                      syllabusUrl = value;
+                      noMatch = false;
+                    }
+                  });
+
+                  // no matched name
+                  if (noMatch) {
+                    String selection = await showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (_) {
+                        return SelectorDialog<String>(
+                          results,
+                          (key, value) async {},
+                          description:
+                              "授業名にマッチするシラバスが見つかりませんでした。\n\n下の選択肢から正しいシラバスを選択してください。",
+                        );
+                      },
+                    );
+                    if (selection == "この選択肢の中にない") {
+                      syllabusUrl = await showSyllabusUrlCustomizeDialog();
+                    } else {
+                      syllabusUrl = results[selection] ??
+                          await showSyllabusUrlCustomizeDialog();
+                    }
+                  }
+                  widget.classCell.setCustomSyllabusUrl(syllabusUrl);
+                } else {
+                  syllabusUrl = widget.classCell.syllabusUrl!;
                 }
 
-                late Uri uri;
+                // transition
                 try {
-                  uri = Uri.parse(syllabusUrl);
+                  var uri = Uri.parse(syllabusUrl);
 
                   Navigator.push(
                     context,
@@ -264,8 +304,6 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                         return SinglePageScomb(
                           uri,
                           "${widget.classCell.name} - シラバス",
-                          javascript:
-                              "document.getElementById('hit_1').click();",
                         );
                       },
                       fullscreenDialog: true,
@@ -273,7 +311,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                   );
                 } catch (e) {
                   Fluttertoast.showToast(
-                    msg: "無効なURL\nURLに日本語を含めることはできません",
+                    msg: "無効なURL\nURLに日本語が含まれています",
                   );
                 }
               },
@@ -292,35 +330,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
             ),
             InkWell(
               onTap: () async {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text("シラバスのURL設定"),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                              "大学のシラバス検索システムで授業名を自動検索しているため、異なるシラバスが開かれる場合があります。\n\n正しいシラバスのリンクを入力してください。"),
-                          TextFormField(
-                            initialValue: widget.classCell.syllabusUrl,
-                            onChanged: (text) {
-                              widget.classCell.setCustomSyllabusUrl(text);
-                            },
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text("閉じる"),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                showSyllabusUrlCustomizeDialog();
               },
               child: Container(
                 width: double.infinity,
@@ -368,6 +378,40 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
           ),
         )
       ],
+    );
+  }
+
+  Future<String> showSyllabusUrlCustomizeDialog() async {
+    var controller = TextEditingController(text: widget.classCell.syllabusUrl);
+    return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("シラバスのURL設定"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                  "大学のシラバス検索システムで授業名を自動検索しているため、異なるシラバスが開かれる場合があります。\n\n正しいシラバスのリンクを入力してください。"),
+              TextFormField(
+                controller: controller,
+                onChanged: (text) async {
+                  await widget.classCell.setCustomSyllabusUrl(text);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, controller.text);
+              },
+              child: const Text("閉じる"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

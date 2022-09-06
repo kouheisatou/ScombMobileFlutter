@@ -51,7 +51,7 @@ class SelectorDialog<T> extends StatelessWidget {
           width: double.infinity,
           child: InkWell(
             onTap: () async {
-              Navigator.pop(context);
+              Navigator.pop(context, text);
               await onPressed(text, selectionMap[text]);
             },
             child: Align(

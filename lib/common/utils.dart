@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:charset_converter/charset_converter.dart';
@@ -83,4 +84,9 @@ Future<String> convertUrlQueryString(String queryValue,
   });
 
   return queryString;
+}
+
+Future<String> convertEUCJPtoUTF8(List<int> charArray) async {
+  var string = CharsetConverter.decode("EUC-JP", Uint8List.fromList(charArray));
+  return string;
 }
