@@ -153,6 +153,11 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
   /// fetch data from db and save to shared resource here
   Future<void> getDataOffLine();
 
+  List<Widget> buildAppBarActions() {
+    List<Widget> result = [];
+    return result;
+  }
+
   NetworkScreenState() {
     // run fetch after build
     WidgetsBinding.instance.addPostFrameCallback((_) => fetchData());
@@ -163,6 +168,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: buildAppBarActions(),
       ),
       body: !widget.isLoading
           ? innerBuild()
