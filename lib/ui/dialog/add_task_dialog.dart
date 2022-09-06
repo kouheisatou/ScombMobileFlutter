@@ -221,14 +221,11 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
   List<DropdownMenuItem<ClassCell?>>? buildDropdownItems() {
     List<ClassCell> allClasses = [];
-    for (int r = 0; r < sharedTimetable.length; r++) {
-      for (int c = 0; c < sharedTimetable[0].length; c++) {
-        if (sharedTimetable[r][c] != null &&
-            !allClasses.contains(sharedTimetable[r][c])) {
-          allClasses.add(sharedTimetable[r][c]!);
-        }
+    sharedTimetable.applyToAllCells((classCell) {
+      if (classCell != null && !allClasses.contains(classCell)) {
+        allClasses.add(classCell);
       }
-    }
+    });
 
     List<DropdownMenuItem<ClassCell?>> result = [];
 

@@ -4,7 +4,7 @@ import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
-import 'package:scomb_mobile/ui/component/timetable.dart';
+import 'package:scomb_mobile/ui/component/timetable_component.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
 import 'package:scomb_mobile/ui/screen/timetable/my_timetable_list_screen.dart';
@@ -88,7 +88,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
     if (timetableInitialized) return;
 
-    clearTimetable();
+    sharedTimetable.clearTimetable();
 
     // timetable info too old
     if (lastUpdate < DateTime.now().millisecondsSinceEpoch - refreshInterval ||
@@ -108,7 +108,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       var allClasses = await db.currentClassCellDao.getAllClasses();
       for (var c in allClasses) {
         if (c.year == timetableYear && c.term == timetableTerm) {
-          sharedTimetable[c.period][c.dayOfWeek] = c;
+          sharedTimetable.timetable[c.period][c.dayOfWeek] = c;
         }
       }
     }
@@ -124,7 +124,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     var allClasses = await db.currentClassCellDao.getAllClasses();
     for (var c in allClasses) {
       if (c.year == timetableYear && c.term == timetableTerm) {
-        sharedTimetable[c.period][c.dayOfWeek] = c;
+        sharedTimetable.timetable[c.period][c.dayOfWeek] = c;
       }
     }
   }
@@ -134,14 +134,13 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     return TimetableComponent(
       sharedTimetable,
       checkSaturdayClassExists(),
-      "$timetableYear年$timetableTerm時間割",
       isEditMode: false,
     );
   }
 
   bool checkSaturdayClassExists() {
     var result = false;
-    applyToAllCells(sharedTimetable, (classCell) {
+    sharedTimetable.applyToAllCells((classCell) {
       if (classCell?.dayOfWeek == 5) {
         result = true;
       }

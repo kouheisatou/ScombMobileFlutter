@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/dialog/new_class_cell_dialog.dart';
 
 import '../../common/db/class_cell.dart';
@@ -10,13 +11,12 @@ import '../../common/values.dart';
 import '../dialog/class_detail_dialog.dart';
 
 class TimetableComponent extends StatefulWidget {
-  List<List<ClassCell?>> timetable;
+  TimetableModel timetable;
   bool showSaturday = true;
   bool isEditMode = false;
   bool shouldEmphasizeToday;
-  String title;
 
-  TimetableComponent(this.timetable, this.showSaturday, this.title,
+  TimetableComponent(this.timetable, this.showSaturday,
       {super.key, required this.isEditMode, this.shouldEmphasizeToday = true});
 
   @override
@@ -38,7 +38,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
     List<Widget> tableRows = [buildDayOfWeekRow()];
 
     // main rows
-    for (int r = 0; r < widget.timetable.length; r++) {
+    for (int r = 0; r < widget.timetable.timetable.length; r++) {
       tableRows.add(buildTableRow(r));
     }
 
@@ -100,7 +100,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
     );
 
     // main columns
-    for (int c = 0; c < widget.timetable[0].length; c++) {
+    for (int c = 0; c < widget.timetable.timetable[0].length; c++) {
       if (widget.showSaturday || c != 5) {
         tableCells.add(buildTableCell(row, c));
       }
@@ -118,11 +118,12 @@ class _TimetableComponentState extends State<TimetableComponent> {
                 : null,
         width: double.infinity,
         height: double.infinity,
-        child: widget.timetable[row][col] == null
+        child: widget.timetable.timetable[row][col] == null
             ? widget.isEditMode
                 ? MaterialButton(
                     onPressed: () async {
-                      widget.timetable[row][col] = await showNewClassCellDialog(
+                      widget.timetable.timetable[row][col] =
+                          await showNewClassCellDialog(
                         row,
                         col,
                       );
@@ -132,7 +133,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
                 : const Text("")
             : MaterialButton(
                 color: Color(
-                  widget.timetable[row][col]?.customColorInt ??
+                  widget.timetable.timetable[row][col]?.customColorInt ??
                       Colors.white70.value,
                 ),
                 onPressed: widget.isEditMode
@@ -141,16 +142,17 @@ class _TimetableComponentState extends State<TimetableComponent> {
                             await showNewClassCellDialog(
                           row,
                           col,
-                          classCell: widget.timetable[row][col]!,
+                          classCell: widget.timetable.timetable[row][col]!,
                         );
                         // update dialog canceled
                         if (updatedClassCell == null) return;
 
-                        widget.timetable[row][col] = updatedClassCell;
+                        widget.timetable.timetable[row][col] = updatedClassCell;
                         setState(() {});
                       }
                     : () async {
-                        var currentClassCell = widget.timetable[row][col]!;
+                        var currentClassCell =
+                            widget.timetable.timetable[row][col]!;
                         var detailDialog = ClassDetailDialog(currentClassCell);
                         await showDialog(
                           context: context,
@@ -165,12 +167,12 @@ class _TimetableComponentState extends State<TimetableComponent> {
                       },
                 onLongPress: () async {
                   Fluttertoast.showToast(
-                      msg: widget.timetable[row][col]?.room ?? "");
+                      msg: widget.timetable.timetable[row][col]?.room ?? "");
                 },
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
                   child: buildLimitedText(
-                    widget.timetable[row][col]?.name ?? "",
+                    widget.timetable.timetable[row][col]?.name ?? "",
                     widget.showSaturday ? 3 : 4,
                   ),
                 ),
@@ -218,24 +220,10 @@ class _TimetableComponentState extends State<TimetableComponent> {
         return NewClassCellDialog(
           row,
           col,
-          widget.title,
           widget.timetable,
           editingClassCell: classCell,
         );
       },
     );
   }
-}
-
-List<List<ClassCell?>> createEmptyTimetable() {
-  List<List<ClassCell?>> timetable = [
-    [null, null, null, null, null, null],
-    [null, null, null, null, null, null],
-    [null, null, null, null, null, null],
-    [null, null, null, null, null, null],
-    [null, null, null, null, null, null],
-    [null, null, null, null, null, null],
-    [null, null, null, null, null, null],
-  ];
-  return timetable;
 }

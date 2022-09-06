@@ -3,11 +3,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 
 import '../../common/db/class_cell.dart';
+import '../../common/timetable_model.dart';
 import 'color_picker_dialog.dart';
 
 class NewClassCellDialog extends StatefulWidget {
-  NewClassCellDialog(
-      this.row, this.col, String timetableTitle, this.currentTimetable,
+  NewClassCellDialog(this.row, this.col, this.currentTimetable,
       {super.key, ClassCell? editingClassCell}) {
     if (editingClassCell == null) {
       this.editingClassCell = ClassCell(
@@ -18,7 +18,7 @@ class NewClassCellDialog extends StatefulWidget {
         col,
         row,
         0,
-        timetableTitle,
+        currentTimetable.title,
         null,
         null,
         0,
@@ -37,7 +37,7 @@ class NewClassCellDialog extends StatefulWidget {
   int col;
   late bool isNew;
   late ClassCell editingClassCell;
-  late List<List<ClassCell?>> currentTimetable;
+  late TimetableModel currentTimetable;
 
   @override
   State<NewClassCellDialog> createState() => _NewClassCellDialogState();

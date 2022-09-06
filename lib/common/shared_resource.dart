@@ -1,34 +1,17 @@
 // shared resource
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/notification.dart';
-import 'package:scomb_mobile/ui/component/timetable.dart';
+import 'package:scomb_mobile/common/timetable_model.dart';
 
-import 'db/class_cell.dart';
 import 'db/task.dart';
 
 String? sessionId;
 String? userName;
 
-List<List<ClassCell?>> sharedTimetable = createEmptyTimetable();
+TimetableModel sharedTimetable = TimetableModel.empty("");
 bool timetableInitialized = false;
 int? timetableYear;
 String? timetableTerm;
-void clearTimetable() {
-  for (int r = 0; r < sharedTimetable.length; r++) {
-    for (int c = 0; c < sharedTimetable[0].length; c++) {
-      sharedTimetable[r][c] = null;
-    }
-  }
-}
-
-Future<void> applyToAllCells(List<List<ClassCell?>> timetable,
-    void Function(ClassCell? classCell) process) async {
-  for (int r = 0; r < timetable.length; r++) {
-    for (int c = 0; c < timetable[0].length; c++) {
-      process(timetable[r][c]);
-    }
-  }
-}
 
 // ------------- task_list-----------
 List<Task> taskList = [];

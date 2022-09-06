@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scomb_mobile/ui/component/timetable.dart';
-
-import '../../../common/db/class_cell.dart';
+import 'package:scomb_mobile/common/timetable_model.dart';
+import 'package:scomb_mobile/ui/component/timetable_component.dart';
 
 class CustomizedTimetableScreen extends StatefulWidget {
-  CustomizedTimetableScreen(this.title, this.timetable,
+  CustomizedTimetableScreen(this.timetable,
       {super.key, required this.isEditMode});
 
-  String title;
-  List<List<ClassCell?>> timetable;
+  TimetableModel timetable;
   bool isEditMode = false;
 
   @override
@@ -22,7 +20,7 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.timetable.title),
         actions: [
           IconButton(
             onPressed: () {
@@ -38,7 +36,6 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
       body: TimetableComponent(
         widget.timetable,
         true,
-        widget.title,
         isEditMode: widget.isEditMode,
       ),
     );
