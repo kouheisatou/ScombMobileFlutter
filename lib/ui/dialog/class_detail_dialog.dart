@@ -425,7 +425,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               onPressed: () {
                 Navigator.pop(context, controller.text);
               },
-              child: const Text("保存"),
+              child: const Text("閉じる"),
             ),
           ],
         );
