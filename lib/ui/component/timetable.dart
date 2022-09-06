@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/ui/dialog/new_class_cell_dialog.dart';
 
 import '../../common/db/class_cell.dart';
 import '../../common/values.dart';
@@ -12,8 +13,9 @@ class TimetableComponent extends StatefulWidget {
   List<List<ClassCell?>> timetable;
   bool showSaturday = true;
   bool isEditMode = false;
+  String title;
 
-  TimetableComponent(this.timetable, this.showSaturday,
+  TimetableComponent(this.timetable, this.showSaturday, this.title,
       {super.key, required this.isEditMode});
 
   @override
@@ -112,25 +114,46 @@ class _TimetableComponentState extends State<TimetableComponent> {
         width: double.infinity,
         height: double.infinity,
         child: widget.timetable[row][col] == null
-            ? const Text("")
+            ? widget.isEditMode
+                ? MaterialButton(
+                    onPressed: () async {
+                      widget.timetable[row][col] = await showNewClassCellDialog(
+                        row,
+                        col,
+                      );
+                      setState(() {});
+                    },
+                  )
+                : const Text("")
             : MaterialButton(
                 color: Color(
                   widget.timetable[row][col]?.customColorInt ??
                       Colors.white70.value,
                 ),
-                onPressed: () async {
-                  var currentClassCell = widget.timetable[row][col]!;
-                  var detailDialog = ClassDetailDialog(currentClassCell);
-                  await showDialog(
-                    context: context,
-                    builder: (_) {
-                      return detailDialog;
-                    },
-                  );
+                onPressed: widget.isEditMode
+                    ? () async {
+                        widget.timetable[row][col] =
+                            await showNewClassCellDialog(
+                          row,
+                          col,
+                          classCell: widget.timetable[row][col]!,
+                        );
+                        setState(() {});
+                      }
+                    : () async {
+                        var currentClassCell = widget.timetable[row][col]!;
+                        var detailDialog = ClassDetailDialog(currentClassCell);
+                        await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return detailDialog;
+                          },
+                        );
 
-                  await currentClassCell.setColor(detailDialog.selectedColor);
-                  setState(() {});
-                },
+                        await currentClassCell
+                            .setColor(detailDialog.selectedColor);
+                        setState(() {});
+                      },
                 onLongPress: () async {
                   Fluttertoast.showToast(
                       msg: widget.timetable[row][col]?.room ?? "");
@@ -174,6 +197,22 @@ class _TimetableComponentState extends State<TimetableComponent> {
       newText,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,
+    );
+  }
+
+  Future<ClassCell?> showNewClassCellDialog(int row, int col,
+      {ClassCell? classCell}) async {
+    return await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (_) {
+        return NewClassCellDialog(
+          row,
+          col,
+          widget.title,
+          editingClassCell: classCell,
+        );
+      },
     );
   }
 }

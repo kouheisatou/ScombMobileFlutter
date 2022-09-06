@@ -38,6 +38,7 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
       body: TimetableComponent(
         widget.timetable,
         true,
+        widget.title,
         isEditMode: widget.isEditMode,
       ),
     );

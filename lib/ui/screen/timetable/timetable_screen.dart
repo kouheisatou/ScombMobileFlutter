@@ -134,6 +134,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     return TimetableComponent(
       timetable,
       checkSaturdayClassExists(),
+      "$timetableYear年$timetableTerm時間割",
       isEditMode: false,
     );
   }

@@ -20,8 +20,9 @@ class MyTimetableListScreen extends StatelessWidget {
                 context: context,
                 builder: (builder) {
                   return AlertDialog(
-                    title: const Text("時間割名を入力"),
+                    title: const Text("時間割のタイトルを入力"),
                     content: TextFormField(
+                      autofocus: true,
                       controller: controller,
                     ),
                     actions: [
