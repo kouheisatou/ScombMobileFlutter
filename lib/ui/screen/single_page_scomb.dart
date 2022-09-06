@@ -43,6 +43,9 @@ class _SinglePageScombState extends State<SinglePageScomb> {
               children: [
                 InAppWebView(
                   onWebViewCreated: (controller) {
+                    if (widget.initUrl.toString() == "") {
+                      errorMsg = "URLが設定されていません";
+                    }
                     webView = controller;
                     setState(() {
                       loading = true;
@@ -55,7 +58,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                   onLoadError: (controller, url, code, msg) {
                     setState(() {
                       errorMsg =
-                          "[ロードエラー]\n\n\n・学内ネットからのみアクセス可能なページの可能性があります。\n\n・カスタマイズしたシラバスのURLが間違えている可能性があります。";
+                          "[ロードエラー]\n\n\n・学内ネットからのみアクセス可能なページの可能性があります。\n\n・URLが間違えている可能性があります。";
                       loading = false;
                     });
                   },
@@ -120,29 +123,38 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                   visible: errorMsg != null,
                   child: Center(
                     child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            Text(errorMsg ?? ""),
-                            const Divider(
-                              height: 20,
-                              color: Colors.transparent,
-                            ),
-                            OutlinedButton(
-                              onPressed: () {
-                                errorMsg = null;
-                                try {
-                                  webView.loadUrl(
-                                    urlRequest: URLRequest(url: widget.initUrl),
-                                  );
-                                } catch (e) {
-                                  print(e);
-                                }
-                              },
-                              child: const Text("初期ページに戻る"),
-                            )
-                          ],
-                        )),
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          Text(errorMsg ?? ""),
+                          const Divider(
+                            height: 20,
+                            color: Colors.transparent,
+                          ),
+                          widget.initUrl.toString() != ""
+                              ? OutlinedButton(
+                                  onPressed: () {
+                                    errorMsg = null;
+                                    try {
+                                      webView.loadUrl(
+                                        urlRequest:
+                                            URLRequest(url: widget.initUrl),
+                                      );
+                                    } catch (e) {
+                                      print(e);
+                                    }
+                                  },
+                                  child: const Text("初期ページに戻る"),
+                                )
+                              : OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("ブラウザを閉じる"),
+                                )
+                        ],
+                      ),
+                    ),
                   ),
                 )
               ],

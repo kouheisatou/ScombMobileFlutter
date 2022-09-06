@@ -89,8 +89,9 @@ Future<void> _constructTimetableArray(
         0,
         0,
         null,
+        CLASS_PAGE_URL.replaceFirst("\${classId}", id),
       );
-      timetable[r][c] = newCell;
+      sharedTimetable[r][c] = newCell;
 
       // merge old timetable and new one
       var classCellFromDB =

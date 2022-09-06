@@ -2,8 +2,6 @@ import 'package:floor/floor.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/shared_resource.dart';
 
-import '../values.dart';
-
 @Entity(tableName: "class_cell")
 class ClassCell {
   String classId;
@@ -22,6 +20,8 @@ class ClassCell {
   late int lateCount;
   late int absentCount;
   late String? syllabusUrl;
+  @ignore
+  List<List<ClassCell?>>? currentTimetable;
 
   ClassCell(
     this.classId,
@@ -37,8 +37,8 @@ class ClassCell {
     this.lateCount,
     this.absentCount,
     this.syllabusUrl,
+    this.url,
   ) {
-    url = CLASS_PAGE_URL.replaceFirst("\${classId}", classId);
     cellId = "$year:$term-$period:$dayOfWeek-$classId";
   }
 
@@ -57,7 +57,8 @@ class ClassCell {
 
     // apply color to same class
     if (applyToChildren) {
-      return await applyToAllCells((classCell) async {
+      return await applyToAllCells(currentTimetable ?? sharedTimetable,
+          (classCell) async {
         if (classCell != null) {
           if (classCell.classId == classId) {
             await classCell.setColor(customColorInt, applyToChildren: false);
@@ -74,7 +75,8 @@ class ClassCell {
 
     // apply text to same class
     if (applyToChildren) {
-      await applyToAllCells((classCell) async {
+      await applyToAllCells(currentTimetable ?? sharedTimetable,
+          (classCell) async {
         if (classCell != null) {
           if (classCell.classId == classId) {
             await classCell.setNoteText(note ?? "", applyToChildren: false);
@@ -92,7 +94,8 @@ class ClassCell {
 
     // apply text to same class
     if (applyToChildren) {
-      await applyToAllCells((classCell) async {
+      await applyToAllCells(currentTimetable ?? sharedTimetable,
+          (classCell) async {
         if (classCell != null) {
           if (classCell.classId == classId) {
             await classCell.setCustomSyllabusUrl(url, applyToChildren: false);

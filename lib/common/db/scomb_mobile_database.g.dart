@@ -216,7 +216,8 @@ class _$ClassCellDao extends ClassCellDao {
             row['note'] as String?,
             row['lateCount'] as int,
             row['absentCount'] as int,
-            row['syllabusUrl'] as String?));
+            row['syllabusUrl'] as String?,
+            row['url'] as String));
   }
 
   @override
@@ -236,7 +237,8 @@ class _$ClassCellDao extends ClassCellDao {
             row['note'] as String?,
             row['lateCount'] as int,
             row['absentCount'] as int,
-            row['syllabusUrl'] as String?),
+            row['syllabusUrl'] as String?,
+            row['url'] as String),
         arguments: [classId]);
   }
 

@@ -108,7 +108,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       var allClasses = await db.currentClassCellDao.getAllClasses();
       for (var c in allClasses) {
         if (c.year == timetableYear && c.term == timetableTerm) {
-          timetable[c.period][c.dayOfWeek] = c;
+          sharedTimetable[c.period][c.dayOfWeek] = c;
         }
       }
     }
@@ -124,7 +124,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     var allClasses = await db.currentClassCellDao.getAllClasses();
     for (var c in allClasses) {
       if (c.year == timetableYear && c.term == timetableTerm) {
-        timetable[c.period][c.dayOfWeek] = c;
+        sharedTimetable[c.period][c.dayOfWeek] = c;
       }
     }
   }
@@ -132,7 +132,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   @override
   Widget innerBuild() {
     return TimetableComponent(
-      timetable,
+      sharedTimetable,
       checkSaturdayClassExists(),
       "$timetableYear年$timetableTerm時間割",
       isEditMode: false,
@@ -141,7 +141,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
 
   bool checkSaturdayClassExists() {
     var result = false;
-    applyToAllCells((classCell) {
+    applyToAllCells(sharedTimetable, (classCell) {
       if (classCell?.dayOfWeek == 5) {
         result = true;
       }

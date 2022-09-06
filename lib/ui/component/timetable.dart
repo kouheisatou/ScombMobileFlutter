@@ -132,12 +132,16 @@ class _TimetableComponentState extends State<TimetableComponent> {
                 ),
                 onPressed: widget.isEditMode
                     ? () async {
-                        widget.timetable[row][col] =
+                        ClassCell? updatedClassCell =
                             await showNewClassCellDialog(
                           row,
                           col,
                           classCell: widget.timetable[row][col]!,
                         );
+                        // update dialog canceled
+                        if (updatedClassCell == null) return;
+
+                        widget.timetable[row][col] = updatedClassCell;
                         setState(() {});
                       }
                     : () async {
@@ -210,6 +214,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
           row,
           col,
           widget.title,
+          widget.timetable,
           editingClassCell: classCell,
         );
       },
