@@ -7,29 +7,11 @@ import 'db/class_cell.dart';
 class TimetableModel {
   TimetableModel(this.title, this.isUserClassCell) {
     timetable = createEmptyTimetable();
-    header = ClassCell.user(
-      "$title/timetable_header",
-      -1,
-      -1,
-      isUserClassCell,
-      title,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      this,
-    );
   }
 
   late List<List<ClassCell?>> timetable;
   String title;
   bool isUserClassCell;
-  late ClassCell header;
 
   @override
   String toString() {

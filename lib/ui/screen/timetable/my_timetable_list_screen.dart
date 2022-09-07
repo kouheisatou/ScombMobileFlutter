@@ -4,6 +4,7 @@ import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/component/timetable_component.dart';
 
+import '../../../common/db/class_cell.dart';
 import 'customized_timetable_screen.dart';
 
 class MyTimetableListScreen extends StatefulWidget {
@@ -68,9 +69,25 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
               if (newTimetableTitle == null) return;
 
               var newTimetable = TimetableModel(newTimetableTitle, true);
+              var timetableHeader = ClassCell(
+                "$newTimetableTitle/timetable_header",
+                -1,
+                -1,
+                true,
+                newTimetableTitle,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+              );
               (await AppDatabase.getDatabase())
                   .currentClassCellDao
-                  .insertClassCell(newTimetable.header);
+                  .insertClassCell(timetableHeader);
 
               setState(() {
                 timetables[newTimetableTitle] = newTimetable;

@@ -30,7 +30,7 @@ class ClassCell {
   String? syllabusUrl;
 
   @ignore
-  TimetableModel currentTimetable = sharedTimetable;
+  late TimetableModel currentTimetable = sharedTimetable;
 
   ClassCell(
     this.classId,

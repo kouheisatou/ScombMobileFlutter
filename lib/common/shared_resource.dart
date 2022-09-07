@@ -8,7 +8,8 @@ import 'db/task.dart';
 String? sessionId;
 String? userName;
 
-TimetableModel sharedTimetable = TimetableModel("", false);
+TimetableModel sharedTimetable =
+    TimetableModel("$timetableYear-$timetableTerm", false);
 bool timetableInitialized = false;
 int? timetableYear;
 String? timetableTerm;
