@@ -12,9 +12,16 @@ class TimetableComponent extends StatefulWidget {
   bool showSaturday = true;
   bool isEditMode = false;
   bool shouldEmphasizeToday;
+  bool shouldShowCellText;
 
-  TimetableComponent(this.timetable, this.showSaturday,
-      {super.key, required this.isEditMode, this.shouldEmphasizeToday = true});
+  TimetableComponent(
+    this.timetable,
+    this.showSaturday, {
+    super.key,
+    required this.isEditMode,
+    this.shouldEmphasizeToday = true,
+    this.shouldShowCellText = true,
+  });
 
   @override
   State<TimetableComponent> createState() => _TimetableComponentState();
@@ -69,7 +76,11 @@ class _TimetableComponentState extends State<TimetableComponent> {
                           widget.shouldEmphasizeToday)
                       ? Colors.black12
                       : null,
-                  child: Text(value),
+                  child: Text(
+                    value,
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
+                  ),
                 ),
               ),
             ),
@@ -164,7 +175,9 @@ class _TimetableComponentState extends State<TimetableComponent> {
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
                   child: buildLimitedText(
-                    widget.timetable.timetable[row][col]?.name ?? "",
+                    widget.shouldShowCellText
+                        ? widget.timetable.timetable[row][col]?.name ?? ""
+                        : "",
                     widget.showSaturday ? 3 : 4,
                   ),
                 ),
