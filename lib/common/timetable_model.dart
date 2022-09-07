@@ -7,7 +7,7 @@ import 'db/class_cell.dart';
 class TimetableModel {
   TimetableModel(this.title, this.isUserClassCell) {
     timetable = createEmptyTimetable();
-    header = ClassCell(
+    header = ClassCell.user(
       "$title/timetable_header",
       -1,
       -1,
@@ -22,6 +22,7 @@ class TimetableModel {
       null,
       null,
       null,
+      this,
     );
   }
 
@@ -77,41 +78,31 @@ class TimetableModel {
     return timetable;
   }
 
-  Future<void> removeAllCell() async {
-    var db = await AppDatabase.getDatabase();
-
-    await applyToAllCells((classCell) async {
-      if (classCell != null) {
-        await removeCell(classCell, db);
-      }
-    });
-    await removeCell(header, db);
-  }
-
   Future<void> removeCell(ClassCell cell, AppDatabase db) async {
-    await db.currentClassCellDao.removeClassCell(cell);
-    print("removed $cell");
     if (cell.period >= 0 && cell.dayOfWeek >= 0) {
       timetable[cell.period][cell.dayOfWeek] = null;
     }
+    print("removed $cell");
+    await db.currentClassCellDao.removeClassCell(cell);
   }
 
   Future<void> showNewClassCellDialog(int row, int col, BuildContext context,
       {ClassCell? classCell}) async {
-    var dialog = NewClassCellDialog(
-      row,
-      col,
-      this,
-      editingClassCell: classCell,
-    );
-
-    await showDialog(
+    ClassCell? dialogResponse = await showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) {
-        return dialog;
+        return NewClassCellDialog(
+          row,
+          col,
+          this,
+          editingClassCell: classCell,
+        );
       },
     );
 
-    await addCell(dialog.editingClassCell);
+    if (dialogResponse != null) {
+      await addCell(dialogResponse);
+    }
   }
 }

@@ -264,6 +264,13 @@ class _$ClassCellDao extends ClassCellDao {
   }
 
   @override
+  Future<void> removeTimetable(String timetableTitle) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM class_cell WHERE timetableTitle = ?1',
+        arguments: [timetableTitle]);
+  }
+
+  @override
   Future<void> insertClassCell(ClassCell classCell) async {
     await _classCellInsertionAdapter.insert(
         classCell, OnConflictStrategy.replace);

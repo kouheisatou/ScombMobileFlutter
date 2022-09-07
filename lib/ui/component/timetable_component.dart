@@ -148,10 +148,19 @@ class _TimetableComponentState extends State<TimetableComponent> {
                             .showClassDetailDialog(context);
                         setState(() {});
                       },
-                onLongPress: () async {
-                  Fluttertoast.showToast(
-                      msg: widget.timetable.timetable[row][col]?.room ?? "");
-                },
+                onLongPress: widget.isEditMode
+                    ? () async {
+                        print(widget.timetable.timetable[row][col]);
+                        await widget.timetable.timetable[row][col]
+                            ?.showRemoveClassDialog(context);
+                        setState(() {});
+                      }
+                    : () async {
+                        print(widget.timetable.timetable[row][col]);
+                        Fluttertoast.showToast(
+                          msg: widget.timetable.timetable[row][col]?.room ?? "",
+                        );
+                      },
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
                   child: buildLimitedText(

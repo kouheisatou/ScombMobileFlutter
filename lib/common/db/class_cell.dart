@@ -30,7 +30,7 @@ class ClassCell {
   String? syllabusUrl;
 
   @ignore
-  TimetableModel? currentTimetable;
+  TimetableModel currentTimetable = sharedTimetable;
 
   ClassCell(
     this.classId,
@@ -49,6 +49,24 @@ class ClassCell {
     this.syllabusUrl,
   );
 
+  ClassCell.user(
+    this.classId,
+    this.period,
+    this.dayOfWeek,
+    this.isUserClassCell,
+    this.timetableTitle,
+    this.year,
+    this.term,
+    this.name,
+    this.teachers,
+    this.room,
+    this.customColorInt,
+    this.url,
+    this.note,
+    this.syllabusUrl,
+    this.currentTimetable,
+  );
+
   Future<void> setColor(int? colorInt, {bool applyToChildren = true}) async {
     if (colorInt == null) return;
     var db = await AppDatabase.getDatabase();
@@ -64,8 +82,7 @@ class ClassCell {
 
     // apply color to same class
     if (applyToChildren) {
-      return await (currentTimetable ?? sharedTimetable)
-          .applyToAllCells((classCell) async {
+      return await (currentTimetable).applyToAllCells((classCell) async {
         if (classCell != null) {
           if (classCell.classId == classId) {
             await classCell.setColor(customColorInt, applyToChildren: false);
@@ -82,8 +99,7 @@ class ClassCell {
 
     // apply text to same class
     if (applyToChildren) {
-      await (currentTimetable ?? sharedTimetable)
-          .applyToAllCells((classCell) async {
+      await (currentTimetable).applyToAllCells((classCell) async {
         if (classCell != null) {
           if (classCell.classId == classId) {
             await classCell.setNoteText(note ?? "", applyToChildren: false);
@@ -101,8 +117,7 @@ class ClassCell {
 
     // apply text to same class
     if (applyToChildren) {
-      await (currentTimetable ?? sharedTimetable)
-          .applyToAllCells((classCell) async {
+      await (currentTimetable).applyToAllCells((classCell) async {
         if (classCell != null) {
           if (classCell.classId == classId) {
             await classCell.setCustomSyllabusUrl(url, applyToChildren: false);
@@ -174,7 +189,8 @@ class ClassCell {
   }
 
   Future<void> showRemoveClassDialog(BuildContext context) async {
-    var timetable = currentTimetable ?? sharedTimetable;
+    var timetable = currentTimetable;
+    print(timetable);
     var db = await AppDatabase.getDatabase();
 
     await showDialog(

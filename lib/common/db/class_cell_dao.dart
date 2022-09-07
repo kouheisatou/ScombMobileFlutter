@@ -15,4 +15,7 @@ abstract class ClassCellDao {
 
   @delete
   Future<void> removeClassCell(ClassCell classCell);
+
+  @Query("DELETE FROM class_cell WHERE timetableTitle = :timetableTitle")
+  Future<void> removeTimetable(String timetableTitle);
 }

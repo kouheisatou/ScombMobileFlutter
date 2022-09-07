@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/component/timetable_component.dart';
@@ -25,7 +26,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("マイ時間割"),
+        title: const Text("履修計画一覧"),
         actions: [
           IconButton(
             onPressed: () async {
@@ -48,8 +49,14 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context, controller.text);
-                          controller.text = "";
+                          if (timetables.keys.contains(controller.text)) {
+                            Fluttertoast.showToast(msg: "すでに存在します");
+                          } else if (controller.text == "") {
+                            Fluttertoast.showToast(msg: "タイトルが入力されていません");
+                          } else {
+                            Navigator.pop(context, controller.text);
+                            controller.text = "";
+                          }
                         },
                         child: const Text("作成"),
                       ),
@@ -97,8 +104,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
             padding: const EdgeInsets.all(3.0),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.blueGrey),
               ),
               child: Stack(
                 children: [
@@ -110,6 +116,11 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                       isEditMode: false,
                       shouldEmphasizeToday: false,
                     ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.white38,
                   ),
                   Center(child: Text(currentTimetable.title)),
                   InkWell(
@@ -142,7 +153,10 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                                   child: const Text("キャンセル")),
                               TextButton(
                                   onPressed: () async {
-                                    await currentTimetable.removeAllCell();
+                                    await (await AppDatabase.getDatabase())
+                                        .currentClassCellDao
+                                        .removeTimetable(
+                                            currentTimetable.title);
                                     setState(() {
                                       timetables.remove(currentTimetable.title);
                                     });
