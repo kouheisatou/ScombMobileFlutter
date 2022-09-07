@@ -118,7 +118,7 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
                               widget.editingClassCell.syllabusUrl =
                                   copyOriginalCell.syllabusUrl;
                             });
-                            Navigator.pop(context);
+                            Navigator.pop(context, widget.editingClassCell);
                           }
                         },
                       );

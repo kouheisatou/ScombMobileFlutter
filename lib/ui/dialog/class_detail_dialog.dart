@@ -224,7 +224,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                   var results = await fetchAllSyllabusSearchResult(
                     syllabusResultUrl,
                   );
-                  results["この選択肢の中にない"] = "";
+                  results["[ URLを直接入力する ]"] = "";
 
                   // select same name class
                   bool noMatch = true;
@@ -250,7 +250,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                     );
                     if (selection == null) {
                       return;
-                    } else if (selection == "この選択肢の中にない") {
+                    } else if (selection == "[ URLを直接入力する ]") {
                       String? customUrl =
                           await showSyllabusUrlCustomizeDialog();
                       if (customUrl == null || customUrl == "") {
