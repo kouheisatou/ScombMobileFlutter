@@ -202,12 +202,16 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
     for (var cell in allCells) {
       // if my timetable, year is 0
       if (cell.isUserClassCell) {
+        // new timetable model
         if (timetables[cell.timetableTitle] == null) {
           timetables[cell.timetableTitle] = TimetableModel(
             cell.timetableTitle,
             true,
           );
         }
+
+        // insert to map
+        cell.currentTimetable = timetables[cell.timetableTitle]!;
         if (cell.period >= 0 && cell.dayOfWeek >= 0) {
           timetables[cell.timetableTitle]!.timetable[cell.period]
               [cell.dayOfWeek] = cell;
