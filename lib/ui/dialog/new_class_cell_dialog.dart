@@ -47,7 +47,25 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: widget.isNew ? const Text("新規授業作成") : const Text("授業詳細編集"),
+      title: widget.isNew
+          ? const Text("新規授業作成")
+          : Row(
+              children: [
+                const Text("授業詳細編集"),
+                const Spacer(),
+                IconButton(
+                  onPressed: () async {
+                    var db = await AppDatabase.getDatabase();
+                    await widget.currentTimetable.removeCell(
+                      widget.editingClassCell,
+                      db,
+                    );
+                    Navigator.pop(context, null);
+                  },
+                  icon: const Icon(Icons.delete),
+                )
+              ],
+            ),
       actions: [
         TextButton(
           onPressed: () {

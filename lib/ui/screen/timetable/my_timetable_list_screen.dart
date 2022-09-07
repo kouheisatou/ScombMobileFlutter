@@ -129,8 +129,8 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                   ),
                   Center(child: Text(currentTimetable.title)),
                   InkWell(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (builder) {
@@ -141,32 +141,34 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                           },
                         ),
                       );
+                      setState(() {});
                     },
                     onLongPress: () {
                       showDialog(
-                          context: context,
-                          builder: (_) {
-                            return AlertDialog(
-                              title: const Text("削除"),
-                              content: const Text("本当に削除しますか？"),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text("キャンセル")),
-                                TextButton(
-                                    onPressed: () {
-                                      currentTimetable.remove();
-                                      setState(() {
-                                        timetables.removeAt(index);
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text("削除")),
-                              ],
-                            );
-                          });
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            title: const Text("削除"),
+                            content: const Text("本当に削除しますか？"),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("キャンセル")),
+                              TextButton(
+                                  onPressed: () {
+                                    currentTimetable.removeAllCell();
+                                    setState(() {
+                                      timetables.removeAt(index);
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("削除")),
+                            ],
+                          );
+                        },
+                      );
                     },
                   )
                 ],
@@ -196,6 +198,8 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
           var newTimetable = TimetableModel.empty(cell.term);
           newTimetable.timetable[cell.period][cell.dayOfWeek] = cell;
           timetables.add(newTimetable);
+
+          print(newTimetable);
         }
       }
     }

@@ -213,7 +213,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
 
   Future<ClassCell?> showNewClassCellDialog(int row, int col,
       {ClassCell? classCell}) async {
-    return await showDialog(
+    ClassCell? dialogResponse = await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (_) {
@@ -225,5 +225,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
         );
       },
     );
+    setState(() {});
+    return dialogResponse;
   }
 }

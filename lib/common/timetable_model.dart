@@ -15,7 +15,7 @@ class TimetableModel {
   String toString() {
     var s = "TimetableModel.$title{";
     applyToAllCells((classCell) {
-      s += "${classCell?.name ?? "null"},";
+      s += "${classCell?.name ?? ""},";
     });
     return "$s}";
   }
@@ -50,13 +50,18 @@ class TimetableModel {
     return timetable;
   }
 
-  Future<void> remove() async {
+  Future<void> removeAllCell() async {
     var db = await AppDatabase.getDatabase();
 
     await applyToAllCells((classCell) {
       if (classCell != null) {
-        db.currentClassCellDao.removeClassCell(classCell);
+        removeCell(classCell, db);
       }
     });
+  }
+
+  Future<void> removeCell(ClassCell cell, AppDatabase db) async {
+    await db.currentClassCellDao.removeClassCell(cell);
+    timetable[cell.period][cell.dayOfWeek] = null;
   }
 }
