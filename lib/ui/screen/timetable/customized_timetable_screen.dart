@@ -19,7 +19,9 @@ class CustomizedTimetableScreen extends StatefulWidget {
 class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
   @override
   void initState() {
-    showModeToast();
+    if (widget.isEditMode) {
+      showModeToast();
+    }
   }
 
   @override
