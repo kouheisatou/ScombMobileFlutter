@@ -9,47 +9,45 @@ import '../timetable_model.dart';
 
 @Entity(tableName: "class_cell")
 class ClassCell {
-  String classId;
-  String name;
-  String teachers;
-  String room;
-  int dayOfWeek;
-  int period;
-  int year;
-  String term;
-  int? customColorInt;
-  late String url;
   @primaryKey
-  late String cellId;
+  String classId;
+  @primaryKey
+  int period;
+  @primaryKey
+  int dayOfWeek;
+  @primaryKey
+  bool isUserClassCell;
+  @primaryKey
+  String timetableTitle;
+  int? year;
+  String? term;
+  String? name;
+  String? teachers;
+  String? room;
+  int? customColorInt;
+  String? url;
   String? note;
-  late int lateCount;
-  late int absentCount;
-  late String? syllabusUrl;
+  String? syllabusUrl;
+
   @ignore
   TimetableModel? currentTimetable;
 
   ClassCell(
     this.classId,
+    this.period,
+    this.dayOfWeek,
+    this.isUserClassCell,
+    this.timetableTitle,
+    this.year,
+    this.term,
     this.name,
     this.teachers,
     this.room,
-    this.dayOfWeek,
-    this.period,
-    this.year,
-    this.term,
     this.customColorInt,
-    this.note,
-    this.lateCount,
-    this.absentCount,
-    this.syllabusUrl,
     this.url,
-  ) {
-    resetCellId();
-  }
-
-  void resetCellId() {
-    cellId = "$year:$term-$period:$dayOfWeek-$classId";
-  }
+    this.note,
+    this.syllabusUrl,
+  );
 
   Future<void> setColor(int? colorInt, {bool applyToChildren = true}) async {
     if (colorInt == null) return;
@@ -125,7 +123,7 @@ class ClassCell {
 
   @override
   String toString() {
-    return "ClassCell { classId=$classId, name=$name, teachers=$teachers, room=$room, dayOfWeek=$dayOfWeek, period=$period, year=$year, term=$term, customColor=$customColorInt, absentCount=$absentCount, lateCount=$lateCount, note=$note }";
+    return "ClassCell($classId, $name, $teachers, $room, $dayOfWeek, $period, $isUserClassCell, $timetableTitle, $customColorInt, $note, $syllabusUrl, $url)";
   }
 
   Future<void> showClassDetailDialog(BuildContext context) async {

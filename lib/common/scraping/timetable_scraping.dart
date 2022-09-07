@@ -74,22 +74,22 @@ Future<void> _constructTimetableArray(
         }
       }
 
-      if (id == null || room == null) continue;
+      if (id == null) continue;
       var newCell = ClassCell(
         id,
+        r,
+        c,
+        false,
+        "$year-$term",
+        year,
+        term,
         name,
         teachers,
         room,
-        c,
-        r,
-        year,
-        term,
-        null,
-        null,
-        0,
-        0,
         null,
         CLASS_PAGE_URL.replaceFirst("\${classId}", id),
+        null,
+        null,
       );
       sharedTimetable.timetable[r][c] = newCell;
 
@@ -99,8 +99,6 @@ Future<void> _constructTimetableArray(
       print("class_from_db : $classCellFromDB");
       newCell.customColorInt = classCellFromDB?.customColorInt;
       newCell.note = classCellFromDB?.note;
-      newCell.lateCount = classCellFromDB?.lateCount ?? 0;
-      newCell.absentCount = classCellFromDB?.absentCount ?? 0;
       await db.currentClassCellDao.insertClassCell(newCell);
 
       print("class_from_server : $newCell");

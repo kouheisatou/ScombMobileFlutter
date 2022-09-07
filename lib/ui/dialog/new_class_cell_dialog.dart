@@ -8,20 +8,20 @@ class NewClassCellDialog extends StatefulWidget {
       {super.key, ClassCell? editingClassCell}) {
     if (editingClassCell == null) {
       this.editingClassCell = ClassCell(
-        "",
-        "",
-        "",
-        "",
-        col,
+        "${currentTimetable.title}/user_class_cell/${DateTime.now().millisecondsSinceEpoch}",
         row,
-        0,
+        col,
+        true,
         currentTimetable.title,
         null,
         null,
-        0,
-        0,
         null,
-        "",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
       );
       isNew = true;
     } else {

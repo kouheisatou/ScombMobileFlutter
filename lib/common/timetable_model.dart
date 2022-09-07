@@ -5,29 +5,29 @@ import '../ui/dialog/new_class_cell_dialog.dart';
 import 'db/class_cell.dart';
 
 class TimetableModel {
-  TimetableModel(this.title, this.timetable, this.header);
-  TimetableModel.empty(this.title) {
+  TimetableModel(this.title, this.isUserClassCell) {
     timetable = createEmptyTimetable();
     header = ClassCell(
       "$title/timetable_header",
-      "",
-      "",
-      "",
       -1,
       -1,
-      0,
+      isUserClassCell,
       title,
       null,
       null,
-      0,
-      0,
       null,
-      "",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
     );
   }
 
   late List<List<ClassCell?>> timetable;
   String title;
+  bool isUserClassCell;
   late ClassCell header;
 
   @override
@@ -112,7 +112,6 @@ class TimetableModel {
       },
     );
 
-    dialog.editingClassCell.resetCellId();
     await addCell(dialog.editingClassCell);
   }
 }

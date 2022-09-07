@@ -60,7 +60,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
 
               if (newTimetableTitle == null) return;
 
-              var newTimetable = TimetableModel.empty(newTimetableTitle);
+              var newTimetable = TimetableModel(newTimetableTitle, true);
               (await AppDatabase.getDatabase())
                   .currentClassCellDao
                   .insertClassCell(newTimetable.header);
@@ -170,15 +170,16 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
 
     for (var cell in allCells) {
       // if my timetable, year is 0
-      if (cell.year == 0) {
-        var timetableTitle = cell.term;
-
-        if (timetables[timetableTitle] == null) {
-          timetables[timetableTitle] = TimetableModel.empty(timetableTitle);
+      if (cell.isUserClassCell) {
+        if (timetables[cell.timetableTitle] == null) {
+          timetables[cell.timetableTitle] = TimetableModel(
+            cell.timetableTitle,
+            true,
+          );
         }
         if (cell.period >= 0 && cell.dayOfWeek >= 0) {
-          timetables[timetableTitle]!.timetable[cell.period][cell.dayOfWeek] =
-              cell;
+          timetables[cell.timetableTitle]!.timetable[cell.period]
+              [cell.dayOfWeek] = cell;
         }
       }
     }

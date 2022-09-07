@@ -238,7 +238,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         DropdownMenuItem(
           value: c,
           child: Text(
-            c.name,
+            c.name ?? "",
             style: TextStyle(
                 color: c.customColorInt != null
                     ? Color(c.customColorInt!)

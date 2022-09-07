@@ -30,7 +30,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
         child: Column(
           children: [
             Text(
-              widget.classCell.name,
+              widget.classCell.name ?? "",
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const Divider(
@@ -52,7 +52,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
           children: [
             buildClassDetailRow(
               "教室 : ",
-              widget.classCell.room,
+              widget.classCell.room ?? "",
               (value) {
                 Fluttertoast.showToast(msg: value);
               },
@@ -63,7 +63,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
             ),
             buildClassDetailRow(
               "教員 : ",
-              widget.classCell.teachers,
+              widget.classCell.teachers ?? "",
               (value) {
                 Fluttertoast.showToast(msg: value);
               },
@@ -172,8 +172,8 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                   MaterialPageRoute(
                     builder: (builder) {
                       return SinglePageScomb(
-                        Uri.parse(widget.classCell.url),
-                        widget.classCell.name,
+                        Uri.parse(widget.classCell.url ?? ""),
+                        widget.classCell.name ?? "",
                       );
                     },
                     fullscreenDialog: true,
@@ -210,7 +210,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
 
                   // encode url query
                   var queryString = await convertUrlQueryString(
-                    widget.classCell.name,
+                    widget.classCell.name ?? "",
                     encode: "EUC-JP",
                   );
 
