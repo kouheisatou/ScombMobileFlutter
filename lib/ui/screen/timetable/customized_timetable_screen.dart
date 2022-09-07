@@ -25,6 +25,7 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           widget.timetable.title + (widget.isEditMode ? "（編集中）" : ""),
