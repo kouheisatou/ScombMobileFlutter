@@ -12,15 +12,11 @@ import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
 import '../../common/db/class_cell.dart';
-import 'color_picker_dialog.dart';
 
 class ClassDetailDialog extends StatefulWidget {
-  ClassDetailDialog(this.classCell, {Key? key}) : super(key: key) {
-    selectedColor = classCell.customColorInt;
-  }
+  ClassDetailDialog(this.classCell, {Key? key}) : super(key: key);
 
   late ClassCell classCell;
-  late int? selectedColor;
 
   @override
   State<ClassDetailDialog> createState() => _ClassDetailDialogState();
@@ -82,12 +78,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 const Spacer(),
                 InkResponse(
                   onTap: () async {
-                    widget.selectedColor = await showDialog<int>(
-                      context: context,
-                      builder: (builder) {
-                        return ColorPickerDialog();
-                      },
-                    );
+                    await widget.classCell.showColorPickerDialog(context);
                     setState(() {});
                   },
                   child: Padding(
@@ -104,8 +95,8 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                             blurRadius: 5,
                           )
                         ],
-                        color: widget.selectedColor != null
-                            ? Color(widget.selectedColor!)
+                        color: widget.classCell.customColorInt != null
+                            ? Color(widget.classCell.customColorInt!)
                             : Colors.white70,
                       ),
                     ),
@@ -137,33 +128,10 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                             ),
                           ),
                           InkResponse(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (_) {
-                                  return AlertDialog(
-                                    title: const Text("メモ"),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text("閉じる"),
-                                      )
-                                    ],
-                                    content: TextFormField(
-                                      autofocus: true,
-                                      initialValue: widget.classCell.note,
-                                      maxLines: null,
-                                      onChanged: (text) async {
-                                        setState(() {
-                                          widget.classCell.setNoteText(text);
-                                        });
-                                      },
-                                    ),
-                                  );
-                                },
-                              );
+                            onTap: () async {
+                              await widget.classCell
+                                  .showNoteEditDialog(context);
+                              setState(() {});
                             },
                             child: const Padding(
                               padding: EdgeInsets.only(left: 10),
@@ -357,7 +325,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.pop(context, widget.selectedColor);
+            Navigator.pop(context);
           },
           child: const Text("閉じる"),
         ),

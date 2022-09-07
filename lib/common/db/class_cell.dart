@@ -1,7 +1,10 @@
 import 'package:floor/floor.dart';
+import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/shared_resource.dart';
+import 'package:scomb_mobile/ui/dialog/class_detail_dialog.dart';
 
+import '../../ui/dialog/color_picker_dialog.dart';
 import '../timetable_model.dart';
 
 @Entity(tableName: "class_cell")
@@ -41,6 +44,10 @@ class ClassCell {
     this.syllabusUrl,
     this.url,
   ) {
+    resetCellId();
+  }
+
+  void resetCellId() {
     cellId = "$year:$term-$period:$dayOfWeek-$classId";
   }
 
@@ -119,5 +126,80 @@ class ClassCell {
   @override
   String toString() {
     return "ClassCell { classId=$classId, name=$name, teachers=$teachers, room=$room, dayOfWeek=$dayOfWeek, period=$period, year=$year, term=$term, customColor=$customColorInt, absentCount=$absentCount, lateCount=$lateCount, note=$note }";
+  }
+
+  Future<void> showClassDetailDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (_) {
+        return ClassDetailDialog(this);
+      },
+    );
+  }
+
+  Future<void> showColorPickerDialog(BuildContext context) async {
+    int? selectedColor = await showDialog<int>(
+      context: context,
+      builder: (builder) {
+        return ColorPickerDialog();
+      },
+    );
+
+    await setColor(selectedColor);
+  }
+
+  Future<void> showNoteEditDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("メモ"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("閉じる"),
+            )
+          ],
+          content: TextFormField(
+            autofocus: true,
+            initialValue: note,
+            maxLines: null,
+            onChanged: (text) async {
+              setNoteText(text);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> showRemoveClassDialog(BuildContext context) async {
+    var timetable = currentTimetable ?? sharedTimetable;
+    var db = await AppDatabase.getDatabase();
+
+    await showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("削除"),
+          content: const Text("本当に削除しますか？"),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("キャンセル")),
+            TextButton(
+                onPressed: () async {
+                  await timetable.removeCell(this, db);
+                  Navigator.pop(context);
+                },
+                child: const Text("削除")),
+          ],
+        );
+      },
+    );
   }
 }

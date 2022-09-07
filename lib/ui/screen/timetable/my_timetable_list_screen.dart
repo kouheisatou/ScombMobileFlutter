@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scomb_mobile/common/db/class_cell.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/component/timetable_component.dart';
@@ -15,7 +14,7 @@ class MyTimetableListScreen extends StatefulWidget {
 
 class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
   var controller = TextEditingController();
-  List<TimetableModel> timetables = [];
+  Map<String, TimetableModel> timetables = {};
 
   @override
   void initState() {
@@ -62,32 +61,15 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
               if (newTimetableTitle == null) return;
 
               var newTimetable = TimetableModel.empty(newTimetableTitle);
-              var sampleClassCell = ClassCell(
-                "sample",
-                "何もないところをタップして追加",
-                "",
-                "",
-                3,
-                3,
-                0,
-                newTimetableTitle,
-                null,
-                null,
-                0,
-                0,
-                null,
-                "",
-              );
               (await AppDatabase.getDatabase())
                   .currentClassCellDao
-                  .insertClassCell(sampleClassCell);
-              newTimetable.timetable[3][3] = sampleClassCell;
+                  .insertClassCell(newTimetable.header);
 
               setState(() {
-                timetables.add(newTimetable);
+                timetables[newTimetableTitle] = newTimetable;
               });
 
-              Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (builder) {
@@ -98,6 +80,8 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                   },
                 ),
               );
+
+              setState(() {});
             },
             icon: const Icon(Icons.add),
           )
@@ -108,7 +92,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemCount: timetables.length,
         itemBuilder: (context, index) {
-          var currentTimetable = timetables[index];
+          var currentTimetable = timetables.entries.elementAt(index).value;
           return Padding(
             padding: const EdgeInsets.all(3.0),
             child: Container(
@@ -157,10 +141,10 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                                   },
                                   child: const Text("キャンセル")),
                               TextButton(
-                                  onPressed: () {
-                                    currentTimetable.removeAllCell();
+                                  onPressed: () async {
+                                    await currentTimetable.removeAllCell();
                                     setState(() {
-                                      timetables.removeAt(index);
+                                      timetables.remove(currentTimetable.title);
                                     });
                                     Navigator.pop(context);
                                   },
@@ -185,24 +169,23 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
     var allCells = await db.currentClassCellDao.getAllClasses();
 
     for (var cell in allCells) {
+      // if my timetable, year is 0
       if (cell.year == 0) {
-        bool timetableExist = false;
-        for (var timetable in timetables) {
-          if (timetable.title == cell.term) {
-            timetableExist = true;
-            timetable.timetable[cell.period][cell.dayOfWeek] = cell;
-          }
+        var timetableTitle = cell.term;
+
+        if (timetables[timetableTitle] == null) {
+          timetables[timetableTitle] = TimetableModel.empty(timetableTitle);
         }
-
-        if (!timetableExist) {
-          var newTimetable = TimetableModel.empty(cell.term);
-          newTimetable.timetable[cell.period][cell.dayOfWeek] = cell;
-          timetables.add(newTimetable);
-
-          print(newTimetable);
+        if (cell.period >= 0 && cell.dayOfWeek >= 0) {
+          timetables[timetableTitle]!.timetable[cell.period][cell.dayOfWeek] =
+              cell;
         }
       }
     }
+
+    timetables.forEach((key, value) {
+      print(value);
+    });
 
     setState(() {});
   }

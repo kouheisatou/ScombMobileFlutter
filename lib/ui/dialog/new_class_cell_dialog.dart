@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 
 import '../../common/db/class_cell.dart';
 import '../../common/timetable_model.dart';
-import 'color_picker_dialog.dart';
 
 class NewClassCellDialog extends StatefulWidget {
   NewClassCellDialog(this.row, this.col, this.currentTimetable,
@@ -55,12 +52,9 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
                 const Spacer(),
                 IconButton(
                   onPressed: () async {
-                    var db = await AppDatabase.getDatabase();
-                    await widget.currentTimetable.removeCell(
-                      widget.editingClassCell,
-                      db,
-                    );
-                    Navigator.pop(context, null);
+                    await widget.editingClassCell
+                        .showRemoveClassDialog(context);
+                    Navigator.pop(context);
                   },
                   icon: const Icon(Icons.delete),
                 )
@@ -71,33 +65,19 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
           onPressed: () {
             Navigator.pop(context, null);
           },
-          child: const Text("キャンセル"),
-        ),
-        TextButton(
-          onPressed: () {
-            // title check
-            if (widget.editingClassCell.name == "") {
-              Fluttertoast.showToast(msg: "タイトルを入力してください");
-              return;
-            }
-
-            insertClassCell();
-
-            // close dialog
-            Navigator.pop(context, widget.editingClassCell);
-          },
-          child: widget.isNew ? const Text("作成") : const Text("更新"),
+          child: const Text("閉じる"),
         ),
       ],
       content: SingleChildScrollView(
         child: Column(
           children: [
             TextFormField(
-              decoration: const InputDecoration(labelText: "授業名*"),
+              decoration: const InputDecoration(labelText: "授業名"),
               initialValue: widget.editingClassCell.name,
               onChanged: (text) {
                 widget.editingClassCell.name = text;
-                widget.editingClassCell.classId = "userClass.$text";
+                widget.editingClassCell.classId =
+                    "${widget.currentTimetable.title}/my_class/$text";
               },
             ),
             TextFormField(
@@ -131,13 +111,7 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
                 const Spacer(),
                 InkResponse(
                   onTap: () async {
-                    widget.editingClassCell.customColorInt =
-                        await showDialog<int>(
-                      context: context,
-                      builder: (builder) {
-                        return ColorPickerDialog();
-                      },
-                    );
+                    widget.editingClassCell.showColorPickerDialog(context);
                     setState(() {});
                   },
                   child: Padding(
@@ -167,10 +141,5 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
         ),
       ),
     );
-  }
-
-  Future<void> insertClassCell() async {
-    var db = await AppDatabase.getDatabase();
-    db.currentClassCellDao.insertClassCell(widget.editingClassCell);
   }
 }

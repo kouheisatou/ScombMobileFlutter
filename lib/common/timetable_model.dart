@@ -1,15 +1,34 @@
+import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 
+import '../ui/dialog/new_class_cell_dialog.dart';
 import 'db/class_cell.dart';
 
 class TimetableModel {
-  TimetableModel(this.title, this.timetable);
+  TimetableModel(this.title, this.timetable, this.header);
   TimetableModel.empty(this.title) {
     timetable = createEmptyTimetable();
+    header = ClassCell(
+      "$title/timetable_header",
+      "",
+      "",
+      "",
+      -1,
+      -1,
+      0,
+      title,
+      null,
+      null,
+      0,
+      0,
+      null,
+      "",
+    );
   }
 
   late List<List<ClassCell?>> timetable;
   String title;
+  late ClassCell header;
 
   @override
   String toString() {
@@ -25,6 +44,14 @@ class TimetableModel {
       for (int c = 0; c < timetable[0].length; c++) {
         timetable[r][c] = null;
       }
+    }
+  }
+
+  Future<void> addCell(ClassCell cell) async {
+    var db = await AppDatabase.getDatabase();
+    await db.currentClassCellDao.insertClassCell(cell);
+    if (cell.period >= 0 && cell.dayOfWeek >= 0) {
+      timetable[cell.period][cell.dayOfWeek] = cell;
     }
   }
 
@@ -53,15 +80,39 @@ class TimetableModel {
   Future<void> removeAllCell() async {
     var db = await AppDatabase.getDatabase();
 
-    await applyToAllCells((classCell) {
+    await applyToAllCells((classCell) async {
       if (classCell != null) {
-        removeCell(classCell, db);
+        await removeCell(classCell, db);
       }
     });
+    await removeCell(header, db);
   }
 
   Future<void> removeCell(ClassCell cell, AppDatabase db) async {
     await db.currentClassCellDao.removeClassCell(cell);
-    timetable[cell.period][cell.dayOfWeek] = null;
+    print("removed $cell");
+    if (cell.period >= 0 && cell.dayOfWeek >= 0) {
+      timetable[cell.period][cell.dayOfWeek] = null;
+    }
+  }
+
+  Future<void> showNewClassCellDialog(int row, int col, BuildContext context,
+      {ClassCell? classCell}) async {
+    var dialog = NewClassCellDialog(
+      row,
+      col,
+      this,
+      editingClassCell: classCell,
+    );
+
+    await showDialog(
+      context: context,
+      builder: (_) {
+        return dialog;
+      },
+    );
+
+    dialog.editingClassCell.resetCellId();
+    await addCell(dialog.editingClassCell);
   }
 }
