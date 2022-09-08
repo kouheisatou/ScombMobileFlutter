@@ -202,7 +202,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                 );
               },
             )
-          : Container(
+          : SizedBox(
               width: double.infinity,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
