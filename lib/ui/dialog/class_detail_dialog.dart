@@ -210,7 +210,8 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
 
                   // encode url query
                   var queryString = await convertUrlQueryString(
-                    widget.classCell.name ?? "",
+                    widget.classCell.name?.replaceAll(RegExp("[１-９Ａ-Ｚ]"), "") ??
+                        "",
                     encode: "EUC-JP",
                   );
 
