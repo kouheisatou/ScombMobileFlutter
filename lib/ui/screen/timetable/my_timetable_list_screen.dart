@@ -140,7 +140,12 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                     height: double.infinity,
                     color: Colors.white38,
                   ),
-                  Center(child: Text(currentTimetable.title)),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(currentTimetable.title),
+                    ),
+                  ),
                   InkWell(
                     onTap: () async {
                       await Navigator.push(
