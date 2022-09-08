@@ -111,93 +111,114 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
           )
         ],
       ),
-      body: GridView.builder(
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemCount: timetables.length,
-        itemBuilder: (context, index) {
-          var currentTimetable = timetables.entries.elementAt(index).value;
-          return Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueGrey),
-              ),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TimetableComponent(
-                      currentTimetable,
-                      true,
-                      isEditMode: false,
-                      shouldEmphasizeToday: false,
-                      shouldShowCellText: false,
+      body: timetables.isNotEmpty
+          ? GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2),
+              itemCount: timetables.length,
+              itemBuilder: (context, index) {
+                var currentTimetable =
+                    timetables.entries.elementAt(index).value;
+                return Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blueGrey),
                     ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: Colors.white38,
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Text(currentTimetable.title),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (builder) {
-                            return CustomizedTimetableScreen(
-                              currentTimetable,
-                              isEditMode: false,
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TimetableComponent(
+                            currentTimetable,
+                            true,
+                            isEditMode: false,
+                            shouldEmphasizeToday: false,
+                            shouldShowCellText: false,
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          color: Colors.white38,
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Text(currentTimetable.title),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (builder) {
+                                  return CustomizedTimetableScreen(
+                                    currentTimetable,
+                                    isEditMode: false,
+                                  );
+                                },
+                              ),
+                            );
+                            setState(() {});
+                          },
+                          onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return AlertDialog(
+                                  title: const Text("削除"),
+                                  content: const Text("本当に削除しますか？"),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("キャンセル")),
+                                    TextButton(
+                                        onPressed: () async {
+                                          await (await AppDatabase
+                                                  .getDatabase())
+                                              .currentClassCellDao
+                                              .removeTimetable(
+                                                  currentTimetable.title);
+                                          setState(() {
+                                            timetables
+                                                .remove(currentTimetable.title);
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("削除")),
+                                  ],
+                                );
+                              },
                             );
                           },
-                        ),
-                      );
-                      setState(() {});
-                    },
-                    onLongPress: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) {
-                          return AlertDialog(
-                            title: const Text("削除"),
-                            content: const Text("本当に削除しますか？"),
-                            actions: [
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("キャンセル")),
-                              TextButton(
-                                  onPressed: () async {
-                                    await (await AppDatabase.getDatabase())
-                                        .currentClassCellDao
-                                        .removeTimetable(
-                                            currentTimetable.title);
-                                    setState(() {
-                                      timetables.remove(currentTimetable.title);
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("削除")),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  )
-                ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            )
+          : Container(
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.only(right: 14, bottom: 5),
+                      child: Text("↑"),
+                    ),
+                    Text("ここから新しい時間割を追加"),
+                  ],
+                ),
               ),
             ),
-          );
-        },
-      ),
     );
   }
 
