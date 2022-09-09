@@ -11,6 +11,7 @@ const SURVEY_LIST_PAGE_URL =
     "https://scombz.shibaura-it.ac.jp/portal/surveys/list";
 const SURVEY_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/surveys/take";
 const TWITTER_URL = "https://twitter.com/ScombMobile";
+const GITHUB_URL = "https://github.com/kouheisatou/ScombMobileFlutter";
 const PRIVACY_POLICY_URL = "https://kouheisatou.github.io/ScombMobileFlutter/";
 const SYLLABUS_SEARCH_URL =
     "http://syllabus.sic.shibaura-it.ac.jp/namazu/namazu.cgi?ajaxmode=true&query=\${className}&whence=0&idxname=\${admissionYearAndSection}&max=20&result=normal&sort=score#:~:text=%E6%A4%9C%E7%B4%A2%E7%B5%90%E6%9E%9C,-%E5%8F%82%E8%80%83%E3%83%92%E3%83%83%E3%83%88%E6%95%B0";

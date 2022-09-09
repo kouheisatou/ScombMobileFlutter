@@ -393,6 +393,19 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
             SettingsTile(
+              title: const Text("GitHub"),
+              onPressed: (context) async {
+                if (await canLaunchUrl(
+                  Uri.parse(GITHUB_URL),
+                )) {
+                  await launchUrl(
+                    Uri.parse(GITHUB_URL),
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+              },
+            ),
+            SettingsTile(
               title: const Text("Twitter"),
               onPressed: (context) async {
                 if (await canLaunchUrl(
