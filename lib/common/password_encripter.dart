@@ -3,8 +3,8 @@ import 'package:encrypt/encrypt.dart';
 // TODO create file(/lib/keys.dart) and define const value of encrypt key here.
 import '../keys.dart' as keys;
 
-String encryptAES(String? plainText) {
-  var result = "";
+String? encryptAES(String? plainText) {
+  String? result;
   try {
     final key = Key.fromUtf8(keys.ENCRYPT_KEY_32);
     final iv = IV.fromLength(16);
@@ -23,8 +23,8 @@ String encryptAES(String? plainText) {
   return result;
 }
 
-String decryptAES(String? encryptedText) {
-  var result = "";
+String? decryptAES(String? encryptedText) {
+  String? result;
   try {
     final key = Key.fromUtf8(keys.ENCRYPT_KEY_32);
     final iv = IV.fromLength(16);

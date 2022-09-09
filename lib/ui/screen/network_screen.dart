@@ -32,9 +32,9 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     var db = await AppDatabase.getDatabase();
     try {
       // recover session_id from local db
-      var sessionIdSetting = await db.currentSettingDao
-          .getSetting(decryptAES(SettingKeys.SESSION_ID));
-      var savedSessionId = sessionIdSetting?.settingValue;
+      var sessionIdSetting =
+          await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
+      var savedSessionId = decryptAES(sessionIdSetting?.settingValue);
 
       // first launch
       if (savedSessionId == null) {
@@ -48,7 +48,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
                   onPressed: () async {
                     db.currentSettingDao.insertSetting(
                       Setting(
-                        encryptAES(SettingKeys.SESSION_ID),
+                        SettingKeys.SESSION_ID,
                         "",
                       ),
                     );

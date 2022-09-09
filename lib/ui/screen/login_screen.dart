@@ -28,12 +28,12 @@ class _LoginScreenState extends State<LoginScreen> {
     var usernameSetting =
         await db.currentSettingDao.getSetting(SettingKeys.USERNAME);
     var passwordSetting =
-        await db.currentSettingDao.getSetting(decryptAES(SettingKeys.PASSWORD));
-    var savedSessionID = await db.currentSettingDao
-        .getSetting(decryptAES(SettingKeys.SESSION_ID));
+        await db.currentSettingDao.getSetting(SettingKeys.PASSWORD);
+    var savedSessionID =
+        await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
 
     _userController.text = usernameSetting?.settingValue ?? "";
-    _passwordController.text = passwordSetting?.settingValue ?? "";
+    _passwordController.text = decryptAES(passwordSetting?.settingValue) ?? "";
 
     if (usernameSetting != null &&
         passwordSetting != null &&
@@ -132,16 +132,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // save session_id to db
                       var db = await AppDatabase.getDatabase();
-                      db.currentSettingDao.insertSetting(Setting(
-                          encryptAES(SettingKeys.SESSION_ID), sessionId!));
-                      db.currentSettingDao.insertSetting(Setting(
-                        SettingKeys.PASSWORD,
-                        encryptAES(_passwordController.text),
-                      ));
-                      db.currentSettingDao.insertSetting(Setting(
-                        SettingKeys.USERNAME,
-                        _userController.text,
-                      ));
+                      db.currentSettingDao.insertSetting(
+                        Setting(
+                          SettingKeys.SESSION_ID,
+                          encryptAES(sessionId!),
+                        ),
+                      );
+                      db.currentSettingDao.insertSetting(
+                        Setting(
+                          SettingKeys.PASSWORD,
+                          encryptAES(_passwordController.text),
+                        ),
+                      );
+                      db.currentSettingDao.insertSetting(
+                        Setting(
+                          SettingKeys.USERNAME,
+                          _userController.text,
+                        ),
+                      );
 
                       // set bottom navigation timetable
                       Navigator.pop(context, false);

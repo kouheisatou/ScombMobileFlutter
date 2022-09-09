@@ -112,8 +112,8 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SettingsTile(
               title: const Text("パスワード"),
-              value: Text(
-                  genHiddenText(decryptAES(settings[SettingKeys.PASSWORD]))),
+              value: Text(genHiddenText(
+                  decryptAES(settings[SettingKeys.PASSWORD]) ?? "")),
               onPressed: (context) {
                 showDialog(
                   context: context,
@@ -126,8 +126,8 @@ class _SettingScreenState extends State<SettingScreen> {
                             decryptAES(settings[SettingKeys.PASSWORD]),
                         onChanged: (text) {
                           updateSetting(
-                            encryptAES(SettingKeys.PASSWORD),
-                            text,
+                            SettingKeys.PASSWORD,
+                            encryptAES(text),
                           );
                         },
                         decoration: const InputDecoration(hintText: "パスワード"),
