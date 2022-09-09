@@ -3,7 +3,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
-import 'package:scomb_mobile/common/utils.dart';
+import 'package:scomb_mobile/common/password_encripter.dart';
 
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
 
     _userController.text = usernameSetting?.settingValue ?? "";
-    _passwordController.text = passwordSetting?.settingValue ?? "";
+    _passwordController.text = decryptAES(passwordSetting?.settingValue) ?? "";
 
     if (usernameSetting != null &&
         passwordSetting != null &&
@@ -49,8 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void startLogin() {
-    print(
-        "login : user=${_userController.text}, pass=${genHiddenText(_passwordController.text)}");
     CookieManager cookieManager = CookieManager.instance();
     cookieManager.deleteAllCookies();
     webView?.loadUrl(
@@ -133,20 +131,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // login succeeded
                     if (sessionId != null) {
-                      print("session_id=$sessionId");
-
                       // save session_id to db
                       var db = await AppDatabase.getDatabase();
                       db.currentSettingDao.insertSetting(
-                          Setting(SettingKeys.SESSION_ID, sessionId!));
-                      db.currentSettingDao.insertSetting(Setting(
-                        SettingKeys.PASSWORD,
-                        _passwordController.text,
-                      ));
-                      db.currentSettingDao.insertSetting(Setting(
-                        SettingKeys.USERNAME,
-                        _userController.text,
-                      ));
+                        Setting(
+                          SettingKeys.SESSION_ID,
+                          encryptAES(sessionId!),
+                        ),
+                      );
+                      db.currentSettingDao.insertSetting(
+                        Setting(
+                          SettingKeys.PASSWORD,
+                          encryptAES(_passwordController.text),
+                        ),
+                      );
+                      db.currentSettingDao.insertSetting(
+                        Setting(
+                          SettingKeys.USERNAME,
+                          _userController.text,
+                        ),
+                      );
 
                       // set bottom navigation timetable
                       Navigator.pop(context, false);

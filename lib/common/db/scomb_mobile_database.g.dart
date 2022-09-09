@@ -76,6 +76,7 @@ class _$AppDatabase extends AppDatabase {
         await callback?.onConfigure?.call(database);
       },
       onOpen: (database) async {
+        print("database_version=${(await database.getVersion()).toString()}");
         await callback?.onOpen?.call(database);
       },
       onUpgrade: (database, startVersion, endVersion) async {
@@ -83,6 +84,7 @@ class _$AppDatabase extends AppDatabase {
             database, startVersion, endVersion, migrations);
 
         await callback?.onUpgrade?.call(database, startVersion, endVersion);
+        print("database_version=${(await database.getVersion()).toString()}");
       },
       onCreate: (database, version) async {
         await database.execute(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/database_exception.dart';
 import 'package:scomb_mobile/common/login_exception.dart';
+import 'package:scomb_mobile/common/password_encripter.dart';
 import 'package:scomb_mobile/common/shared_resource.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
 
@@ -33,7 +34,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       // recover session_id from local db
       var sessionIdSetting =
           await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
-      var savedSessionId = sessionIdSetting?.settingValue;
+      var savedSessionId = decryptAES(sessionIdSetting?.settingValue);
 
       // first launch
       if (savedSessionId == null) {
