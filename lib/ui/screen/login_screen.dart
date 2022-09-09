@@ -4,7 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/password_encripter.dart';
-import 'package:scomb_mobile/common/utils.dart';
 
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
@@ -50,8 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void startLogin() {
-    print(
-        "login : user=${_userController.text}, pass=${genHiddenText(_passwordController.text)}");
     CookieManager cookieManager = CookieManager.instance();
     cookieManager.deleteAllCookies();
     webView?.loadUrl(
@@ -128,8 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // login succeeded
                     if (sessionId != null) {
-                      print("session_id=$sessionId");
-
                       // save session_id to db
                       var db = await AppDatabase.getDatabase();
                       db.currentSettingDao.insertSetting(

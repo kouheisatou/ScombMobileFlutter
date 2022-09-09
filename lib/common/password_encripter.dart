@@ -14,11 +14,10 @@ String? encryptAES(String? plainText) {
     final encrypted = encryptor.encrypt(plainText ?? "", iv: iv);
 
     result = encrypted.base64;
-  } catch (e) {
+  } catch (e, stackTrace) {
     print(e);
+    print(stackTrace);
   }
-
-  print(result);
 
   return result;
 }
@@ -34,10 +33,10 @@ String? decryptAES(String? encryptedText) {
     final decrypted = encryptor.decrypt64(encryptedText ?? "", iv: iv);
 
     result = decrypted;
-  } catch (e) {
+  } catch (e, stackTrace) {
     print(e);
+    print(stackTrace);
   }
-  print(result);
 
   return result;
 }
