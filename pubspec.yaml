@@ -67,6 +67,8 @@ dependencies:
   app_review: ^2.1.2+1
   # charset_converter:
   charset_converter: ^2.1.0
+  # encrypt
+  encrypt: ^5.0.1
 
 flutter_native_splash:
   image: "resources/splash.png"

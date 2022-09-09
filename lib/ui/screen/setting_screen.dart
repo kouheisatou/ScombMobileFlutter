@@ -2,6 +2,7 @@ import 'package:app_review/app_review.dart';
 import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
+import 'package:scomb_mobile/common/password_encripter.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
@@ -111,7 +112,8 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SettingsTile(
               title: const Text("パスワード"),
-              value: Text(genHiddenText(settings[SettingKeys.PASSWORD] ?? "")),
+              value: Text(
+                  genHiddenText(decryptAES(settings[SettingKeys.PASSWORD]))),
               onPressed: (context) {
                 showDialog(
                   context: context,
@@ -120,9 +122,13 @@ class _SettingScreenState extends State<SettingScreen> {
                       title: const Text("パスワード"),
                       content: TextFormField(
                         obscureText: true,
-                        initialValue: settings[SettingKeys.PASSWORD],
+                        initialValue:
+                            decryptAES(settings[SettingKeys.PASSWORD]),
                         onChanged: (text) {
-                          updateSetting(SettingKeys.PASSWORD, text);
+                          updateSetting(
+                            encryptAES(SettingKeys.PASSWORD),
+                            text,
+                          );
                         },
                         decoration: const InputDecoration(hintText: "パスワード"),
                       ),

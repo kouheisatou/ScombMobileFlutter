@@ -3,6 +3,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
+import 'package:scomb_mobile/common/password_encripter.dart';
 import 'package:scomb_mobile/common/utils.dart';
 
 import '../../common/shared_resource.dart';
@@ -27,9 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
     var usernameSetting =
         await db.currentSettingDao.getSetting(SettingKeys.USERNAME);
     var passwordSetting =
-        await db.currentSettingDao.getSetting(SettingKeys.PASSWORD);
-    var savedSessionID =
-        await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
+        await db.currentSettingDao.getSetting(decryptAES(SettingKeys.PASSWORD));
+    var savedSessionID = await db.currentSettingDao
+        .getSetting(decryptAES(SettingKeys.SESSION_ID));
 
     _userController.text = usernameSetting?.settingValue ?? "";
     _passwordController.text = passwordSetting?.settingValue ?? "";
@@ -131,11 +132,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // save session_id to db
                       var db = await AppDatabase.getDatabase();
-                      db.currentSettingDao.insertSetting(
-                          Setting(SettingKeys.SESSION_ID, sessionId!));
+                      db.currentSettingDao.insertSetting(Setting(
+                          encryptAES(SettingKeys.SESSION_ID), sessionId!));
                       db.currentSettingDao.insertSetting(Setting(
                         SettingKeys.PASSWORD,
-                        _passwordController.text,
+                        encryptAES(_passwordController.text),
                       ));
                       db.currentSettingDao.insertSetting(Setting(
                         SettingKeys.USERNAME,
