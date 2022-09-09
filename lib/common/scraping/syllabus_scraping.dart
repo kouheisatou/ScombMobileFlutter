@@ -16,7 +16,7 @@ Future<Map<String, String>> fetchAllSyllabusSearchResult(String url) async {
 
   var document = parse(bodyString);
 
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 200; i++) {
     var searchResult = document.getElementById("hit_$i");
     if (searchResult == null) continue;
 

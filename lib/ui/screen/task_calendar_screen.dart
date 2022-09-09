@@ -66,9 +66,13 @@ class _TaskCalendarScreenState extends TaskListScreenState {
           ),
           onDaySelected: _onDaySelected,
           eventLoader: getTaskForDay,
-          headerStyle: HeaderStyle(titleTextFormatter: (date, _) {
-            return "${date.year}年${date.month}月";
-          }),
+          headerStyle: HeaderStyle(
+            titleTextFormatter: (date, _) {
+              return "${date.year}年 ${date.month}月";
+            },
+            formatButtonDecoration: const BoxDecoration(),
+            formatButtonTextStyle: const TextStyle(color: Colors.grey),
+          ),
           calendarBuilders: CalendarBuilders(
             markerBuilder: (_, date, dailyTasks) {
               List<Widget> listChildren = [];

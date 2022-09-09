@@ -28,6 +28,7 @@ class ScombMobileState extends State<ScombMobile> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "ScombMobile",
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
