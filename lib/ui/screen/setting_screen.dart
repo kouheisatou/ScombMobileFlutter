@@ -247,6 +247,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       (key, value) async {
                         updateSetting(SettingKeys.Section, value.toString());
                       },
+                      description: "シラバスの検索時に必要になります",
                     );
                   },
                 );

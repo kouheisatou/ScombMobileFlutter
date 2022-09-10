@@ -13,24 +13,34 @@ class SelectorDialog<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
+      titleTextStyle: const TextStyle(color: Colors.grey),
+      title: description != null
+          ? Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1, color: Colors.grey),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 30,
+                  right: 20,
+                  left: 20,
+                  top: 10,
+                ),
+                child: Text(
+                  description!,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          : null,
       children: buildList(context),
     );
   }
 
   List<Widget> buildList(BuildContext context) {
     List<Widget> listChildren = [];
-
-    if (description != null) {
-      listChildren.add(
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text(
-            description!,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
-    }
 
     listChildren.add(
       const Divider(

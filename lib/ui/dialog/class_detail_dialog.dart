@@ -227,7 +227,8 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
 
                   // encode url query
                   var queryString = await convertUrlQueryString(
-                    widget.classCell.name?.replaceAll(RegExp("[１-９Ａ-Ｚ]"), "") ??
+                    widget.classCell.name
+                            ?.replaceAll(RegExp("[１-９Ａ-Ｚ1-9]"), "") ??
                         "",
                     encode: "EUC-JP",
                   );
@@ -261,8 +262,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                         return SelectorDialog<String>(
                           results,
                           (key, value) async {},
-                          description:
-                              "授業名にマッチするシラバスが見つかりませんでした。\n\n下の選択肢から正しいシラバスを選択してください。",
+                          description: "複数の検索結果が見つかりました",
                         );
                       },
                     );
