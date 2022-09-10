@@ -88,8 +88,8 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
         child: Text(
           "$value単位",
           style: TextStyle(
-            color: (key == Colors.white70.value) ? Colors.grey : Color(key),
-          ),
+              color: (key == Colors.white70.value) ? Colors.white : Color(key),
+              shadows: const [Shadow(blurRadius: 20, color: Colors.grey)]),
         ),
       ));
     });
