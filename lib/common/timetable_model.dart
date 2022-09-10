@@ -100,4 +100,26 @@ class TimetableModel {
       await addCell(dialogResponse);
     }
   }
+
+  Map<int, int> getColorAndCreditMap() {
+    Map<int, int> colorAndCreditMap = {};
+
+    applyToAllCells((classCell) {
+      if (classCell != null) {
+        if (colorAndCreditMap[
+                classCell.customColorInt ?? Colors.white70.value] !=
+            null) {
+          colorAndCreditMap[classCell.customColorInt ?? Colors.white70.value] =
+              colorAndCreditMap[
+                      classCell.customColorInt ?? Colors.white70.value]! +
+                  (classCell.numberOfCredit ?? 0);
+        } else {
+          colorAndCreditMap[classCell.customColorInt ?? Colors.white70.value] =
+              classCell.numberOfCredit ?? 0;
+        }
+      }
+    });
+
+    return colorAndCreditMap;
+  }
 }

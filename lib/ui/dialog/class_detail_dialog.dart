@@ -69,14 +69,14 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               },
             ),
             Visibility(
-              visible: widget.classCell.numberOfCredit != null,
+              visible: widget.classCell.isUserClassCell,
               child: const Divider(
                 height: 20,
                 color: Colors.transparent,
               ),
             ),
             Visibility(
-              visible: widget.classCell.numberOfCredit != null,
+              visible: widget.classCell.isUserClassCell,
               child: buildClassDetailRow(
                 "単位数 : ",
                 (widget.classCell.numberOfCredit ?? 0).toString(),

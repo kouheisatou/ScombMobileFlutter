@@ -50,10 +50,12 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
       ),
       body: Column(
         children: [
-          Row(
-            children: [
-              Text(widget.timetable.getSumOfNumberOfCredit().toString()),
-            ],
+          Container(
+            color: Colors.blueGrey.shade50,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(children: buildNumberOfCreditRow()),
+            ),
           ),
           Expanded(
             child: TimetableComponent(
@@ -68,6 +70,30 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
         ],
       ),
     );
+  }
+
+  List<Widget> buildNumberOfCreditRow() {
+    List<Widget> list = [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          "計${widget.timetable.getSumOfNumberOfCredit()}単位",
+          style: const TextStyle(color: Colors.black54),
+        ),
+      )
+    ];
+    widget.timetable.getColorAndCreditMap().forEach((key, value) {
+      list.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          "$value単位",
+          style: TextStyle(
+            color: (key == Colors.white70.value) ? Colors.grey : Color(key),
+          ),
+        ),
+      ));
+    });
+    return list;
   }
 
   void showModeToast() {
