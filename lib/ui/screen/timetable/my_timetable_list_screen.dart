@@ -146,7 +146,17 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.all(10),
-                            child: Text(currentTimetable.title),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(currentTimetable.title),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                      "${currentTimetable.getSumOfNumberOfCredit()}単位"),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         InkWell(
