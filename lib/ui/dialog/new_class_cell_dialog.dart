@@ -26,6 +26,7 @@ class NewClassCellDialog extends StatefulWidget {
         null,
         null,
         currentTimetable,
+        0,
       );
       isNew = true;
     } else {
@@ -213,7 +214,56 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
                   },
                 ),
                 const Divider(
-                  height: 15,
+                  height: 10,
+                  color: Colors.transparent,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "単位数 : ",
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () async {
+                        var db = await AppDatabase.getDatabase();
+                        widget.editingClassCell.numberOfCredit ??= 0;
+                        if (widget.editingClassCell.numberOfCredit! > 0) {
+                          widget.editingClassCell.numberOfCredit =
+                              widget.editingClassCell.numberOfCredit! - 1;
+                          await db.currentClassCellDao
+                              .insertClassCell(widget.editingClassCell);
+                          setState(() {});
+                        }
+                      },
+                      icon: const Text(
+                        "<",
+                        style: TextStyle(color: Colors.blueGrey),
+                      ),
+                    ),
+                    Text(
+                      (widget.editingClassCell.numberOfCredit ?? 0).toString(),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        var db = await AppDatabase.getDatabase();
+                        widget.editingClassCell.numberOfCredit ??= 0;
+                        widget.editingClassCell.numberOfCredit =
+                            widget.editingClassCell.numberOfCredit! + 1;
+                        await db.currentClassCellDao
+                            .insertClassCell(widget.editingClassCell);
+                        setState(() {});
+                      },
+                      icon: const Text(
+                        ">",
+                        style: TextStyle(color: Colors.blueGrey),
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(
+                  height: 10,
                   color: Colors.transparent,
                 ),
                 Stack(

@@ -19,6 +19,7 @@ class CustomizedTimetableScreen extends StatefulWidget {
 class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
   @override
   void initState() {
+    super.initState();
     if (widget.isEditMode) {
       showModeToast();
     }
@@ -42,15 +43,29 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
             },
             icon: Icon(
               Icons.edit,
-              color: widget.isEditMode ? Colors.amber.shade100 : Colors.white,
+              color: widget.isEditMode ? Colors.amber.shade500 : Colors.white,
             ),
           ),
         ],
       ),
-      body: TimetableComponent(
-        widget.timetable,
-        true,
-        isEditMode: widget.isEditMode,
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Text(widget.timetable.getSumOfNumberOfCredit().toString()),
+            ],
+          ),
+          Expanded(
+            child: TimetableComponent(
+              widget.timetable,
+              true,
+              isEditMode: widget.isEditMode,
+              onUpdatedUi: () {
+                setState(() {});
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

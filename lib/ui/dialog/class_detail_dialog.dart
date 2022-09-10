@@ -68,6 +68,23 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
                 Fluttertoast.showToast(msg: value);
               },
             ),
+            Visibility(
+              visible: widget.classCell.numberOfCredit != null,
+              child: const Divider(
+                height: 20,
+                color: Colors.transparent,
+              ),
+            ),
+            Visibility(
+              visible: widget.classCell.numberOfCredit != null,
+              child: buildClassDetailRow(
+                "単位数 : ",
+                (widget.classCell.numberOfCredit ?? 0).toString(),
+                (value) {
+                  Fluttertoast.showToast(msg: value);
+                },
+              ),
+            ),
             const Divider(
               height: 20,
               color: Colors.transparent,

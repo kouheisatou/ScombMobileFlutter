@@ -70,7 +70,7 @@ class _$AppDatabase extends AppDatabase {
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 3,
+      version: 4,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -90,7 +90,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `settings` (`settingKey` TEXT NOT NULL, `settingValue` TEXT, PRIMARY KEY (`settingKey`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `period` INTEGER NOT NULL, `dayOfWeek` INTEGER NOT NULL, `isUserClassCell` INTEGER NOT NULL, `timetableTitle` TEXT NOT NULL, `year` INTEGER, `term` TEXT, `name` TEXT, `teachers` TEXT, `room` TEXT, `customColorInt` INTEGER, `url` TEXT, `note` TEXT, `syllabusUrl` TEXT, PRIMARY KEY (`classId`, `period`, `dayOfWeek`, `isUserClassCell`, `timetableTitle`))');
+            'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `period` INTEGER NOT NULL, `dayOfWeek` INTEGER NOT NULL, `isUserClassCell` INTEGER NOT NULL, `timetableTitle` TEXT NOT NULL, `year` INTEGER, `term` TEXT, `name` TEXT, `teachers` TEXT, `room` TEXT, `customColorInt` INTEGER, `url` TEXT, `note` TEXT, `syllabusUrl` TEXT, `numberOfCredit` INTEGER, PRIMARY KEY (`classId`, `period`, `dayOfWeek`, `isUserClassCell`, `timetableTitle`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, `addManually` INTEGER NOT NULL, `done` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
@@ -190,7 +190,8 @@ class _$ClassCellDao extends ClassCellDao {
                   'customColorInt': item.customColorInt,
                   'url': item.url,
                   'note': item.note,
-                  'syllabusUrl': item.syllabusUrl
+                  'syllabusUrl': item.syllabusUrl,
+                  'numberOfCredit': item.numberOfCredit
                 }),
         _classCellDeletionAdapter = DeletionAdapter(
             database,
@@ -210,7 +211,8 @@ class _$ClassCellDao extends ClassCellDao {
                   'customColorInt': item.customColorInt,
                   'url': item.url,
                   'note': item.note,
-                  'syllabusUrl': item.syllabusUrl
+                  'syllabusUrl': item.syllabusUrl,
+                  'numberOfCredit': item.numberOfCredit
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -240,7 +242,8 @@ class _$ClassCellDao extends ClassCellDao {
             row['customColorInt'] as int?,
             row['url'] as String?,
             row['note'] as String?,
-            row['syllabusUrl'] as String?));
+            row['syllabusUrl'] as String?,
+            row['numberOfCredit'] as int?));
   }
 
   @override
@@ -261,7 +264,8 @@ class _$ClassCellDao extends ClassCellDao {
             row['customColorInt'] as int?,
             row['url'] as String?,
             row['note'] as String?,
-            row['syllabusUrl'] as String?),
+            row['syllabusUrl'] as String?,
+            row['numberOfCredit'] as int?),
         arguments: [classId]);
   }
 

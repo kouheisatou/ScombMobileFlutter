@@ -28,6 +28,7 @@ class ClassCell {
   String? url;
   String? note;
   String? syllabusUrl;
+  int? numberOfCredit;
 
   @ignore
   late TimetableModel currentTimetable = sharedTimetable;
@@ -47,6 +48,7 @@ class ClassCell {
     this.url,
     this.note,
     this.syllabusUrl,
+    this.numberOfCredit,
   );
 
   ClassCell.user(
@@ -65,6 +67,7 @@ class ClassCell {
     this.note,
     this.syllabusUrl,
     this.currentTimetable,
+    this.numberOfCredit,
   );
 
   Future<void> setColor(int? colorInt, {bool applyToChildren = true}) async {
@@ -86,6 +89,26 @@ class ClassCell {
         if (classCell != null) {
           if (classCell.classId == classId) {
             await classCell.setColor(customColorInt, applyToChildren: false);
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> setNumberOfCredit(int? numberOfCredit,
+      {bool applyToChildren = true}) async {
+    if (numberOfCredit == null) return;
+    var db = await AppDatabase.getDatabase();
+    this.numberOfCredit = numberOfCredit;
+    await db.currentClassCellDao.insertClassCell(this);
+
+    // apply color to same class
+    if (applyToChildren) {
+      return await (currentTimetable).applyToAllCells((classCell) async {
+        if (classCell != null) {
+          if (classCell.classId == classId) {
+            await classCell.setNumberOfCredit(numberOfCredit,
+                applyToChildren: false);
           }
         }
       });

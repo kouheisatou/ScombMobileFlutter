@@ -90,6 +90,7 @@ Future<void> _constructTimetableArray(
         CLASS_PAGE_URL.replaceFirst("\${classId}", id),
         null,
         null,
+        null,
       );
       sharedTimetable.timetable[r][c] = newCell;
 

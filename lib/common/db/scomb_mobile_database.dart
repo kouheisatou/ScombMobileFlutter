@@ -12,7 +12,7 @@ import 'class_cell.dart';
 
 part 'scomb_mobile_database.g.dart';
 
-@Database(version: 3, entities: [Setting, ClassCell, Task])
+@Database(version: 4, entities: [Setting, ClassCell, Task])
 abstract class AppDatabase extends FloorDatabase {
   static AppDatabase? _appDatabase;
 
@@ -25,23 +25,41 @@ abstract class AppDatabase extends FloorDatabase {
   static Future<AppDatabase> getDatabase() async {
     return _appDatabase ??= await $FloorAppDatabase
         .databaseBuilder('scomb_mobile.db')
-        .addMigrations([migration1to2, migration1to3, migration2to3]).build();
+        .addMigrations([
+      migration1to2,
+      migration1to3,
+      migration2to3,
+      migration1to4,
+      migration2to4,
+      migration3to4,
+    ]).build();
   }
 }
 
 final migration1to2 = Migration(1, 2, (database) {
-  print("migration_1_to_2");
   return database.execute("ALTER TABLE class_cell ADD COLUMN syllabusUrl TEXT");
 });
 
 final migration1to3 = Migration(1, 3, (database) async {
-  print("migration_1_to_3");
   await migrationTo3(database);
 });
 
 final migration2to3 = Migration(2, 3, (database) async {
-  print("migration_2_to_3");
   await migrationTo3(database);
+});
+
+final migration1to4 = Migration(1, 4, (database) async {
+  await migrationTo3(database);
+  await migrationTo4(database);
+});
+
+final migration2to4 = Migration(2, 4, (database) async {
+  await migrationTo3(database);
+  await migrationTo4(database);
+});
+
+final migration3to4 = Migration(3, 4, (database) async {
+  await migrationTo4(database);
 });
 
 // class_cell primary key change
@@ -51,4 +69,10 @@ Future<void> migrationTo3(sqflite.Database database) async {
       "CREATE TABLE class_cell(classId TEXT NOT NULL, period INTEGER NOT NULL, dayOfWeek INTEGER NOT NULL, isUserClassCell INTEGER NOT NULL, timetableTitle TEXT NOT NULL, year INTEGER, term TEXT, name TEXT, teachers TEXT, room TEXT, customColorInt INTEGER, url TEXT, note TEXT, syllabusUrl TEXT, PRIMARY KEY (classId, period, dayOfWeek, isUserClassCell, timetableTitle));");
   await database.rawQuery(
       "INSERT OR REPLACE INTO settings (settingKey, settingValue) values ('${SettingKeys.TIMETABLE_LAST_UPDATE}', '0');");
+}
+
+// class_cell primary key change
+Future<void> migrationTo4(sqflite.Database database) async {
+  await database
+      .rawQuery("ALTER TABLE class_cell ADD COLUMN numberOfCredit INT;");
 }

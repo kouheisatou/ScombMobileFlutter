@@ -84,6 +84,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                 null,
                 null,
                 null,
+                null,
               );
               (await AppDatabase.getDatabase())
                   .currentClassCellDao

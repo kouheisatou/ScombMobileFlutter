@@ -22,6 +22,19 @@ class TimetableModel {
     return "$s}";
   }
 
+  int getSumOfNumberOfCredit() {
+    var sum = 0;
+    List<ClassCell> alreadyCountedClass = [];
+    applyToAllCells((classCell) {
+      if (classCell?.numberOfCredit != null &&
+          !alreadyCountedClass.contains(classCell)) {
+        sum += classCell!.numberOfCredit!;
+        alreadyCountedClass.add(classCell);
+      }
+    });
+    return sum;
+  }
+
   void clearTimetable() {
     for (int r = 0; r < timetable.length; r++) {
       for (int c = 0; c < timetable[0].length; c++) {

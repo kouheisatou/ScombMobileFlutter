@@ -13,15 +13,14 @@ class TimetableComponent extends StatefulWidget {
   bool isEditMode = false;
   bool shouldEmphasizeToday;
   bool shouldShowCellText;
+  Function? onUpdatedUi;
 
-  TimetableComponent(
-    this.timetable,
-    this.showSaturday, {
-    super.key,
-    required this.isEditMode,
-    this.shouldEmphasizeToday = true,
-    this.shouldShowCellText = true,
-  });
+  TimetableComponent(this.timetable, this.showSaturday,
+      {super.key,
+      required this.isEditMode,
+      this.shouldEmphasizeToday = true,
+      this.shouldShowCellText = true,
+      this.onUpdatedUi});
 
   @override
   State<TimetableComponent> createState() => _TimetableComponentState();
@@ -35,6 +34,14 @@ class _TimetableComponentState extends State<TimetableComponent> {
       style: const TextStyle(fontSize: 10, color: Colors.grey),
       child: buildTable(),
     );
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    if (widget.onUpdatedUi != null) {
+      widget.onUpdatedUi!();
+    }
   }
 
   Widget buildTable() {
