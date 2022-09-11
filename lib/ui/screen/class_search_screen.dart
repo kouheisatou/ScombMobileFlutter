@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
+import 'package:scomb_mobile/ui/screen/timetable/my_timetable_list_screen.dart';
 
+import '../../common/timetable_model.dart';
+import '../dialog/selector_dialog.dart';
 import '../dialog/syllabus_search_dialog.dart';
 
 class ClassSearchScreen extends StatefulWidget {
@@ -65,7 +68,29 @@ class _ClassSearchScreenState extends State<ClassSearchScreen> {
                 ],
               ),
               OutlinedButton(
-                onPressed: () {
+                onPressed: () async {
+                  // get all timetables
+                  Map<String, TimetableModel?> allTimetables =
+                      await getAllTimetables(
+                    onFetchFinished: (_) {},
+                  );
+
+                  // show timetable selection dialog
+                  var selectedTimetableTitle = await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return SelectorDialog<TimetableModel?>(
+                        allTimetables,
+                        (key, value) async {},
+                        description: "追加先の時間割を選択してください",
+                      );
+                    },
+                  );
+                  if (selectedTimetableTitle == null ||
+                      allTimetables[selectedTimetableTitle] == null) {
+                    return;
+                  }
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -78,7 +103,9 @@ class _ClassSearchScreenState extends State<ClassSearchScreen> {
                               .replaceAll("\${departmentCode}", "F")
                               .replaceAll("\${termCode}", "2")
                               .replaceAll("\${gradeCode}", "3")),
-                          "2022年度 情報通信工学科 3年次 後期",
+                          "時間割検索",
+                          shouldShowAddNewClassButton: true,
+                          timetable: allTimetables[selectedTimetableTitle]!,
                         );
                       },
                     ),

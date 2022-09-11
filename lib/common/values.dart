@@ -17,6 +17,7 @@ const SYLLABUS_SEARCH_URL =
     "http://syllabus.sic.shibaura-it.ac.jp/namazu/namazu.cgi?ajaxmode=true&query=\${className}&whence=0&idxname=\${admissionYearAndSection}&max=20&result=normal&sort=score#:~:text=%E6%A4%9C%E7%B4%A2%E7%B5%90%E6%9E%9C,-%E5%8F%82%E8%80%83%E3%83%92%E3%83%83%E3%83%88%E6%95%B0";
 const TIMETABLE_PAGE_URL =
     "http://timetable.sic.shibaura-it.ac.jp/table/\${yearCode}/Timetable\${sectionCode}\${departmentCode}01\${termCode}\${gradeCode}.html";
+const TIMETABLE_LIST_PAGE_URL = "http://timetable.sic.shibaura-it.ac.jp/";
 
 // ScombのCookieとして保存されているセッションIDのキー
 const SESSION_COOKIE_ID = "SESSION";

@@ -317,7 +317,7 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("課題締切通知"),
               value: Text(
-                findMapKeyFromValue<int>(
+                findMapKeyFromValue<String, int>(
                       SettingValues.NOTIFICATION_TIMING,
                       int.parse(
                         settings[SettingKeys.NOTIFICATION_TIMING] ??
@@ -332,7 +332,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   builder: (_) {
                     return SelectorDialog(
                       SettingValues.NOTIFICATION_TIMING,
-                      selectedKey: findMapKeyFromValue<int>(
+                      selectedKey: findMapKeyFromValue<String, int>(
                         SettingValues.NOTIFICATION_TIMING,
                         int.parse(
                           settings[SettingKeys.NOTIFICATION_TIMING] ??

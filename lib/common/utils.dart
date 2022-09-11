@@ -52,8 +52,8 @@ String getCurrentTerm() {
 }
 
 // return only last one
-String? findMapKeyFromValue<T>(Map<String, T> map, T targetValue) {
-  String? resultKey;
+T1? findMapKeyFromValue<T1, T2>(Map<T1, T2> map, T2 targetValue) {
+  T1? resultKey;
   map.forEach((key, value) {
     if (targetValue == value) {
       resultKey = key;

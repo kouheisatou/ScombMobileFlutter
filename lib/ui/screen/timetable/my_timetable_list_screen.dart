@@ -20,7 +20,11 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
 
   @override
   void initState() {
-    getAllTimetables();
+    getAllTimetables(onFetchFinished: (result) {
+      setState(() {
+        timetables = result;
+      });
+    });
   }
 
   @override
@@ -232,35 +236,41 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
             ),
     );
   }
+}
 
-  Future<void> getAllTimetables() async {
-    var db = await AppDatabase.getDatabase();
-    var allCells = await db.currentClassCellDao.getAllClasses();
+Future<Map<String, TimetableModel>> getAllTimetables({
+  required Function(Map<String, TimetableModel> result) onFetchFinished,
+}) async {
+  Map<String, TimetableModel> timetables = {};
 
-    for (var cell in allCells) {
-      // if my timetable, year is 0
-      if (cell.isUserClassCell) {
-        // new timetable model
-        if (timetables[cell.timetableTitle] == null) {
-          timetables[cell.timetableTitle] = TimetableModel(
-            cell.timetableTitle,
-            true,
-          );
-        }
+  var db = await AppDatabase.getDatabase();
+  var allCells = await db.currentClassCellDao.getAllClasses();
 
-        // insert to map
-        cell.currentTimetable = timetables[cell.timetableTitle]!;
-        if (cell.period >= 0 && cell.dayOfWeek >= 0) {
-          timetables[cell.timetableTitle]!.timetable[cell.period]
-              [cell.dayOfWeek] = cell;
-        }
+  for (var cell in allCells) {
+    // if my timetable, year is 0
+    if (cell.isUserClassCell) {
+      // new timetable model
+      if (timetables[cell.timetableTitle] == null) {
+        timetables[cell.timetableTitle] = TimetableModel(
+          cell.timetableTitle,
+          true,
+        );
+      }
+
+      // insert to map
+      cell.currentTimetable = timetables[cell.timetableTitle]!;
+      if (cell.period >= 0 && cell.dayOfWeek >= 0) {
+        timetables[cell.timetableTitle]!.timetable[cell.period]
+            [cell.dayOfWeek] = cell;
       }
     }
-
-    timetables.forEach((key, value) {
-      print(value);
-    });
-
-    setState(() {});
   }
+
+  timetables.forEach((key, value) {
+    print(value);
+  });
+
+  onFetchFinished(timetables);
+
+  return timetables;
 }

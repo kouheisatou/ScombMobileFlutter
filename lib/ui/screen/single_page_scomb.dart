@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scomb_mobile/common/scraping/syllabus_scraping.dart';
+import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,12 +11,21 @@ import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class SinglePageScomb extends StatefulWidget {
-  SinglePageScomb(this.initUrl, this.title, {Key? key, this.javascript})
-      : super(key: key);
+  SinglePageScomb(
+    this.initUrl,
+    this.title, {
+    Key? key,
+    this.javascript,
+    this.shouldShowAddNewClassButton = false,
+    this.timetable,
+  })  : assert(!shouldShowAddNewClassButton || timetable != null),
+        super(key: key);
 
   Uri initUrl;
   String title;
   String? javascript;
+  bool shouldShowAddNewClassButton;
+  TimetableModel? timetable;
 
   @override
   State<SinglePageScomb> createState() => _SinglePageScombState();
@@ -29,6 +40,11 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
   @override
   Widget build(context) {
+    var addNewClassButtonAvailable =
+        (currentUrl.host == "timetable.sic.shibaura-it.ac.jp" &&
+            currentUrl.path.contains("detail") &&
+            errorMsg == null);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -63,6 +79,16 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     });
                   },
                   onLoadStop: (controller, currentUrl) async {
+                    // only school local network error handling
+                    String? html = await controller.evaluateJavascript(
+                      source:
+                          "window.document.getElementsByTagName('html')[0].outerHTML;",
+                    );
+                    if (html?.contains("アクセスしたデータは現在参照できません。") == true) {
+                      errorMsg = "学内ネットからのみアクセス可能なページです";
+                      loading = false;
+                    }
+
                     if (currentUrl != null) {
                       var currentUrlString =
                           "https://${currentUrl.host}${currentUrl.path}";
@@ -185,6 +211,88 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     icon: const Icon(Icons.arrow_forward),
                   ),
                   const Spacer(),
+                  Visibility(
+                    visible: widget.shouldShowAddNewClassButton,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkResponse(
+                        onTap: addNewClassButtonAvailable
+                            ? () async {
+                                if (widget.timetable == null) return;
+
+                                // create new cell from html
+                                var newCell = await fetchClassDetail(
+                                    currentUrl.toString(), widget.timetable!);
+                                print(newCell);
+                                if (newCell == null) return;
+
+                                // override confirmation
+                                if (widget.timetable!.timetable[newCell.period]
+                                        [newCell.dayOfWeek] !=
+                                    null) {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return AlertDialog(
+                                        title: const Text("授業置き換え"),
+                                        content: Text(
+                                            "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} には既に ${widget.timetable?.timetable[newCell.period][newCell.dayOfWeek]?.name} が登録されています。置き換えますか？"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              return;
+                                            },
+                                            child: const Text("キャンセル"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("置き換え"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+
+                                // add to local db
+                                await widget.timetable!.addCell(newCell);
+
+                                Fluttertoast.showToast(
+                                  msg:
+                                      "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} に ${newCell.name} を登録しました。",
+                                );
+                              }
+                            : () {
+                                Fluttertoast.showToast(
+                                  msg: "授業詳細ページでのみ利用できます",
+                                );
+                              },
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: addNewClassButtonAvailable
+                                  ? Colors.black
+                                  : Colors.grey,
+                            ),
+                            Text(
+                              "履修計画に登録",
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: addNewClassButtonAvailable
+                                    ? Colors.black
+                                    : Colors.grey,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkResponse(
