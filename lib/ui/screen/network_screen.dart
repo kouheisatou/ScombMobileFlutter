@@ -17,18 +17,15 @@ abstract class NetworkScreen extends StatefulWidget {
   NetworkScreen(this.title, {Key? key}) : super(key: key);
 
   String title;
-  bool isLoading = false;
 
   @override
   NetworkScreenState<NetworkScreen> createState();
 }
 
 abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
-  Future<void> fetchData() async {
-    setState(() {
-      widget.isLoading = true;
-    });
+  bool isLoading = false;
 
+  Future<void> fetchData() async {
     var db = await AppDatabase.getDatabase();
     try {
       // recover session_id from local db
@@ -81,7 +78,18 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
         throw LoginException("ログインが必要です");
       }
 
+      // fetch data from server
+      setState(() {
+        isLoading = true;
+      });
       await getFromServerAndSaveToSharedResource(savedSessionId);
+      try {
+        setState(() {
+          isLoading = false;
+        });
+      } catch (e) {
+        isLoading = false;
+      }
 
       // saved session id passed
       if (sessionId == null && taskListInitialized) {
@@ -110,9 +118,8 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
         ),
       );
       if (canceled == false) {
-        refreshData();
+        await refreshData();
       }
-      return;
     }
 
     // inflate invalid setting
@@ -129,15 +136,6 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     } finally {
       // sort
       sortTasks();
-
-      // force to disable loading mode
-      try {
-        setState(() {
-          widget.isLoading = false;
-        });
-      } catch (e) {
-        widget.isLoading = false;
-      }
     }
   }
 
@@ -159,9 +157,10 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     return result;
   }
 
-  NetworkScreenState() {
-    // run fetch after build
-    WidgetsBinding.instance.addPostFrameCallback((_) => fetchData());
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
   }
 
   @override
@@ -172,7 +171,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
         title: Text(widget.title),
         actions: buildAppBarActions(),
       ),
-      body: !widget.isLoading
+      body: !isLoading
           ? innerBuild()
           : const Center(
               child: CircularProgressIndicator(),
