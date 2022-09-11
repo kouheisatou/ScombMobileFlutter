@@ -72,8 +72,6 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     } catch (e) {
       throw DatabaseException("不正な設定");
     }
-    timetableYear = 2022;
-    timetableTerm = "10";
     widget.title = "$timetableYear年度 ${TERM_DISP_NAME_MAP[timetableTerm]} 時間割";
 
     // on timetable year or term setting changed, force fetch from server
