@@ -11,19 +11,19 @@ import '../../common/values.dart';
 
 typedef InputUrlManuallyCallback = Future<String?> Function();
 
-Future<String?> showSyllabusSearchResultDialog(
-  BuildContext context,
-  String? searchString,
-  InputUrlManuallyCallback? inputUrlManually,
-) async {
+Future<String?> showSyllabusSearchResultDialog(BuildContext context,
+    String? searchString, InputUrlManuallyCallback? inputUrlManually,
+    {String? section}) async {
   String? syllabusUrl;
   var db = await AppDatabase.getDatabase();
 
   // recover section setting from db
-  var section = (await db.currentSettingDao.getSetting(SettingKeys.Section))
-      ?.settingValue;
   if (section == null) {
-    Fluttertoast.showToast(msg: "設定で学部を設定してください");
+    section = (await db.currentSettingDao.getSetting(SettingKeys.Section))
+        ?.settingValue;
+    if (section == null) {
+      Fluttertoast.showToast(msg: "設定で学部を設定してください");
+    }
   }
 
   // encode url query
