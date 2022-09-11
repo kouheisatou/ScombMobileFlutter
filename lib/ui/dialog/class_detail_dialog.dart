@@ -2,13 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
-import 'package:scomb_mobile/common/db/setting_entity.dart';
-import 'package:scomb_mobile/common/scraping/syllabus_scraping.dart';
-import 'package:scomb_mobile/common/shared_resource.dart';
-import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
-import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
+import 'package:scomb_mobile/ui/dialog/syllabus_search_dialog.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
 import '../../common/db/class_cell.dart';
@@ -212,73 +207,17 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
             ),
             OutlinedButton(
               onPressed: () async {
-                var db = await AppDatabase.getDatabase();
-                var syllabusUrl = "";
+                String? syllabusUrl;
 
                 if (widget.classCell.syllabusUrl == null ||
                     widget.classCell.syllabusUrl == "") {
-                  // recover section setting from db
-                  var section = (await db.currentSettingDao
-                          .getSetting(SettingKeys.Section))
-                      ?.settingValue;
-                  if (section == null) {
-                    Fluttertoast.showToast(msg: "設定で学部を設定してください");
-                  }
-
-                  // encode url query
-                  var queryString = await convertUrlQueryString(
-                    widget.classCell.name
-                            ?.replaceAll(RegExp("[１-９Ａ-Ｚ1-9]"), "") ??
-                        "",
-                    encode: "EUC-JP",
-                  );
-
-                  // construct syllabus url
-                  var syllabusResultUrl = SYLLABUS_SEARCH_URL
-                      .replaceFirst("\${className}", queryString)
-                      .replaceFirst("\${admissionYearAndSection}",
-                          "$timetableYear%2F$section");
-
-                  // syllabus search result
-                  var results = await fetchAllSyllabusSearchResult(
-                    syllabusResultUrl,
-                  );
-                  results["[ URLを直接入力する ]"] = "";
-
-                  // select same name class
-                  bool noMatch = true;
-                  results.forEach((key, value) {
-                    if (key == widget.classCell.name) {
-                      syllabusUrl = value;
-                      noMatch = false;
-                    }
+                  syllabusUrl = await showSyllabusSearchResultDialog(
+                      context, widget.classCell.name, () async {
+                    return await showSyllabusUrlCustomizeDialog();
                   });
 
-                  // no matched name
-                  if (noMatch) {
-                    String? selection = await showDialog(
-                      context: context,
-                      builder: (_) {
-                        return SelectorDialog<String>(
-                          results,
-                          (key, value) async {},
-                          description: "複数の検索結果が見つかりました",
-                        );
-                      },
-                    );
-                    if (selection == null) {
-                      return;
-                    } else if (selection == "[ URLを直接入力する ]") {
-                      String? customUrl =
-                          await showSyllabusUrlCustomizeDialog();
-                      if (customUrl == null || customUrl == "") {
-                        return;
-                      } else {
-                        syllabusUrl = customUrl;
-                      }
-                    } else {
-                      syllabusUrl = results[selection] ?? "";
-                    }
+                  if (syllabusUrl == null || syllabusUrl == "") {
+                    return;
                   }
                   widget.classCell.setCustomSyllabusUrl(syllabusUrl);
                 } else {
@@ -287,8 +226,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
 
                 // transition
                 try {
-                  var uri = Uri.parse(syllabusUrl);
-
+                  var uri = Uri.parse(syllabusUrl ?? "");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
