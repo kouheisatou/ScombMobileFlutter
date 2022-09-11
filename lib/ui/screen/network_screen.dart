@@ -72,7 +72,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
                 (await AppDatabase.getDatabase())
                     .currentSettingDao
                     .insertSetting(
-                        Setting(SettingKeys.Section, value.toString()));
+                        Setting(SettingKeys.SECTION, value.toString()));
               },
               description: "学部を選択してください",
             );
@@ -109,7 +109,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
           fullscreenDialog: true,
         ),
       );
-      if (!canceled) {
+      if (canceled == false) {
         refreshData();
       }
       return;

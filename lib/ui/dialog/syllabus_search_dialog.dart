@@ -19,7 +19,7 @@ Future<String?> showSyllabusSearchResultDialog(BuildContext context,
 
   // recover section setting from db
   if (section == null) {
-    section = (await db.currentSettingDao.getSetting(SettingKeys.Section))
+    section = (await db.currentSettingDao.getSetting(SettingKeys.SECTION))
         ?.settingValue;
     if (section == null) {
       Fluttertoast.showToast(msg: "設定で学部を設定してください");

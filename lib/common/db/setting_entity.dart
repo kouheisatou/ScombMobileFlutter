@@ -32,7 +32,7 @@ class SettingKeys {
   static String PASSWORD = "password";
   static String SESSION_ID = "session_id";
   static String ENABLED_AUTO_LOGIN = "enabled_auto_login";
-  static String Section = "section";
+  static String SECTION = "section";
 
   static String TIMETABLE_LAST_UPDATE = "timetable_last_update";
   static String TIMETABLE_UPDATE_INTERVAL = "timetable_update_interval";

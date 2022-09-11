@@ -92,9 +92,14 @@ class _SettingScreenState extends State<SettingScreen> {
                     return AlertDialog(
                       title: const Text("学籍番号"),
                       content: TextFormField(
+                        autofocus: true,
                         initialValue: settings[SettingKeys.USERNAME],
                         onChanged: (text) {
                           updateSetting(SettingKeys.USERNAME, text);
+                          updateSetting(
+                            SettingKeys.SESSION_ID,
+                            encryptAES("null"),
+                          );
                         },
                       ),
                       actions: [
@@ -122,12 +127,17 @@ class _SettingScreenState extends State<SettingScreen> {
                       title: const Text("パスワード"),
                       content: TextFormField(
                         obscureText: true,
+                        autofocus: true,
                         initialValue:
                             decryptAES(settings[SettingKeys.PASSWORD]),
                         onChanged: (text) {
                           updateSetting(
                             SettingKeys.PASSWORD,
                             encryptAES(text),
+                          );
+                          updateSetting(
+                            SettingKeys.SESSION_ID,
+                            encryptAES("null"),
                           );
                         },
                         decoration: const InputDecoration(hintText: "パスワード"),
@@ -234,7 +244,7 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("学部"),
               value: Text(findMapKeyFromValue(
-                      SettingValues.SECTION, settings[SettingKeys.Section]) ??
+                      SettingValues.SECTION, settings[SettingKeys.SECTION]) ??
                   ""),
               onPressed: (context) {
                 showDialog(
@@ -243,9 +253,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     return SelectorDialog(
                       SettingValues.SECTION,
                       selectedKey: findMapKeyFromValue(
-                          SettingValues.SECTION, settings[SettingKeys.Section]),
+                          SettingValues.SECTION, settings[SettingKeys.SECTION]),
                       (key, value) async {
-                        updateSetting(SettingKeys.Section, value.toString());
+                        updateSetting(SettingKeys.SECTION, value.toString());
                       },
                       description: "シラバスの検索時に必要になります",
                     );
