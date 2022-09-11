@@ -51,7 +51,11 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
       body: Column(
         children: [
           Container(
-            color: Colors.blueGrey.shade50,
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.grey, width: 0.2),
+              ),
+            ),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(children: buildNumberOfCreditRow()),
@@ -85,17 +89,27 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
     widget.timetable.getColorAndCreditMap().forEach((key, value) {
       list.add(Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(
-          "$value単位",
-          style: TextStyle(
-            shadows: [
-              Shadow(
-                blurRadius: 10,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
                 color:
                     (key == Colors.white70.value) ? Colors.white : Color(key),
               ),
-            ],
-            color: Colors.black26,
+            ),
+          ),
+          child: Text(
+            "$value単位",
+            style: TextStyle(
+              shadows: [
+                Shadow(
+                  blurRadius: 10,
+                  color:
+                      (key == Colors.white70.value) ? Colors.white : Color(key),
+                ),
+              ],
+              color: Colors.black26,
+            ),
           ),
         ),
       ));
