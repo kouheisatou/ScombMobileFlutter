@@ -11,6 +11,7 @@ import '../dialog/syllabus_search_dialog.dart';
 const SGSOT_URL =
     "http://sgsot.sic.shibaura-it.ac.jp/redirect.php?user=\${username}&domain=sic.shibaura-it.ac.jp&method=&GID_COMMIT=%A5%ED%A5%B0%A5%A4%A5%F3";
 const BUS_ARRIVAL_TIMETABLE = "http://bus.shibaura-it.ac.jp/ts/today_sheet.php";
+const GP_GRAPH_PAGE_URL = "https://gp.sic.shibaura-it.ac.jp/";
 
 class LinkListScreen extends StatefulWidget {
   @override
@@ -44,6 +45,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
               return SinglePageScomb(
                 uri,
                 linkModel.title,
+                shouldRemoveHeader: false,
               );
             },
             fullscreenDialog: true,
@@ -51,6 +53,24 @@ class _LinkListScreenState extends State<LinkListScreen> {
         );
       },
     ),
+    Link.withIcon("時間割検索システム", TIMETABLE_LIST_PAGE_URL,
+        Image.asset("resources/official_timetable_icon.png"),
+        onPressed: (context, linkItemModel) async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (builder) {
+            return SinglePageScomb(
+              Uri.parse(linkItemModel.url),
+              linkItemModel.title,
+              shouldShowAddNewClassButton: true,
+              shouldRemoveHeader: false,
+            );
+          },
+          fullscreenDialog: true,
+        ),
+      );
+    }),
     Link.withIcon(
       "学バス時刻表",
       BUS_ARRIVAL_TIMETABLE,
@@ -94,6 +114,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
                             return SinglePageScomb(
                               Uri.parse(syllabusUrl),
                               controller.text,
+                              shouldRemoveHeader: false,
                             );
                           },
                         ),
@@ -117,6 +138,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
                             return SinglePageScomb(
                               Uri.parse(linkModel.url),
                               linkModel.title,
+                              shouldRemoveHeader: false,
                             );
                           },
                           fullscreenDialog: true,
@@ -141,30 +163,18 @@ class _LinkListScreenState extends State<LinkListScreen> {
         );
       },
     ),
-    Link.withIcon("時間割検索システム", TIMETABLE_LIST_PAGE_URL,
-        Image.asset("resources/official_timetable_icon.png"),
-        onPressed: (context, linkItemModel) async {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (builder) {
-            return SinglePageScomb(
-              Uri.parse(linkItemModel.url),
-              linkItemModel.title,
-              shouldShowAddNewClassButton: true,
-            );
-          },
-          fullscreenDialog: true,
-        ),
-      );
-    }),
+    Link.withIcon(
+      "GP分布グラフ検索",
+      GP_GRAPH_PAGE_URL,
+      const Icon(Icons.bar_chart),
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("リンク集"),
+        title: const Text("リンク"),
       ),
       body: ListView.builder(
         itemCount: linkList.length,

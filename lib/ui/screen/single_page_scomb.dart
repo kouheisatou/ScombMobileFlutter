@@ -19,6 +19,7 @@ class SinglePageScomb extends StatefulWidget {
     Key? key,
     this.javascript,
     this.shouldShowAddNewClassButton = false,
+    this.shouldRemoveHeader = true,
     this.timetable,
   }) : super(key: key);
 
@@ -26,6 +27,7 @@ class SinglePageScomb extends StatefulWidget {
   String title;
   String? javascript;
   bool shouldShowAddNewClassButton;
+  bool shouldRemoveHeader;
   TimetableModel? timetable;
 
   @override
@@ -117,14 +119,18 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     }
 
                     this.currentUrl = currentUrl ?? widget.initUrl;
-                    await controller.evaluateJavascript(
-                      source:
-                          "document.getElementById('$HEADER_ELEMENT_ID').remove();",
-                    );
-                    await controller.evaluateJavascript(
-                      source:
-                          "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
-                    );
+                    if (widget.shouldRemoveHeader) {
+                      print(
+                          "shouldRemoveHeader : ${widget.shouldRemoveHeader}");
+                      await controller.evaluateJavascript(
+                        source:
+                            "document.getElementById('$HEADER_ELEMENT_ID').remove();",
+                      );
+                      await controller.evaluateJavascript(
+                        source:
+                            "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
+                      );
+                    }
                     if (widget.javascript != null) {
                       await controller.evaluateJavascript(
                         source: widget.javascript!,

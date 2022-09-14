@@ -63,7 +63,7 @@ class ScombMobileState extends State<ScombMobile> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.open_in_new),
-                label: "リンク集",
+                label: "リンク",
               ),
               // BottomNavigationBarItem(
               //   icon: Icon(Icons.search),

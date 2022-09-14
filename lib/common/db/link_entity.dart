@@ -22,6 +22,7 @@ class Link {
             return SinglePageScomb(
               uri,
               linkItemModel.title,
+              shouldRemoveHeader: false,
             );
           },
           fullscreenDialog: true,
@@ -48,6 +49,7 @@ class Link {
               return SinglePageScomb(
                 uri,
                 linkItemModel.title,
+                shouldRemoveHeader: false,
               );
             },
             fullscreenDialog: true,
