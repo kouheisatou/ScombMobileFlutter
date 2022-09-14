@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scomb_mobile/ui/screen/link_list_screen.dart';
 import 'package:scomb_mobile/ui/screen/setting_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_calendar_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
@@ -20,6 +21,7 @@ class ScombMobileState extends State<ScombMobile> {
     _screens.add(TimetableScreen("時間割"));
     _screens.add(TaskListScreen("課題・テスト一覧"));
     _screens.add(TaskCalendarScreen("締切カレンダー"));
+    _screens.add(LinkListScreen());
     // _screens.add(ClassSearchScreen());
     _screens.add(SettingScreen(this));
   }
@@ -58,6 +60,10 @@ class ScombMobileState extends State<ScombMobile> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
                 label: "カレンダー",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.open_in_new),
+                label: "リンク集",
               ),
               // BottomNavigationBarItem(
               //   icon: Icon(Icons.search),

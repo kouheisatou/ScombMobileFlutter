@@ -226,7 +226,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
 
                 // transition
                 try {
-                  var uri = Uri.parse(syllabusUrl ?? "");
+                  var uri = Uri.parse(syllabusUrl);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

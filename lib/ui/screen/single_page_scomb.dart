@@ -78,6 +78,9 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       loading = false;
                     });
                   },
+                  onLoadStart: (controller, currentUrl) {
+                    print(currentUrl.toString());
+                  },
                   onLoadStop: (controller, currentUrl) async {
                     // only school local network error handling
                     String? html = await controller.evaluateJavascript(

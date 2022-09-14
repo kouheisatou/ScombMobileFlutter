@@ -397,19 +397,6 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
             SettingsTile(
-              title: const Text("ScombZ"),
-              onPressed: (context) async {
-                if (await canLaunchUrl(
-                  Uri.parse(SCOMB_HOME_URL),
-                )) {
-                  await launchUrl(
-                    Uri.parse(SCOMB_HOME_URL),
-                    mode: LaunchMode.externalApplication,
-                  );
-                }
-              },
-            ),
-            SettingsTile(
               title: const Text("GitHub"),
               onPressed: (context) async {
                 if (await canLaunchUrl(
