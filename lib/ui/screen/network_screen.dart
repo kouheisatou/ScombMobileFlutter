@@ -83,13 +83,6 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
         isLoading = true;
       });
       await getFromServerAndSaveToSharedResource(savedSessionId);
-      try {
-        setState(() {
-          isLoading = false;
-        });
-      } catch (e) {
-        isLoading = false;
-      }
 
       // saved session id passed
       if (sessionId == null && taskListInitialized) {
@@ -108,7 +101,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     on LoginException catch (e, stackTrace) {
       print("login_fail $e\n$stackTrace");
       Fluttertoast.showToast(msg: "ログインが必要です");
-      bool canceled = await Navigator.push(
+      var canceled = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (builder) {
@@ -117,7 +110,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
           fullscreenDialog: true,
         ),
       );
-      if (canceled == false) {
+      if (canceled is bool && canceled == false) {
         await refreshData();
       }
     }
@@ -136,6 +129,13 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     } finally {
       // sort
       sortTasks();
+      try {
+        setState(() {
+          isLoading = false;
+        });
+      } catch (e) {
+        isLoading = false;
+      }
     }
   }
 
