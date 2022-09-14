@@ -174,6 +174,12 @@ class _LinkListScreenState extends State<LinkListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {},
+            icon: const Icon(Icons.add),
+          )
+        ],
         title: const Text("リンク"),
       ),
       body: ListView.builder(

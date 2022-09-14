@@ -7,12 +7,12 @@ import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/component/timetable_component.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
-import 'package:scomb_mobile/ui/screen/timetable/my_timetable_list_screen.dart';
 
 import '../../../common/scraping/surveys_scraping.dart';
 import '../../../common/scraping/task_scraping.dart';
 import '../../../common/shared_resource.dart';
 import '../../../common/values.dart';
+import 'my_timetable_list_screen.dart';
 
 class TimetableScreen extends NetworkScreen {
   TimetableScreen(super.title, {Key? key}) : super(key: key);
@@ -157,13 +157,24 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   @override
   List<Widget> buildAppBarActions() {
     List<Widget> result = [
-      IconButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (builder) {
-            return MyTimetableListScreen();
-          }));
-        },
-        icon: const Icon(Icons.list),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: InkResponse(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (builder) {
+              return MyTimetableListScreen();
+            }));
+          },
+          child: Column(
+            children: const [
+              Icon(Icons.list),
+              Text(
+                "履修計画",
+                style: TextStyle(fontSize: 10),
+              ),
+            ],
+          ),
+        ),
       ),
     ];
     return result;
