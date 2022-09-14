@@ -141,11 +141,23 @@ class _LinkListScreenState extends State<LinkListScreen> {
         );
       },
     ),
-    Link.withIcon(
-      "時間割検索システム",
-      TIMETABLE_LIST_PAGE_URL,
-      Image.asset("resources/official_timetable_icon.png"),
-    ),
+    Link.withIcon("時間割検索システム", TIMETABLE_LIST_PAGE_URL,
+        Image.asset("resources/official_timetable_icon.png"),
+        onPressed: (context, linkItemModel) async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (builder) {
+            return SinglePageScomb(
+              Uri.parse(linkItemModel.url),
+              linkItemModel.title,
+              shouldShowAddNewClassButton: true,
+            );
+          },
+          fullscreenDialog: true,
+        ),
+      );
+    }),
   ];
 
   @override

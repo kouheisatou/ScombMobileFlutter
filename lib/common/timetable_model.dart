@@ -45,6 +45,13 @@ class TimetableModel {
 
   Future<void> addCell(ClassCell cell) async {
     var db = await AppDatabase.getDatabase();
+
+    // remove old cell
+    var oldCell = timetable[cell.period][cell.dayOfWeek];
+    if (oldCell != null) {
+      await removeCell(oldCell, db);
+    }
+
     await db.currentClassCellDao.insertClassCell(cell);
     if (cell.period >= 0 && cell.dayOfWeek >= 0) {
       timetable[cell.period][cell.dayOfWeek] = cell;

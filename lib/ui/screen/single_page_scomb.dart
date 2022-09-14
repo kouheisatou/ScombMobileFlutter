@@ -4,7 +4,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/scraping/syllabus_scraping.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
+import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
+import 'package:scomb_mobile/ui/screen/timetable/my_timetable_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/shared_resource.dart';
@@ -18,8 +20,7 @@ class SinglePageScomb extends StatefulWidget {
     this.javascript,
     this.shouldShowAddNewClassButton = false,
     this.timetable,
-  })  : assert(!shouldShowAddNewClassButton || timetable != null),
-        super(key: key);
+  }) : super(key: key);
 
   Uri initUrl;
   String title;
@@ -221,7 +222,28 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       child: InkResponse(
                         onTap: addNewClassButtonAvailable
                             ? () async {
-                                if (widget.timetable == null) return;
+                                if (widget.timetable == null) {
+                                  var allTimetables = await getAllTimetables(
+                                      onFetchFinished: (result) {});
+                                  var dialogResponse = await showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return SelectorDialog<TimetableModel?>(
+                                        allTimetables,
+                                        (key, value) async {
+                                          widget.timetable = allTimetables[key];
+                                          if (widget.timetable == null) {
+                                            return;
+                                          }
+                                        },
+                                        description: "追加先の時間割を選択してください",
+                                      );
+                                    },
+                                  );
+                                  if (dialogResponse == null) {
+                                    return;
+                                  }
+                                }
 
                                 // create new cell from html
                                 var newCell = await fetchClassDetail(
