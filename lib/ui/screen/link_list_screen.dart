@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
@@ -176,7 +178,14 @@ class _LinkListScreenState extends State<LinkListScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () async {},
+            onPressed: () async {
+              Link? dialogResponse = await showLinkEditDialog(context);
+              if (dialogResponse == null) return;
+
+              setState(() {
+                linkList.add(dialogResponse);
+              });
+            },
             icon: const Icon(Icons.add),
           )
         ],
@@ -188,32 +197,65 @@ class _LinkListScreenState extends State<LinkListScreen> {
           var currentLinkModel = linkList[index];
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: OutlinedButton(
-              onPressed: () async {
-                await currentLinkModel.onPressed(context, currentLinkModel);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                          width: 40, height: 40, child: currentLinkModel.icon),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Text(
-                        currentLinkModel.title,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const Spacer(),
-                    const Icon(
-                      Icons.keyboard_arrow_right,
-                      color: Colors.blueGrey,
+            child: Slidable(
+              endActionPane: currentLinkModel.manuallyAdded
+                  ? ActionPane(
+                      motion: const DrawerMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (value) {
+                            setState(() {
+                              linkList.remove(currentLinkModel);
+                            });
+                          },
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.blueGrey,
+                          icon: Icons.delete,
+                        ),
+                        SlidableAction(
+                          onPressed: (value) async {
+                            await showLinkEditDialog(
+                              context,
+                              linkItemModel: currentLinkModel,
+                            );
+                            setState(() {});
+                          },
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.blueGrey,
+                          icon: Icons.edit,
+                        ),
+                      ],
                     )
-                  ],
+                  : null,
+              child: OutlinedButton(
+                onPressed: () async {
+                  await currentLinkModel.onPressed(context, currentLinkModel);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: currentLinkModel.icon),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30),
+                        child: Text(
+                          currentLinkModel.title,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.keyboard_arrow_right,
+                        color: Colors.blueGrey,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -222,4 +264,59 @@ class _LinkListScreenState extends State<LinkListScreen> {
       ),
     );
   }
+}
+
+Future<Link?> showLinkEditDialog(BuildContext context,
+    {Link? linkItemModel}) async {
+  Link? dialogResponse = await showDialog(
+      context: context,
+      builder: (_) {
+        var linkName = linkItemModel?.title ?? "";
+        var url = linkItemModel?.url ?? "";
+        return AlertDialog(
+          title: Text(linkItemModel != null ? "マイリンクを編集" : "マイリンクを作成"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(labelText: "リンク名"),
+                initialValue: linkItemModel?.title ?? "",
+                onChanged: (text) {
+                  linkName = text;
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "URL"),
+                initialValue: linkItemModel?.url ?? "",
+                onChanged: (text) {
+                  url = text;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, null);
+              },
+              child: const Text("キャンセル"),
+            ),
+            TextButton(
+              onPressed: () {
+                if (linkName == "" || url == "") {
+                  Fluttertoast.showToast(msg: "リンク名またはURLが空欄です");
+                  return;
+                }
+                if (linkItemModel != null) {
+                  linkItemModel.title = linkName;
+                  linkItemModel.url = url;
+                }
+                Navigator.pop(context, Link(linkName, url));
+              },
+              child: Text(linkItemModel != null ? "更新" : "作成"),
+            ),
+          ],
+        );
+      });
+  return dialogResponse;
 }

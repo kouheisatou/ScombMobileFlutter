@@ -29,6 +29,7 @@ class Link {
         ),
       );
     };
+    manuallyAdded = true;
   }
 
   Link.withIcon(
@@ -57,10 +58,16 @@ class Link {
         );
       };
     }
+    manuallyAdded = false;
   }
 
+  @primaryKey
   String title;
   String url;
+  @ignore
   late Widget icon;
+  @ignore
   late LinkButtonClickCallback onPressed;
+  @ignore
+  late bool manuallyAdded;
 }
