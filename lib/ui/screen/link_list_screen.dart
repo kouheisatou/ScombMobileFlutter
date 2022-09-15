@@ -265,14 +265,15 @@ class _LinkListScreenState extends State<LinkListScreen> {
                             height: 40,
                             child: currentLinkModel.icon),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 30),
-                        child: Text(
-                          currentLinkModel.title,
-                          overflow: TextOverflow.ellipsis,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: Text(
+                            currentLinkModel.title,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
-                      const Spacer(),
                       const Icon(
                         Icons.keyboard_arrow_right,
                         color: Colors.blueGrey,
