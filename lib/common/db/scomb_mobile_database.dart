@@ -100,5 +100,5 @@ Future<void> migrationTo4(sqflite.Database database) async {
 // add my_links table
 Future<void> migrationTo5(sqflite.Database database) async {
   await database.rawQuery(
-      "CREATE TABLE `my_links` (`title` TEXT NOT NULL, `url` TEXT NOT NULL, PRIMARY KEY (`title`));");
+      "CREATE TABLE `my_links` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `url` TEXT NOT NULL);");
 }

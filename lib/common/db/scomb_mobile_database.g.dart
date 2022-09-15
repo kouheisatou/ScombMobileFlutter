@@ -96,7 +96,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, `addManually` INTEGER NOT NULL, `done` INTEGER NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `my_links` (`title` TEXT NOT NULL, `url` TEXT NOT NULL, PRIMARY KEY (`title`))');
+            'CREATE TABLE IF NOT EXISTS `my_links` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `url` TEXT NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -376,14 +376,20 @@ class _$MyLinkDao extends MyLinkDao {
         _myLinkInsertionAdapter = InsertionAdapter(
             database,
             'my_links',
-            (MyLink item) =>
-                <String, Object?>{'title': item.title, 'url': item.url}),
+            (MyLink item) => <String, Object?>{
+                  'id': item.id,
+                  'title': item.title,
+                  'url': item.url
+                }),
         _myLinkDeletionAdapter = DeletionAdapter(
             database,
             'my_links',
-            ['title'],
-            (MyLink item) =>
-                <String, Object?>{'title': item.title, 'url': item.url});
+            ['id'],
+            (MyLink item) => <String, Object?>{
+                  'id': item.id,
+                  'title': item.title,
+                  'url': item.url
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -398,8 +404,8 @@ class _$MyLinkDao extends MyLinkDao {
   @override
   Future<List<MyLink>> getAllLinks() async {
     return _queryAdapter.queryList('SELECT * FROM my_links',
-        mapper: (Map<String, Object?> row) =>
-            MyLink(row['title'] as String, row['url'] as String));
+        mapper: (Map<String, Object?> row) => MyLink(
+            row['id'] as int?, row['title'] as String, row['url'] as String));
   }
 
   @override

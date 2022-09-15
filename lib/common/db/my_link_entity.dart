@@ -11,7 +11,7 @@ typedef LinkButtonClickCallback = Future<void> Function(
 
 @Entity(tableName: "my_links")
 class MyLink {
-  MyLink(this.title, this.url) {
+  MyLink(this.id, this.title, this.url) {
     icon = const Icon(Icons.link);
     onPressed = (context, linkItemModel) async {
       var uri = Uri.parse(linkItemModel.url);
@@ -32,7 +32,28 @@ class MyLink {
     manuallyAdded = true;
   }
 
-  MyLink.withIcon(
+  MyLink.addManually(this.title, this.url) {
+    icon = const Icon(Icons.link);
+    onPressed = (context, linkItemModel) async {
+      var uri = Uri.parse(linkItemModel.url);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (builder) {
+            return SinglePageScomb(
+              uri,
+              linkItemModel.title,
+              shouldRemoveHeader: false,
+            );
+          },
+          fullscreenDialog: true,
+        ),
+      );
+    };
+    manuallyAdded = true;
+  }
+
+  MyLink.preset(
     this.title,
     this.url,
     this.icon, {
@@ -61,7 +82,8 @@ class MyLink {
     manuallyAdded = false;
   }
 
-  @primaryKey
+  @PrimaryKey(autoGenerate: true)
+  int? id;
   String title;
   String url;
   @ignore

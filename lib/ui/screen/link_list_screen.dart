@@ -22,12 +22,12 @@ class LinkListScreen extends StatefulWidget {
 
 class _LinkListScreenState extends State<LinkListScreen> {
   List<MyLink> linkList = [
-    MyLink.withIcon(
+    MyLink.preset(
       "ScombZ",
       SCOMB_HOME_URL,
       Image.asset("resources/scombz_icon.png"),
     ),
-    MyLink.withIcon(
+    MyLink.preset(
       "S*gsot",
       SGSOT_URL,
       Image.asset("resources/sgsot.png"),
@@ -55,7 +55,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
         );
       },
     ),
-    MyLink.withIcon("時間割検索システム", TIMETABLE_LIST_PAGE_URL,
+    MyLink.preset("時間割検索システム", TIMETABLE_LIST_PAGE_URL,
         Image.asset("resources/official_timetable_icon.png"),
         onPressed: (context, linkItemModel) async {
       Navigator.push(
@@ -73,12 +73,12 @@ class _LinkListScreenState extends State<LinkListScreen> {
         ),
       );
     }),
-    MyLink.withIcon(
+    MyLink.preset(
       "学バス時刻表",
       BUS_ARRIVAL_TIMETABLE,
       const Icon(Icons.directions_bus),
     ),
-    MyLink.withIcon(
+    MyLink.preset(
       "シラバス検索システム",
       SYLLABUS_SEARCH_URL,
       const Icon(Icons.school),
@@ -165,7 +165,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
         );
       },
     ),
-    MyLink.withIcon(
+    MyLink.preset(
       "GP分布グラフ検索",
       GP_GRAPH_PAGE_URL,
       const Icon(Icons.bar_chart),
@@ -334,7 +334,7 @@ Future<MyLink?> showLinkEditDialog(BuildContext context,
                   linkItemModel.title = linkName;
                   linkItemModel.url = url;
                 }
-                Navigator.pop(context, MyLink(linkName, url));
+                Navigator.pop(context, MyLink.addManually(linkName, url));
               },
               child: Text(linkItemModel != null ? "更新" : "作成"),
             ),
