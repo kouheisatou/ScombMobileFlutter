@@ -62,7 +62,9 @@ Future<String?> showSyllabusSearchResultDialog(BuildContext context,
         return SelectorDialog<String>(
           results,
           (key, value) async {},
-          description: "複数の検索結果が見つかりました",
+          description: results.isNotEmpty
+              ? "複数の検索結果が見つかりました"
+              : "検索条件にマッチする授業が見つかりませんでした",
         );
       },
     );

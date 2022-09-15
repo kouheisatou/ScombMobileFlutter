@@ -112,14 +112,14 @@ class _LinkListScreenState extends State<LinkListScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (buildContext) {
-                            return SinglePageScomb(
-                              Uri.parse(syllabusUrl),
-                              controller.text,
-                              shouldRemoveHeader: false,
-                            );
-                          },
-                        ),
+                            builder: (buildContext) {
+                              return SinglePageScomb(
+                                Uri.parse(syllabusUrl),
+                                controller.text,
+                                shouldRemoveHeader: false,
+                              );
+                            },
+                            fullscreenDialog: true),
                       );
                     },
                     child: const Text("検索"),
