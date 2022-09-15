@@ -6,7 +6,7 @@ import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
-import '../../common/db/link_entity.dart';
+import '../../common/db/my_link_entity.dart';
 import '../../common/values.dart';
 import '../dialog/syllabus_search_dialog.dart';
 
@@ -21,13 +21,13 @@ class LinkListScreen extends StatefulWidget {
 }
 
 class _LinkListScreenState extends State<LinkListScreen> {
-  List<Link> linkList = [
-    Link.withIcon(
+  List<MyLink> linkList = [
+    MyLink.withIcon(
       "ScombZ",
       SCOMB_HOME_URL,
       Image.asset("resources/scombz_icon.png"),
     ),
-    Link.withIcon(
+    MyLink.withIcon(
       "S*gsot",
       SGSOT_URL,
       Image.asset("resources/sgsot.png"),
@@ -55,7 +55,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
         );
       },
     ),
-    Link.withIcon("時間割検索システム", TIMETABLE_LIST_PAGE_URL,
+    MyLink.withIcon("時間割検索システム", TIMETABLE_LIST_PAGE_URL,
         Image.asset("resources/official_timetable_icon.png"),
         onPressed: (context, linkItemModel) async {
       Navigator.push(
@@ -73,12 +73,12 @@ class _LinkListScreenState extends State<LinkListScreen> {
         ),
       );
     }),
-    Link.withIcon(
+    MyLink.withIcon(
       "学バス時刻表",
       BUS_ARRIVAL_TIMETABLE,
       const Icon(Icons.directions_bus),
     ),
-    Link.withIcon(
+    MyLink.withIcon(
       "シラバス検索システム",
       SYLLABUS_SEARCH_URL,
       const Icon(Icons.school),
@@ -165,12 +165,25 @@ class _LinkListScreenState extends State<LinkListScreen> {
         );
       },
     ),
-    Link.withIcon(
+    MyLink.withIcon(
       "GP分布グラフ検索",
       GP_GRAPH_PAGE_URL,
       const Icon(Icons.bar_chart),
     ),
   ];
+
+  @override
+  void initState() {
+    getAllMyLinkFromDB();
+    super.initState();
+  }
+
+  Future<void> getAllMyLinkFromDB() async {
+    var db = await AppDatabase.getDatabase();
+    var allMyLinks = await db.currentMyLinkDao.getAllLinks();
+    linkList.addAll(allMyLinks);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,12 +192,15 @@ class _LinkListScreenState extends State<LinkListScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              Link? dialogResponse = await showLinkEditDialog(context);
+              MyLink? dialogResponse = await showLinkEditDialog(context);
               if (dialogResponse == null) return;
 
               setState(() {
                 linkList.add(dialogResponse);
               });
+
+              var db = await AppDatabase.getDatabase();
+              db.currentMyLinkDao.insertLink(dialogResponse);
             },
             icon: const Icon(Icons.add),
           )
@@ -203,7 +219,11 @@ class _LinkListScreenState extends State<LinkListScreen> {
                       motion: const DrawerMotion(),
                       children: [
                         SlidableAction(
-                          onPressed: (value) {
+                          onPressed: (value) async {
+                            var db = await AppDatabase.getDatabase();
+                            await db.currentMyLinkDao
+                                .removeLink(currentLinkModel);
+
                             setState(() {
                               linkList.remove(currentLinkModel);
                             });
@@ -219,6 +239,9 @@ class _LinkListScreenState extends State<LinkListScreen> {
                               linkItemModel: currentLinkModel,
                             );
                             setState(() {});
+
+                            var db = await AppDatabase.getDatabase();
+                            db.currentMyLinkDao.insertLink(currentLinkModel);
                           },
                           backgroundColor: Colors.transparent,
                           foregroundColor: Colors.blueGrey,
@@ -266,9 +289,9 @@ class _LinkListScreenState extends State<LinkListScreen> {
   }
 }
 
-Future<Link?> showLinkEditDialog(BuildContext context,
-    {Link? linkItemModel}) async {
-  Link? dialogResponse = await showDialog(
+Future<MyLink?> showLinkEditDialog(BuildContext context,
+    {MyLink? linkItemModel}) async {
+  MyLink? dialogResponse = await showDialog(
       context: context,
       builder: (_) {
         var linkName = linkItemModel?.title ?? "";
@@ -311,7 +334,7 @@ Future<Link?> showLinkEditDialog(BuildContext context,
                   linkItemModel.title = linkName;
                   linkItemModel.url = url;
                 }
-                Navigator.pop(context, Link(linkName, url));
+                Navigator.pop(context, MyLink(linkName, url));
               },
               child: Text(linkItemModel != null ? "更新" : "作成"),
             ),

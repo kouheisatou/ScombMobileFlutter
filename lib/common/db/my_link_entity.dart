@@ -6,12 +6,12 @@ import '../../ui/screen/single_page_scomb.dart';
 
 typedef LinkButtonClickCallback = Future<void> Function(
   BuildContext context,
-  Link linkItemModel,
+  MyLink linkItemModel,
 );
 
-@Entity(tableName: "links")
-class Link {
-  Link(this.title, this.url) {
+@Entity(tableName: "my_links")
+class MyLink {
+  MyLink(this.title, this.url) {
     icon = const Icon(Icons.link);
     onPressed = (context, linkItemModel) async {
       var uri = Uri.parse(linkItemModel.url);
@@ -32,7 +32,7 @@ class Link {
     manuallyAdded = true;
   }
 
-  Link.withIcon(
+  MyLink.withIcon(
     this.title,
     this.url,
     this.icon, {

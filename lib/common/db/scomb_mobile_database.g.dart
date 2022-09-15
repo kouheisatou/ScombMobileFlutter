@@ -67,10 +67,12 @@ class _$AppDatabase extends AppDatabase {
 
   TaskDao? _currentTaskDaoInstance;
 
+  MyLinkDao? _currentMyLinkDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 4,
+      version: 5,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -93,6 +95,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `class_cell` (`classId` TEXT NOT NULL, `period` INTEGER NOT NULL, `dayOfWeek` INTEGER NOT NULL, `isUserClassCell` INTEGER NOT NULL, `timetableTitle` TEXT NOT NULL, `year` INTEGER, `term` TEXT, `name` TEXT, `teachers` TEXT, `room` TEXT, `customColorInt` INTEGER, `url` TEXT, `note` TEXT, `syllabusUrl` TEXT, `numberOfCredit` INTEGER, PRIMARY KEY (`classId`, `period`, `dayOfWeek`, `isUserClassCell`, `timetableTitle`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, `addManually` INTEGER NOT NULL, `done` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `my_links` (`title` TEXT NOT NULL, `url` TEXT NOT NULL, PRIMARY KEY (`title`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -115,6 +119,11 @@ class _$AppDatabase extends AppDatabase {
   @override
   TaskDao get currentTaskDao {
     return _currentTaskDaoInstance ??= _$TaskDao(database, changeListener);
+  }
+
+  @override
+  MyLinkDao get currentMyLinkDao {
+    return _currentMyLinkDaoInstance ??= _$MyLinkDao(database, changeListener);
   }
 }
 
@@ -358,5 +367,48 @@ class _$TaskDao extends TaskDao {
   @override
   Future<void> insertTask(Task task) async {
     await _taskInsertionAdapter.insert(task, OnConflictStrategy.replace);
+  }
+}
+
+class _$MyLinkDao extends MyLinkDao {
+  _$MyLinkDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _myLinkInsertionAdapter = InsertionAdapter(
+            database,
+            'my_links',
+            (MyLink item) =>
+                <String, Object?>{'title': item.title, 'url': item.url}),
+        _myLinkDeletionAdapter = DeletionAdapter(
+            database,
+            'my_links',
+            ['title'],
+            (MyLink item) =>
+                <String, Object?>{'title': item.title, 'url': item.url});
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<MyLink> _myLinkInsertionAdapter;
+
+  final DeletionAdapter<MyLink> _myLinkDeletionAdapter;
+
+  @override
+  Future<List<MyLink>> getAllLinks() async {
+    return _queryAdapter.queryList('SELECT * FROM my_links',
+        mapper: (Map<String, Object?> row) =>
+            MyLink(row['title'] as String, row['url'] as String));
+  }
+
+  @override
+  Future<void> insertLink(MyLink linkModel) async {
+    await _myLinkInsertionAdapter.insert(linkModel, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> removeLink(MyLink linkModel) async {
+    await _myLinkDeletionAdapter.delete(linkModel);
   }
 }
