@@ -144,6 +144,14 @@ class _TimetableComponentState extends State<TimetableComponent> {
                       );
                       setState(() {});
                     },
+                    onLongPress: () async {
+                      await widget.timetable.showNewClassCellDialog(
+                        row,
+                        col,
+                        context,
+                      );
+                      setState(() {});
+                    },
                   )
                 : const Text("")
             : MaterialButton(
@@ -151,7 +159,12 @@ class _TimetableComponentState extends State<TimetableComponent> {
                   widget.timetable.timetable[row][col]?.customColorInt ??
                       Colors.white70.value,
                 ),
-                onPressed: widget.isEditMode
+                onPressed: () async {
+                  await widget.timetable.timetable[row][col]!
+                      .showClassDetailDialog(context);
+                  setState(() {});
+                },
+                onLongPress: widget.isEditMode
                     ? () async {
                         await widget.timetable.showNewClassCellDialog(
                           row,
@@ -159,18 +172,6 @@ class _TimetableComponentState extends State<TimetableComponent> {
                           context,
                           classCell: widget.timetable.timetable[row][col]!,
                         );
-                        setState(() {});
-                      }
-                    : () async {
-                        await widget.timetable.timetable[row][col]!
-                            .showClassDetailDialog(context);
-                        setState(() {});
-                      },
-                onLongPress: widget.isEditMode
-                    ? () async {
-                        print(widget.timetable.timetable[row][col]);
-                        await widget.timetable.timetable[row][col]
-                            ?.showRemoveClassDialog(context);
                         setState(() {});
                       }
                     : () async {

@@ -8,11 +8,9 @@ import '../../../common/values.dart';
 import '../single_page_scomb.dart';
 
 class CustomizedTimetableScreen extends StatefulWidget {
-  CustomizedTimetableScreen(this.timetable,
-      {super.key, required this.isEditMode});
+  CustomizedTimetableScreen(this.timetable, {super.key});
 
   TimetableModel timetable;
-  bool isEditMode = false;
 
   @override
   State<CustomizedTimetableScreen> createState() =>
@@ -22,10 +20,8 @@ class CustomizedTimetableScreen extends StatefulWidget {
 class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
   @override
   void initState() {
+    Fluttertoast.showToast(msg: "マスを長押しして編集");
     super.initState();
-    if (widget.isEditMode) {
-      showModeToast();
-    }
   }
 
   @override
@@ -34,22 +30,8 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          widget.timetable.title + (widget.isEditMode ? "（編集中）" : ""),
+          widget.timetable.title,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              setState(() {
-                widget.isEditMode = !widget.isEditMode;
-              });
-              showModeToast();
-            },
-            icon: Icon(
-              Icons.edit,
-              color: widget.isEditMode ? Colors.amber.shade500 : Colors.white,
-            ),
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -68,30 +50,27 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
                     child: Row(children: buildNumberOfCreditRow()),
                   ),
                 ),
-                Visibility(
-                  visible: widget.isEditMode,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: OutlinedButton(
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (buildContext) {
-                              return SinglePageScomb(
-                                Uri.parse(TIMETABLE_LIST_PAGE_URL),
-                                "時間割検索",
-                                shouldShowAddNewClassButton: true,
-                                timetable: widget.timetable,
-                              );
-                            },
-                          ),
-                        );
-                        setState(() {});
-                      },
-                      child: const Text("時間割サイトから配置"),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: OutlinedButton(
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          fullscreenDialog: true,
+                          builder: (buildContext) {
+                            return SinglePageScomb(
+                              Uri.parse(TIMETABLE_LIST_PAGE_URL),
+                              "時間割検索",
+                              shouldShowAddNewClassButton: true,
+                              timetable: widget.timetable,
+                            );
+                          },
+                        ),
+                      );
+                      setState(() {});
+                    },
+                    child: const Text("時間割サイトから配置"),
                   ),
                 )
               ],
@@ -101,7 +80,7 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
             child: TimetableComponent(
               widget.timetable,
               true,
-              isEditMode: widget.isEditMode,
+              isEditMode: true,
               onUpdatedUi: () {
                 setState(() {});
               },
@@ -151,17 +130,5 @@ class _CustomizedTimetableScreenState extends State<CustomizedTimetableScreen> {
       ));
     });
     return list;
-  }
-
-  void showModeToast() {
-    if (widget.isEditMode) {
-      Fluttertoast.showToast(
-        msg: "[編集モード]\n画面をタップして授業を追加\n長押しで削除",
-      );
-    } else {
-      Fluttertoast.showToast(
-        msg: "[表示モード]",
-      );
-    }
   }
 }

@@ -102,10 +102,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (builder) {
-                    return CustomizedTimetableScreen(
-                      newTimetable,
-                      isEditMode: true,
-                    );
+                    return CustomizedTimetableScreen(newTimetable);
                   },
                 ),
               );
@@ -171,7 +168,6 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                                 builder: (builder) {
                                   return CustomizedTimetableScreen(
                                     currentTimetable,
-                                    isEditMode: false,
                                   );
                                 },
                               ),
