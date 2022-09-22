@@ -21,12 +21,20 @@ class LinkListScreen extends StatefulWidget {
 }
 
 class _LinkListScreenState extends State<LinkListScreen> {
-  List<MyLink> linkList = [
+  List<MyLink> globalLinkList = [
     MyLink.preset(
       "ScombZ",
       SCOMB_HOME_URL,
       Image.asset("resources/scombz_icon.png"),
     ),
+    MyLink.preset(
+      "学バス時刻表",
+      BUS_ARRIVAL_TIMETABLE,
+      const Icon(Icons.directions_bus),
+    ),
+  ];
+
+  List<MyLink> vpnLinkList = [
     MyLink.preset(
       "S*gsot",
       SGSOT_URL,
@@ -55,28 +63,26 @@ class _LinkListScreenState extends State<LinkListScreen> {
         );
       },
     ),
-    MyLink.preset("時間割検索システム", TIMETABLE_LIST_PAGE_URL,
-        Image.asset("resources/official_timetable_icon.png"),
-        onPressed: (context, linkItemModel) async {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (builder) {
-            return SinglePageScomb(
-              Uri.parse(linkItemModel.url),
-              linkItemModel.title,
-              shouldShowAddNewClassButton: true,
-              shouldRemoveHeader: false,
-            );
-          },
-          fullscreenDialog: true,
-        ),
-      );
-    }),
     MyLink.preset(
-      "学バス時刻表",
-      BUS_ARRIVAL_TIMETABLE,
-      const Icon(Icons.directions_bus),
+      "時間割検索システム",
+      TIMETABLE_LIST_PAGE_URL,
+      Image.asset("resources/official_timetable_icon.png"),
+      onPressed: (context, linkItemModel) async {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (builder) {
+              return SinglePageScomb(
+                Uri.parse(linkItemModel.url),
+                linkItemModel.title,
+                shouldShowAddNewClassButton: true,
+                shouldRemoveHeader: false,
+              );
+            },
+            fullscreenDialog: true,
+          ),
+        );
+      },
     ),
     MyLink.preset(
       "シラバス検索システム",
@@ -171,6 +177,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
       const Icon(Icons.bar_chart),
     ),
   ];
+  List<MyLink> userLinkList = [];
 
   @override
   void initState() {
@@ -180,111 +187,179 @@ class _LinkListScreenState extends State<LinkListScreen> {
 
   Future<void> getAllMyLinkFromDB() async {
     var db = await AppDatabase.getDatabase();
-    var allMyLinks = await db.currentMyLinkDao.getAllLinks();
-    linkList.addAll(allMyLinks);
+    userLinkList = await db.currentMyLinkDao.getAllLinks();
     setState(() {});
+  }
+
+  List<Widget> buildListItems() {
+    List<Widget> result = [];
+
+    result.add(
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10, top: 20),
+          child: Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.grey),
+              ),
+            ),
+            child: const Text(
+              "学外からアクセス可能なリンク",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ),
+      ),
+    );
+    for (var linkModel in globalLinkList) {
+      result.add(buildMyLinkWidget(linkModel));
+    }
+    result.add(
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10, top: 20),
+          child: Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.grey),
+              ),
+            ),
+            child: const Text(
+              "学内ネットからのみアクセス可能なリンク",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ),
+      ),
+    );
+    for (var linkModel in vpnLinkList) {
+      result.add(buildMyLinkWidget(linkModel));
+    }
+    result.add(
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10, top: 20),
+          child: Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.grey),
+              ),
+            ),
+            child: const Text(
+              "マイリンク",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ),
+      ),
+    );
+    for (var linkModel in userLinkList) {
+      result.add(buildMyLinkWidget(linkModel));
+    }
+    result.add(
+      TextButton(
+        onPressed: () async {
+          MyLink? dialogResponse = await showLinkEditDialog(context);
+          if (dialogResponse == null) return;
+
+          setState(() {
+            userLinkList.add(dialogResponse);
+          });
+
+          var db = await AppDatabase.getDatabase();
+          db.currentMyLinkDao.insertLink(dialogResponse);
+        },
+        child: const Text("リンクを追加"),
+      ),
+    );
+
+    return result;
+  }
+
+  Widget buildMyLinkWidget(MyLink linkModel) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Slidable(
+        endActionPane: linkModel.manuallyAdded
+            ? ActionPane(
+                motion: const DrawerMotion(),
+                children: [
+                  SlidableAction(
+                    onPressed: (value) async {
+                      var db = await AppDatabase.getDatabase();
+                      await db.currentMyLinkDao.removeLink(linkModel);
+
+                      setState(() {
+                        userLinkList.remove(linkModel);
+                      });
+                    },
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.blueGrey,
+                    icon: Icons.delete,
+                  ),
+                  SlidableAction(
+                    onPressed: (value) async {
+                      await showLinkEditDialog(
+                        context,
+                        linkItemModel: linkModel,
+                      );
+                      setState(() {});
+
+                      var db = await AppDatabase.getDatabase();
+                      db.currentMyLinkDao.insertLink(linkModel);
+                    },
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.blueGrey,
+                    icon: Icons.edit,
+                  ),
+                ],
+              )
+            : null,
+        child: OutlinedButton(
+          onPressed: () async {
+            await linkModel.onPressed(context, linkModel);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(width: 40, height: 40, child: linkModel.icon),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Text(
+                      linkModel.title,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                const Icon(
+                  Icons.keyboard_arrow_right,
+                  color: Colors.blueGrey,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () async {
-              MyLink? dialogResponse = await showLinkEditDialog(context);
-              if (dialogResponse == null) return;
-
-              setState(() {
-                linkList.add(dialogResponse);
-              });
-
-              var db = await AppDatabase.getDatabase();
-              db.currentMyLinkDao.insertLink(dialogResponse);
-            },
-            icon: const Icon(Icons.add),
-          )
-        ],
         title: const Text("リンク"),
       ),
-      body: ListView.builder(
-        itemCount: linkList.length,
-        itemBuilder: (BuildContext context, int index) {
-          var currentLinkModel = linkList[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Slidable(
-              endActionPane: currentLinkModel.manuallyAdded
-                  ? ActionPane(
-                      motion: const DrawerMotion(),
-                      children: [
-                        SlidableAction(
-                          onPressed: (value) async {
-                            var db = await AppDatabase.getDatabase();
-                            await db.currentMyLinkDao
-                                .removeLink(currentLinkModel);
-
-                            setState(() {
-                              linkList.remove(currentLinkModel);
-                            });
-                          },
-                          backgroundColor: Colors.transparent,
-                          foregroundColor: Colors.blueGrey,
-                          icon: Icons.delete,
-                        ),
-                        SlidableAction(
-                          onPressed: (value) async {
-                            await showLinkEditDialog(
-                              context,
-                              linkItemModel: currentLinkModel,
-                            );
-                            setState(() {});
-
-                            var db = await AppDatabase.getDatabase();
-                            db.currentMyLinkDao.insertLink(currentLinkModel);
-                          },
-                          backgroundColor: Colors.transparent,
-                          foregroundColor: Colors.blueGrey,
-                          icon: Icons.edit,
-                        ),
-                      ],
-                    )
-                  : null,
-              child: OutlinedButton(
-                onPressed: () async {
-                  await currentLinkModel.onPressed(context, currentLinkModel);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: currentLinkModel.icon),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 30),
-                          child: Text(
-                            currentLinkModel.title,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                      const Icon(
-                        Icons.keyboard_arrow_right,
-                        color: Colors.blueGrey,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+      body: ListView(
+        children: buildListItems(),
       ),
     );
   }
