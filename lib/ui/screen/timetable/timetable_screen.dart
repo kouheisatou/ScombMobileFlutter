@@ -64,7 +64,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       refreshInterval = int.parse((await db.currentSettingDao
                   .getSetting(SettingKeys.TIMETABLE_UPDATE_INTERVAL))
               ?.settingValue ??
-          (86400000 * 7).toString());
+          (86400000 * 1).toString());
       lastUpdate = int.parse((await db.currentSettingDao
                   .getSetting(SettingKeys.TIMETABLE_LAST_UPDATE))
               ?.settingValue ??
