@@ -195,20 +195,18 @@ class _LinkListScreenState extends State<LinkListScreen> {
     List<Widget> result = [];
 
     result.add(
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, top: 20),
-          child: Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.grey),
-              ),
+      Padding(
+        padding: const EdgeInsets.only(left: 10, top: 20),
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey),
             ),
-            child: const Text(
-              "学外からアクセス可能なリンク",
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.grey),
-            ),
+          ),
+          child: const Text(
+            "学外からアクセス可能なリンク",
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: Colors.grey),
           ),
         ),
       ),
@@ -217,20 +215,18 @@ class _LinkListScreenState extends State<LinkListScreen> {
       result.add(buildMyLinkWidget(linkModel));
     }
     result.add(
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, top: 20),
-          child: Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.grey),
-              ),
+      Padding(
+        padding: const EdgeInsets.only(left: 10, top: 20),
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey),
             ),
-            child: const Text(
-              "学内ネットからのみアクセス可能なリンク",
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.grey),
-            ),
+          ),
+          child: const Text(
+            "学内ネットからのみアクセス可能なリンク",
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: Colors.grey),
           ),
         ),
       ),
@@ -239,20 +235,18 @@ class _LinkListScreenState extends State<LinkListScreen> {
       result.add(buildMyLinkWidget(linkModel));
     }
     result.add(
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, top: 20),
-          child: Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.grey),
-              ),
+      Padding(
+        padding: const EdgeInsets.only(left: 10, top: 20),
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey),
             ),
-            child: const Text(
-              "マイリンク",
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.grey),
-            ),
+          ),
+          child: const Text(
+            "マイリンク",
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: Colors.grey),
           ),
         ),
       ),
