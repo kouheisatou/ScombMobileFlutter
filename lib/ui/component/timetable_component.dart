@@ -81,7 +81,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
                   width: double.infinity,
                   color: ((DateTime.now().weekday - 1) == key &&
                           widget.shouldEmphasizeToday)
-                      ? Colors.black12
+                      ? Theme.of(context).primaryColor.withAlpha(40)
                       : null,
                   child: Text(
                     value,
@@ -129,7 +129,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
       child: Container(
         color:
             ((DateTime.now().weekday - 1) == col && widget.shouldEmphasizeToday)
-                ? Colors.black12
+                ? Theme.of(context).primaryColor.withAlpha(40)
                 : null,
         width: double.infinity,
         height: double.infinity,
