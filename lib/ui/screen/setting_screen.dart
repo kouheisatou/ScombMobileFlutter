@@ -81,6 +81,80 @@ class _SettingScreenState extends State<SettingScreen> {
     return SettingsList(
       sections: [
         SettingsSection(
+          title: const Text("全般"),
+          tiles: [
+            SettingsTile(
+              title: const Text("テーマカラー"),
+              onPressed: (context) async {
+                int? selectedColor = await showDialog(
+                  context: context,
+                  builder: (_) {
+                    return ColorPickerDialog(
+                      defaultColor: Colors.blueGrey,
+                    );
+                  },
+                );
+
+                if (selectedColor == null) {
+                  return;
+                }
+
+                parent.setThemeColor(Color(selectedColor));
+
+                updateSetting(
+                  SettingKeys.THEME_COLOR,
+                  selectedColor.toString(),
+                );
+              },
+              value: Padding(
+                padding: const EdgeInsets.all(5),
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                      )
+                    ],
+                    color: Color(
+                      int.parse(
+                        settings[SettingKeys.THEME_COLOR] ??
+                            themeColor.value.toString(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SettingsTile(
+              title: const Text("学部"),
+              value: Text(findMapKeyFromValue(
+                      SettingValues.SECTION, settings[SettingKeys.SECTION]) ??
+                  ""),
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectorDialog(
+                      SettingValues.SECTION,
+                      selectedKey: findMapKeyFromValue(
+                          SettingValues.SECTION, settings[SettingKeys.SECTION]),
+                      (key, value) async {
+                        updateSetting(SettingKeys.SECTION, value.toString());
+                      },
+                      description: "シラバスの検索時に必要になります",
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        SettingsSection(
           title: const Text("ログイン設定"),
           tiles: [
             SettingsTile(
@@ -243,28 +317,6 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
             SettingsTile(
-              title: const Text("学部"),
-              value: Text(findMapKeyFromValue(
-                      SettingValues.SECTION, settings[SettingKeys.SECTION]) ??
-                  ""),
-              onPressed: (context) {
-                showDialog(
-                  context: context,
-                  builder: (_) {
-                    return SelectorDialog(
-                      SettingValues.SECTION,
-                      selectedKey: findMapKeyFromValue(
-                          SettingValues.SECTION, settings[SettingKeys.SECTION]),
-                      (key, value) async {
-                        updateSetting(SettingKeys.SECTION, value.toString());
-                      },
-                      description: "シラバスの検索時に必要になります",
-                    );
-                  },
-                );
-              },
-            ),
-            SettingsTile(
               title: const Text("自動更新間隔"),
               value: Text(
                 findMapKeyFromValue(
@@ -319,56 +371,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
                 timetableInitialized = false;
               },
-            ),
-          ],
-        ),
-        SettingsSection(
-          title: const Text("全般"),
-          tiles: [
-            SettingsTile(
-              title: const Text("テーマカラー"),
-              onPressed: (context) async {
-                int? selectedColor = await showDialog(
-                  context: context,
-                  builder: (_) {
-                    return ColorPickerDialog();
-                  },
-                );
-
-                if (selectedColor == null) {
-                  return;
-                }
-
-                parent.setThemeColor(Color(selectedColor));
-
-                updateSetting(
-                  SettingKeys.THEME_COLOR,
-                  selectedColor.toString(),
-                );
-              },
-              value: Padding(
-                padding: const EdgeInsets.only(right: 5),
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                      )
-                    ],
-                    color: Color(
-                      int.parse(
-                        settings[SettingKeys.THEME_COLOR] ??
-                            themeColor.value.toString(),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ),
           ],
         ),

@@ -5,8 +5,9 @@ import '../../common/utils.dart';
 
 class ColorPickerDialog extends StatelessWidget {
   int? selectedColor;
+  Color? defaultColor;
 
-  ColorPickerDialog({Key? key}) : super(key: key);
+  ColorPickerDialog({this.defaultColor, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class ColorPickerDialog extends StatelessWidget {
           hexToColor("#FFFFAB91"),
           hexToColor("#FFBCAAA4"),
           // default color
-          Colors.white70
+          defaultColor != null ? defaultColor! : Colors.white70
         ],
         layoutBuilder: (context, colors, child) {
           Orientation orientation = MediaQuery.of(context).orientation;
