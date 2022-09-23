@@ -1,4 +1,5 @@
 // shared resource
+import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/notification.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
@@ -84,3 +85,5 @@ Future<void> _saveToDB(Task newTask) async {
   // replace
   db.currentTaskDao.insertTask(newTask);
 }
+
+MaterialColor themeColor = Colors.blueGrey;

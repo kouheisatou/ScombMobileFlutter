@@ -296,7 +296,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
                       });
                     },
                     backgroundColor: Colors.transparent,
-                    foregroundColor: Colors.blueGrey,
+                    foregroundColor: Theme.of(context).primaryColor,
                     icon: Icons.delete,
                   ),
                   SlidableAction(
@@ -311,7 +311,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
                       db.currentMyLinkDao.insertLink(linkModel);
                     },
                     backgroundColor: Colors.transparent,
-                    foregroundColor: Colors.blueGrey,
+                    foregroundColor: Theme.of(context).primaryColor,
                     icon: Icons.edit,
                   ),
                 ],
@@ -335,12 +335,12 @@ class _LinkListScreenState extends State<LinkListScreen> {
                     child: Text(
                       linkModel.title,
                       overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.black54),
                     ),
                   ),
                 ),
                 const Icon(
                   Icons.keyboard_arrow_right,
-                  color: Colors.blueGrey,
                 )
               ],
             ),

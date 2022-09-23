@@ -69,7 +69,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
       children: [
         // chip list
         Container(
-          color: Colors.blueGrey.shade50,
+          color: Theme.of(context).primaryColor.withAlpha(50),
           width: double.infinity,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -139,7 +139,8 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
           });
         },
         child: Chip(
-          backgroundColor: enabled ? Colors.blueGrey : Colors.black12,
+          backgroundColor:
+              enabled ? Theme.of(context).primaryColor : Colors.black12,
           label: Text(
             text,
             style: TextStyle(color: enabled ? Colors.white : Colors.black),
@@ -182,8 +183,8 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
 
   Widget buildListTile(int index, List<Task> currentTaskList) {
     var currentTask = currentTaskList[index];
-    var textStyle = const TextStyle(
-      color: Colors.blueGrey,
+    var textStyle = TextStyle(
+      color: Theme.of(context).primaryColor,
       fontSize: 10,
       fontWeight: FontWeight.w300,
     );
@@ -193,7 +194,8 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.text_snippet_outlined, color: Colors.blueGrey),
+            Icon(Icons.text_snippet_outlined,
+                color: Theme.of(context).primaryColor),
             Text("課 題", style: textStyle),
           ],
         );
@@ -202,7 +204,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.task_outlined, color: Colors.blueGrey),
+            Icon(Icons.task_outlined, color: Theme.of(context).primaryColor),
             Text("テ ス ト", style: textStyle),
           ],
         );
@@ -211,7 +213,8 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.question_mark_rounded, color: Colors.blueGrey),
+            Icon(Icons.question_mark_rounded,
+                color: Theme.of(context).primaryColor),
             Text("アンケート", style: textStyle),
           ],
         );
@@ -220,8 +223,8 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
         icon = Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.playlist_add_check_outlined,
-                color: Colors.blueGrey),
+            Icon(Icons.playlist_add_check_outlined,
+                color: Theme.of(context).primaryColor),
             Text("そ の 他", style: textStyle),
           ],
         );

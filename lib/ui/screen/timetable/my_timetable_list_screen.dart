@@ -125,7 +125,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                   padding: const EdgeInsets.all(3.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blueGrey),
+                      border: Border.all(color: Theme.of(context).primaryColor),
                     ),
                     child: Stack(
                       children: [

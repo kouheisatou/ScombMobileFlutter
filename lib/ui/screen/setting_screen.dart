@@ -5,6 +5,7 @@ import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/password_encripter.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
+import 'package:scomb_mobile/ui/dialog/color_picker_dialog.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -318,6 +319,56 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
                 timetableInitialized = false;
               },
+            ),
+          ],
+        ),
+        SettingsSection(
+          title: const Text("全般"),
+          tiles: [
+            SettingsTile(
+              title: const Text("テーマカラー"),
+              onPressed: (context) async {
+                int? selectedColor = await showDialog(
+                  context: context,
+                  builder: (_) {
+                    return ColorPickerDialog();
+                  },
+                );
+
+                if (selectedColor == null) {
+                  return;
+                }
+
+                parent.setThemeColor(Color(selectedColor));
+
+                updateSetting(
+                  SettingKeys.THEME_COLOR,
+                  selectedColor.toString(),
+                );
+              },
+              value: Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                      )
+                    ],
+                    color: Color(
+                      int.parse(
+                        settings[SettingKeys.THEME_COLOR] ??
+                            themeColor.value.toString(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

@@ -237,9 +237,9 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
                           setState(() {});
                         }
                       },
-                      icon: const Text(
+                      icon: Text(
                         "<",
-                        style: TextStyle(color: Colors.blueGrey),
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                     ),
                     Text(
@@ -255,9 +255,9 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
                             .insertClassCell(widget.editingClassCell);
                         setState(() {});
                       },
-                      icon: const Text(
+                      icon: Text(
                         ">",
-                        style: TextStyle(color: Colors.blueGrey),
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                     ),
                   ],
