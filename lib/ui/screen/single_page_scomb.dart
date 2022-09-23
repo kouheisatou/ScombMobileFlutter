@@ -228,7 +228,9 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       child: InkResponse(
                         onTap: addNewClassButtonAvailable
                             ? () async {
-                                if (widget.timetable == null) {
+                                var addDestinationTimetable = widget.timetable;
+                                // show add destination timetable select dialog
+                                if (addDestinationTimetable == null) {
                                   var allTimetables = await getAllTimetables(
                                       onFetchFinished: (result) {});
                                   var dialogResponse = await showDialog(
@@ -237,8 +239,9 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                                       return SelectorDialog<TimetableModel?>(
                                         allTimetables,
                                         (key, value) async {
-                                          widget.timetable = allTimetables[key];
-                                          if (widget.timetable == null) {
+                                          addDestinationTimetable =
+                                              allTimetables[key];
+                                          if (addDestinationTimetable == null) {
                                             return;
                                           }
                                         },
@@ -253,32 +256,36 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
                                 // create new cell from html
                                 var newCell = await fetchClassDetail(
-                                    currentUrl.toString(), widget.timetable!);
+                                  currentUrl.toString(),
+                                  addDestinationTimetable!,
+                                );
                                 print(newCell);
                                 if (newCell == null) return;
 
                                 // override confirmation
-                                if (widget.timetable!.timetable[newCell.period]
+                                bool? shouldReplace = true;
+                                if (addDestinationTimetable!
+                                            .timetable[newCell.period]
                                         [newCell.dayOfWeek] !=
                                     null) {
-                                  await showDialog(
+                                  shouldReplace = await showDialog(
                                     context: context,
                                     builder: (_) {
                                       return AlertDialog(
                                         title: const Text("授業置き換え"),
                                         content: Text(
-                                            "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} には既に ${widget.timetable?.timetable[newCell.period][newCell.dayOfWeek]?.name} が登録されています。置き換えますか？"),
+                                            "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} には既に ${addDestinationTimetable?.timetable[newCell.period][newCell.dayOfWeek]?.name} が登録されています。置き換えますか？"),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
-                                              Navigator.pop(context);
+                                              Navigator.pop(context, false);
                                               return;
                                             },
                                             child: const Text("キャンセル"),
                                           ),
                                           TextButton(
                                             onPressed: () async {
-                                              Navigator.pop(context);
+                                              Navigator.pop(context, true);
                                             },
                                             child: const Text("置き換え"),
                                           ),
@@ -289,12 +296,15 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                                 }
 
                                 // add to local db
-                                await widget.timetable!.addCell(newCell);
+                                if (shouldReplace == true) {
+                                  await addDestinationTimetable!
+                                      .addCell(newCell);
 
-                                Fluttertoast.showToast(
-                                  msg:
-                                      "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} に ${newCell.name} を登録しました。",
-                                );
+                                  Fluttertoast.showToast(
+                                    msg:
+                                        "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} に ${newCell.name} を登録しました。",
+                                  );
+                                }
                               }
                             : () {
                                 Fluttertoast.showToast(

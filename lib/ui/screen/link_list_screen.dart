@@ -97,7 +97,11 @@ class _LinkListScreenState extends State<LinkListScreen> {
             return AlertDialog(
               contentPadding: const EdgeInsets.all(10),
               titlePadding: const EdgeInsets.only(
-                  left: 25, bottom: 10, top: 20, right: 10),
+                left: 25,
+                bottom: 10,
+                top: 20,
+                right: 10,
+              ),
               actions: [
                 TextButton(
                     onPressed: () {

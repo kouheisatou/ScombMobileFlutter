@@ -48,7 +48,6 @@ Future<ClassCell?> fetchClassDetail(
 
     String? teacher = document.body?.children[0].children[0].children[3]
         .children[0].children[0].children[0].children[0].children[2].text;
-    print(teacher ?? "null");
 
     String? syllabusUrl = document
         .body
