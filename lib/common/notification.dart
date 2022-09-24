@@ -48,7 +48,7 @@ Future<void> registerTaskNotification(Task task, {AppDatabase? db}) async {
         importance: Importance.high,
         priority: Priority.high,
       ),
-      iOS: IOSNotificationDetails(),
+      iOS: DarwinNotificationDetails(),
     ),
     uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime,
@@ -99,7 +99,7 @@ Future<void> registerTaskNotification(Task task, {AppDatabase? db}) async {
         importance: Importance.high,
         priority: Priority.high,
       ),
-      iOS: IOSNotificationDetails(),
+      iOS: DarwinNotificationDetails(),
     ),
     uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime,

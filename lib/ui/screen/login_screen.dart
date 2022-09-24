@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const Padding(
             padding: EdgeInsets.all(12),
             child: Text(
-              "ここで入力された学籍番号とパスワードは、アプリ内でScombZにログインするためにのみ利用されます。\nスマホ内のローカルDBに暗号化して保存され、外部に送信されることはありません。。",
+              "ここで入力された学籍番号とパスワードは、アプリ内でScombZにログインするためにのみ利用されます。\nスマホ内のローカルDBに暗号化して保存され、外部に送信されることはありません。",
             ),
           ),
           Expanded(

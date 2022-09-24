@@ -15,12 +15,9 @@ Future<void> initNotification() async {
   var plugin = FlutterLocalNotificationsPlugin();
   await plugin.initialize(
     const InitializationSettings(
-      iOS: IOSInitializationSettings(),
+      iOS: DarwinInitializationSettings(),
       android: AndroidInitializationSettings("@drawable/ic_notification"),
     ),
-    onSelectNotification: (_) {
-      // launchUrl()
-    },
   );
 
   if (Platform.isAndroid) {
