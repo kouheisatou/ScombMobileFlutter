@@ -110,7 +110,12 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                         );
                         try {
                           controller.loadUrl(
-                            urlRequest: URLRequest(url: widget.initUrl),
+                            urlRequest: URLRequest(
+                              url: widget.initUrl,
+                              headers: {
+                                "Cookie": "$SESSION_COOKIE_ID=$sessionId"
+                              },
+                            ),
                           );
                         } catch (e) {
                           print(e);
@@ -139,6 +144,27 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     setState(() {
                       loading = false;
                     });
+                  },
+                  onReceivedHttpAuthRequest: (controller, challenge) async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (builder) {
+                          return LoginScreen();
+                        },
+                        fullscreenDialog: true,
+                      ),
+                    );
+                    try {
+                      controller.loadUrl(
+                        urlRequest: URLRequest(
+                          url: widget.initUrl,
+                          headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
+                        ),
+                      );
+                    } catch (e) {
+                      print(e);
+                    }
                   },
                 ),
                 Visibility(
