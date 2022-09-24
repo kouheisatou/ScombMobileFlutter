@@ -199,8 +199,13 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                                     errorMsg = null;
                                     try {
                                       webView.loadUrl(
-                                        urlRequest:
-                                            URLRequest(url: widget.initUrl),
+                                        urlRequest: URLRequest(
+                                          url: widget.initUrl,
+                                          headers: {
+                                            "Cookie":
+                                                "$SESSION_COOKIE_ID=$sessionId"
+                                          },
+                                        ),
                                       );
                                     } catch (e) {
                                       print(e);
