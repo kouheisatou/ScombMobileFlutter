@@ -4,6 +4,8 @@ import 'package:floor/floor.dart';
 import 'package:scomb_mobile/common/db/class_cell_dao.dart';
 import 'package:scomb_mobile/common/db/my_link_dao.dart';
 import 'package:scomb_mobile/common/db/my_link_entity.dart';
+import 'package:scomb_mobile/common/db/news_item_model_dao.dart';
+import 'package:scomb_mobile/common/db/news_item_model_entity.dart';
 import 'package:scomb_mobile/common/db/setting_dao.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
 import 'package:scomb_mobile/common/db/task.dart';
@@ -14,7 +16,8 @@ import 'class_cell.dart';
 
 part 'scomb_mobile_database.g.dart';
 
-@Database(version: 5, entities: [Setting, ClassCell, Task, MyLink])
+@Database(
+    version: 6, entities: [Setting, ClassCell, Task, MyLink, NewsItemModel])
 abstract class AppDatabase extends FloorDatabase {
   static AppDatabase? _appDatabase;
 
@@ -22,6 +25,7 @@ abstract class AppDatabase extends FloorDatabase {
   ClassCellDao get currentClassCellDao;
   TaskDao get currentTaskDao;
   MyLinkDao get currentMyLinkDao;
+  NewsItemModelDao get currentNewsItemModelDao;
 
   static Future<AppDatabase> getDatabase() async {
     return _appDatabase ??= await $FloorAppDatabase
@@ -31,6 +35,7 @@ abstract class AppDatabase extends FloorDatabase {
       migration2to3,
       migration3to4,
       migration4to5,
+      migration5to6,
     ]).build();
   }
 }
@@ -58,4 +63,10 @@ final migration3to4 = Migration(3, 4, (database) async {
 final migration4to5 = Migration(4, 5, (database) async {
   await database.rawQuery(
       "CREATE TABLE `my_links` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `url` TEXT NOT NULL);");
+});
+
+// add news_item table
+final migration5to6 = Migration(5, 6, (database) async {
+  await database.rawQuery(
+      "CREATE TABLE IF NOT EXISTS `news_item` (`newsId` TEXT NOT NULL, `data2` TEXT NOT NULL, `title` TEXT NOT NULL, `category` TEXT NOT NULL, `domain` TEXT NOT NULL, `publishTime` TEXT NOT NULL, `tags` TEXT NOT NULL, `unread` INTEGER NOT NULL, PRIMARY KEY (`newsId`))");
 });

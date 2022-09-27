@@ -1,18 +1,16 @@
 import 'package:floor/floor.dart';
 
-@Entity(tableName: "news")
+@Entity(tableName: "news_item")
 class NewsItemModel {
   @primaryKey
   // "data1" in html attr
   String newsId;
-
   String data2;
-
   String title;
   String category;
   String domain;
   String publishTime;
-  Set<String> tags;
+  String tags;
   bool unread;
 
   NewsItemModel(
@@ -28,6 +26,6 @@ class NewsItemModel {
 
   @override
   String toString() {
-    return "NewsItemModel($newsId, $data2, $title, $category, $domain, $publishTime, $tags)";
+    return "NewsItemModel(newsId=$newsId, data2=$data2, title=$title, category=$category, domain=$domain, publishTime=$publishTime, tags=$tags)";
   }
 }

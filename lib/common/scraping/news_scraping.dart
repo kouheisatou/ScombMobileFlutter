@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 import 'package:scomb_mobile/common/db/news_item_model_entity.dart';
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 
 import '../login_exception.dart';
 import '../shared_resource.dart';
@@ -28,7 +29,7 @@ Future<List<NewsItemModel>> fetchAllNews() async {
     throw LoginException("セッションIDの有効期限切れ");
   }
 
-  document.getElementsByClassName(NEWS_LIST_ITEM_CSS_NM).forEach((element) {
+  for (var element in document.getElementsByClassName(NEWS_LIST_ITEM_CSS_NM)) {
     try {
       var linkText =
           element.getElementsByClassName(NEWS_LIST_ITEM_TITLE_CSS_NM)[0];
@@ -44,14 +45,24 @@ Future<List<NewsItemModel>> fetchAllNews() async {
           .children[0]
           .text;
 
-      Set<String> tags = {};
+      String tags = "";
       element.getElementsByClassName(NEWS_TAG_CSS_NM).forEach(
         (tag) {
           if (!tag.classes.contains(NEWS_TAG_HIDDEN_CSS_NM)) {
-            tags.add(tag.text);
+            if (!tags.contains(tag.text)) {
+              tags += "${tag.text},";
+            }
           }
         },
       );
+
+      var db = await AppDatabase.getDatabase();
+      NewsItemModel? oldNews = await db.currentNewsItemModelDao.getNews(data1);
+
+      bool unread = tags.contains("未読");
+      if (oldNews != null) {
+        unread = oldNews.unread;
+      }
 
       NewsItemModel news = NewsItemModel(
         data1,
@@ -61,14 +72,16 @@ Future<List<NewsItemModel>> fetchAllNews() async {
         domain,
         publishTime,
         tags,
-        tags.contains("未読"),
+        unread,
       );
       print(news);
       result.add(news);
+
+      await db.currentNewsItemModelDao.insertNewsModel(news);
     } catch (e, stackTrace) {
       print(e);
     }
-  });
+  }
 
   return result;
 }

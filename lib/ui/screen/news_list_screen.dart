@@ -6,6 +6,7 @@ import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
 import '../../common/db/news_item_model_entity.dart';
+import '../../common/db/scomb_mobile_database.dart';
 
 class NewsScreen extends NetworkScreen {
   NewsScreen(super.title, {Key? key}) : super(key: key);
@@ -37,7 +38,7 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
           return Column(
             children: [
               InkWell(
-                onTap: () {
+                onTap: () async {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -50,17 +51,35 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
                       fullscreenDialog: true,
                     ),
                   );
+
+                  // remove unread badge
+                  setState(() {
+                    widget.news[index].unread = false;
+                  });
+                  var db = await AppDatabase.getDatabase();
+                  await db.currentNewsItemModelDao
+                      .insertNewsModel(widget.news[index]);
+                },
+                onLongPress: () {
+                  print(widget.news[index]);
                 },
                 child: ListTile(
                   subtitle: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "${widget.news[index].domain}\n${widget.news[index].publishTime}",
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   title: Row(
                     children: [
-                      Expanded(child: Text(widget.news[index].title)),
+                      Expanded(
+                        child: Text(
+                          widget.news[index].title,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ),
                       Visibility(
                         visible: widget.news[index].unread,
                         child: Padding(

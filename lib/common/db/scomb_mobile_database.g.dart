@@ -69,10 +69,15 @@ class _$AppDatabase extends AppDatabase {
 
   MyLinkDao? _currentMyLinkDaoInstance;
 
-  Future<sqflite.Database> open(String path, List<Migration> migrations,
-      [Callback? callback]) async {
+  NewsItemModelDao? _currentNewsItemModelDaoInstance;
+
+  Future<sqflite.Database> open(
+    String path,
+    List<Migration> migrations, [
+    Callback? callback,
+  ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 5,
+      version: 6,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -97,6 +102,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `task` (`title` TEXT NOT NULL, `className` TEXT NOT NULL, `taskType` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `url` TEXT NOT NULL, `classId` TEXT NOT NULL, `reportId` TEXT NOT NULL, `id` TEXT NOT NULL, `customColor` INTEGER, `addManually` INTEGER NOT NULL, `done` INTEGER NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `my_links` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `url` TEXT NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `news_item` (`newsId` TEXT NOT NULL, `data2` TEXT NOT NULL, `title` TEXT NOT NULL, `category` TEXT NOT NULL, `domain` TEXT NOT NULL, `publishTime` TEXT NOT NULL, `tags` TEXT NOT NULL, `unread` INTEGER NOT NULL, PRIMARY KEY (`newsId`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -125,11 +132,19 @@ class _$AppDatabase extends AppDatabase {
   MyLinkDao get currentMyLinkDao {
     return _currentMyLinkDaoInstance ??= _$MyLinkDao(database, changeListener);
   }
+
+  @override
+  NewsItemModelDao get currentNewsItemModelDao {
+    return _currentNewsItemModelDaoInstance ??=
+        _$NewsItemModelDao(database, changeListener);
+  }
 }
 
 class _$SettingDao extends SettingDao {
-  _$SettingDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+  _$SettingDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
         _settingInsertionAdapter = InsertionAdapter(
             database,
             'settings',
@@ -180,8 +195,10 @@ class _$SettingDao extends SettingDao {
 }
 
 class _$ClassCellDao extends ClassCellDao {
-  _$ClassCellDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+  _$ClassCellDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
         _classCellInsertionAdapter = InsertionAdapter(
             database,
             'class_cell',
@@ -298,8 +315,10 @@ class _$ClassCellDao extends ClassCellDao {
 }
 
 class _$TaskDao extends TaskDao {
-  _$TaskDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+  _$TaskDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
         _taskInsertionAdapter = InsertionAdapter(
             database,
             'task',
@@ -371,8 +390,10 @@ class _$TaskDao extends TaskDao {
 }
 
 class _$MyLinkDao extends MyLinkDao {
-  _$MyLinkDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+  _$MyLinkDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
         _myLinkInsertionAdapter = InsertionAdapter(
             database,
             'my_links',
@@ -416,5 +437,55 @@ class _$MyLinkDao extends MyLinkDao {
   @override
   Future<void> removeLink(MyLink linkModel) async {
     await _myLinkDeletionAdapter.delete(linkModel);
+  }
+}
+
+class _$NewsItemModelDao extends NewsItemModelDao {
+  _$NewsItemModelDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _newsItemModelInsertionAdapter = InsertionAdapter(
+            database,
+            'news_item',
+            (NewsItemModel item) => <String, Object?>{
+                  'newsId': item.newsId,
+                  'data2': item.data2,
+                  'title': item.title,
+                  'category': item.category,
+                  'domain': item.domain,
+                  'publishTime': item.publishTime,
+                  'tags': item.tags,
+                  'unread': item.unread ? 1 : 0
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<NewsItemModel> _newsItemModelInsertionAdapter;
+
+  @override
+  Future<NewsItemModel?> getNews(String newsId) async {
+    return _queryAdapter.query(
+        'SELECT * FROM news_item WHERE newsId = ?1 LIMIT 1',
+        mapper: (Map<String, Object?> row) => NewsItemModel(
+            row['newsId'] as String,
+            row['data2'] as String,
+            row['title'] as String,
+            row['category'] as String,
+            row['domain'] as String,
+            row['publishTime'] as String,
+            row['tags'] as String,
+            (row['unread'] as int) != 0),
+        arguments: [newsId]);
+  }
+
+  @override
+  Future<void> insertNewsModel(NewsItemModel news) async {
+    await _newsItemModelInsertionAdapter.insert(
+        news, OnConflictStrategy.replace);
   }
 }
