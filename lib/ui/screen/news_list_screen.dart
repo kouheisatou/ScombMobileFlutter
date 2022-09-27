@@ -31,39 +31,66 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
   Widget innerBuild() {
     return RefreshIndicator(
       onRefresh: refreshData,
-      child: ListView.separated(
+      child: ListView.builder(
         itemCount: widget.news.length,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SinglePageScomb(
-                    Uri.parse(NEWS_LIST_PAGE_URL),
-                    widget.news[index].title,
-                    javascript:
-                        "detailPortalInfo('${widget.news[index].newsId}', '${widget.news[index].data2}')",
+          return Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SinglePageScomb(
+                        Uri.parse(NEWS_LIST_PAGE_URL),
+                        widget.news[index].title,
+                        javascript:
+                            "detailPortalInfo('${widget.news[index].newsId}', '${widget.news[index].data2}')",
+                      ),
+                      fullscreenDialog: true,
+                    ),
+                  );
+                },
+                child: ListTile(
+                  subtitle: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "${widget.news[index].domain}\n${widget.news[index].publishTime}",
+                    ),
                   ),
-                  fullscreenDialog: true,
+                  title: Row(
+                    children: [
+                      Expanded(child: Text(widget.news[index].title)),
+                      Visibility(
+                        visible: widget.news[index].unread,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  spreadRadius: 1,
+                                  blurRadius: 3,
+                                )
+                              ],
+                              color: Colors.deepOrange,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            },
-            title: Text(widget.news[index].title),
-            subtitle: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Text(widget.news[index].category),
-                Text(widget.news[index].domain),
-                Text(widget.news[index].publishTime),
-                Text(widget.news[index].tags.toString()),
-              ],
-            ),
+              ),
+              const Divider(
+                height: 0.5,
+              ),
+            ],
           );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Divider();
         },
       ),
     );

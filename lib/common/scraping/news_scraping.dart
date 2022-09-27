@@ -61,6 +61,7 @@ Future<List<NewsItemModel>> fetchAllNews() async {
         domain,
         publishTime,
         tags,
+        tags.contains("未読"),
       );
       print(news);
       result.add(news);

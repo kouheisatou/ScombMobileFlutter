@@ -13,6 +13,7 @@ class NewsItemModel {
   String domain;
   String publishTime;
   Set<String> tags;
+  bool unread;
 
   NewsItemModel(
     this.newsId,
@@ -22,7 +23,9 @@ class NewsItemModel {
     this.domain,
     this.publishTime,
     this.tags,
+    this.unread,
   );
+
   @override
   String toString() {
     return "NewsItemModel($newsId, $data2, $title, $category, $domain, $publishTime, $tags)";
