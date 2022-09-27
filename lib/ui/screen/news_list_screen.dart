@@ -22,7 +22,9 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
 
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
+    isLoading = true;
     widget.news = await fetchAllNews();
+    isLoading = false;
   }
 
   @override
@@ -69,6 +71,8 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
 
   @override
   Future<void> refreshData() async {
+    isLoading = true;
     widget.news = await fetchAllNews();
+    isLoading = false;
   }
 }

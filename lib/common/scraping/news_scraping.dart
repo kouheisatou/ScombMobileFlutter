@@ -30,25 +30,24 @@ Future<List<NewsItemModel>> fetchAllNews() async {
 
   document.getElementsByClassName(NEWS_LIST_ITEM_CSS_NM).forEach((element) {
     try {
-      var linkText = element.getElementsByClassName("link-txt")[0];
+      var linkText =
+          element.getElementsByClassName(NEWS_LIST_ITEM_TITLE_CSS_NM)[0];
       String title = linkText.text;
-      String data1 = linkText.attributes["data1"]!;
-      String data2 = linkText.attributes["data2"]!;
-      String category = element
-          .getElementsByClassName("portal-information-list-type")[0]
-          .text;
-      String domain = element
-          .getElementsByClassName("portal-information-list-division")[0]
-          .text;
+      String data1 = linkText.attributes[NEWS_ID_ATTR_NM]!;
+      String data2 = linkText.attributes[NEWS_CATEGORY_ATTR_NM]!;
+      String category =
+          element.getElementsByClassName(NEWS_CATEGORY_CSS_NM)[0].text;
+      String domain =
+          element.getElementsByClassName(NEWS_DOMAIN_CSS_NM)[0].text;
       String publishTime = element
-          .getElementsByClassName("portal-information-list-date")[0]
+          .getElementsByClassName(NEWS_PUBLISH_TIME_CSS_NM)[0]
           .children[0]
           .text;
 
       Set<String> tags = {};
-      element.getElementsByClassName("portal-information-priority").forEach(
+      element.getElementsByClassName(NEWS_TAG_CSS_NM).forEach(
         (tag) {
-          if (!tag.classes.contains("contents-hidden")) {
+          if (!tag.classes.contains(NEWS_TAG_HIDDEN_CSS_NM)) {
             tags.add(tag.text);
           }
         },

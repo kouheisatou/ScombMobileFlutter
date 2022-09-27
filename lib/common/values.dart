@@ -61,8 +61,15 @@ const TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline";
 const SURVEY_ROW_CSS_NM = "result-list";
 
 // --------お知らせ一覧ページ--------
-// お知らせリストのアイテムのCSSクラス名
 const NEWS_LIST_ITEM_CSS_NM = "contents-display-flex";
+const NEWS_LIST_ITEM_TITLE_CSS_NM = "link-txt";
+const NEWS_ID_ATTR_NM = "data1";
+const NEWS_CATEGORY_ATTR_NM = "data2";
+const NEWS_CATEGORY_CSS_NM = "portal-information-list-type";
+const NEWS_DOMAIN_CSS_NM = "portal-information-list-division";
+const NEWS_PUBLISH_TIME_CSS_NM = "portal-information-list-date";
+const NEWS_TAG_CSS_NM = "portal-information-priority";
+const NEWS_TAG_HIDDEN_CSS_NM = "contents-hidden";
 
 class Term {
   static String FIRST = "10";

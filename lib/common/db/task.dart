@@ -46,6 +46,7 @@ class Task {
   ) {
     var uri = Uri.parse(url);
     classId = uri.queryParameters["idnumber"]!;
+
     String? reportId = uri.queryParameters["reportId"];
     String? examId = uri.queryParameters["examinationId"];
     if (reportId != null) {
