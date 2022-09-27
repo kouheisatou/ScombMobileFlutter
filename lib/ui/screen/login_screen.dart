@@ -49,8 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void startLogin() {
-    CookieManager cookieManager = CookieManager.instance();
-    cookieManager.deleteAllCookies();
     webView?.loadUrl(
       urlRequest: URLRequest(url: Uri.parse(SCOMB_LOGIN_PAGE_URL)),
     );

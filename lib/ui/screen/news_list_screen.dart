@@ -80,25 +80,24 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
                           maxLines: 2,
                         ),
                       ),
-                      Visibility(
-                        visible: widget.news[index].unread,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Container(
-                            width: 8,
-                            height: 8,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  spreadRadius: 1,
-                                  blurRadius: 3,
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: widget.news[index].unread
+                              ? const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      spreadRadius: 1,
+                                      blurRadius: 3,
+                                    )
+                                  ],
+                                  color: Colors.deepOrange,
                                 )
-                              ],
-                              color: Colors.deepOrange,
-                            ),
-                          ),
+                              : null,
                         ),
                       ),
                     ],
