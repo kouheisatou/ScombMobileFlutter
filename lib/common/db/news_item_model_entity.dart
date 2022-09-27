@@ -12,7 +12,7 @@ class NewsItemModel {
   String category;
   String domain;
   String publishTime;
-  List<String> tags;
+  Set<String> tags;
 
   NewsItemModel(
     this.newsId,

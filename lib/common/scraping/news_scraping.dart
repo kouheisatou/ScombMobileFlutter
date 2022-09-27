@@ -45,7 +45,7 @@ Future<List<NewsItemModel>> fetchAllNews() async {
           .children[0]
           .text;
 
-      List<String> tags = [];
+      Set<String> tags = {};
       element.getElementsByClassName("portal-information-priority").forEach(
         (tag) {
           if (!tag.classes.contains("contents-hidden")) {

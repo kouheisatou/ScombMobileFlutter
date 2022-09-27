@@ -49,9 +49,13 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
             },
             title: Text(widget.news[index].title),
             subtitle: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Text(widget.news[index].category),
-                Text(widget.news[index].domain)
+                Text(widget.news[index].domain),
+                Text(widget.news[index].publishTime),
+                Text(widget.news[index].tags.toString()),
               ],
             ),
           );
