@@ -41,7 +41,7 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
                     Uri.parse(NEWS_LIST_PAGE_URL),
                     widget.news[index].title,
                     javascript:
-                        "detailPortalInfo('${widget.news[index].newsId}')",
+                        "detailPortalInfo('${widget.news[index].newsId}', '${widget.news[index].data2}')",
                   ),
                   fullscreenDialog: true,
                 ),
