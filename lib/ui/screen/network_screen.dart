@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -92,7 +93,13 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     }
 
     // offline mode
-    on SocketException catch (e, stackTrace) {
+    on SocketException catch (e) {
+      Fluttertoast.showToast(msg: "オフライン");
+      await getDataOffLine();
+    }
+
+    // offline mode
+    on DioError catch (e) {
       Fluttertoast.showToast(msg: "オフライン");
       await getDataOffLine();
     }
@@ -124,8 +131,9 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
 
     // unhandled error
     catch (e, stackTrace) {
-      Fluttertoast.showToast(
-          msg: "予期せぬエラーが発生しました。開発者に報告してください。\n$e,$stackTrace");
+      Fluttertoast.showToast(msg: "予期せぬエラーが発生しました。\n$e,$stackTrace");
+      print(e);
+      print(stackTrace);
     } finally {
       // sort
       sortTasks();

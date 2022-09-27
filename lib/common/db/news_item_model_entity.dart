@@ -2,22 +2,29 @@ import 'package:floor/floor.dart';
 
 @Entity(tableName: "news")
 class NewsItemModel {
-  @PrimaryKey(autoGenerate: true)
-  int? id;
-  bool isAlreadyRead = false;
-  bool isNew = false;
-  bool isImportant = false;
-  String domain;
-  int publishTime;
+  @primaryKey
+  // "data1" in html attr
+  String newsId;
+
+  String data2;
+
+  String title;
   String category;
+  String domain;
+  String publishTime;
+  List<String> tags;
 
   NewsItemModel(
-    this.id,
-    this.isAlreadyRead,
-    this.isNew,
-    this.isImportant,
+    this.newsId,
+    this.data2,
+    this.title,
+    this.category,
     this.domain,
     this.publishTime,
-    this.category,
+    this.tags,
   );
+  @override
+  String toString() {
+    return "NewsItemModel($newsId, $data2, $title, $category, $domain, $publishTime, $tags)";
+  }
 }

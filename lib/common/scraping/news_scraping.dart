@@ -28,8 +28,47 @@ Future<List<NewsItemModel>> fetchAllNews() async {
     throw LoginException("セッションIDの有効期限切れ");
   }
 
-  document.getElementsByClassName("contents-display-flex").forEach((element) {
-    print(element.text);
+  document.getElementsByClassName(NEWS_LIST_ITEM_CSS_NM).forEach((element) {
+    try {
+      var linkText = element.getElementsByClassName("link-txt")[0];
+      String title = linkText.text;
+      String data1 = linkText.attributes["data1"]!;
+      String data2 = linkText.attributes["data2"]!;
+      String category = element
+          .getElementsByClassName("portal-information-list-type")[0]
+          .text;
+      String domain = element
+          .getElementsByClassName("portal-information-list-division")[0]
+          .text;
+      String publishTime = element
+          .getElementsByClassName("portal-information-list-date")[0]
+          .children[0]
+          .text;
+
+      List<String> tags = [];
+      element.getElementsByClassName("portal-information-priority").forEach(
+        (tag) {
+          if (!tag.classes.contains("contents-hidden")) {
+            tags.add(tag.text);
+          }
+        },
+      );
+
+      NewsItemModel news = NewsItemModel(
+        data1,
+        data2,
+        title,
+        category,
+        domain,
+        publishTime,
+        tags,
+      );
+      print(news);
+      result.add(news);
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
+    }
   });
 
   return result;

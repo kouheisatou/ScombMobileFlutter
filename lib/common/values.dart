@@ -60,6 +60,10 @@ const TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline";
 // アンケート1行分のCSS
 const SURVEY_ROW_CSS_NM = "result-list";
 
+// --------お知らせ一覧ページ--------
+// お知らせリストのアイテムのCSSクラス名
+const NEWS_LIST_ITEM_CSS_NM = "contents-display-flex";
+
 class Term {
   static String FIRST = "10";
   static String SECOND = "20";

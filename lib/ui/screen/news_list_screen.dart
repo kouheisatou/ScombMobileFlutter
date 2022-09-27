@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/scraping/news_scraping.dart';
+import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
+import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
 
 import '../../common/db/news_item_model_entity.dart';
 
@@ -16,23 +18,48 @@ class NewsScreen extends NetworkScreen {
 
 class NewsScreenState extends NetworkScreenState<NewsScreen> {
   @override
-  Future<void> getDataOffLine() {
-    // TODO: implement getDataOffLine
-    throw UnimplementedError();
-  }
+  Future<void> getDataOffLine() async {}
 
   @override
-  Future<void> getFromServerAndSaveToSharedResource(
-      String savedSessionId) async {
+  Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
     widget.news = await fetchAllNews();
   }
 
   @override
   Widget innerBuild() {
-    return ListView(
-      children: [
-        Text(widget.news.toString()),
-      ],
+    return RefreshIndicator(
+      onRefresh: refreshData,
+      child: ListView.separated(
+        itemCount: widget.news.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SinglePageScomb(
+                    Uri.parse(NEWS_LIST_PAGE_URL),
+                    widget.news[index].title,
+                    javascript:
+                        "detailPortalInfo('${widget.news[index].newsId}')",
+                  ),
+                  fullscreenDialog: true,
+                ),
+              );
+            },
+            title: Text(widget.news[index].title),
+            subtitle: Column(
+              children: [
+                Text(widget.news[index].category),
+                Text(widget.news[index].domain)
+              ],
+            ),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const Divider();
+        },
+      ),
     );
   }
 
