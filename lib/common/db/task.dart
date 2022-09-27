@@ -46,8 +46,17 @@ class Task {
   ) {
     var uri = Uri.parse(url);
     classId = uri.queryParameters["idnumber"]!;
-    reportId = uri.queryParameters["reportId"]!;
-    id = "$taskType-$classId-$reportId";
+    String? reportId = uri.queryParameters["reportId"];
+    String? examId = uri.queryParameters["examinationId"];
+    if (reportId != null) {
+      this.reportId = reportId;
+    } else if (examId != null) {
+      this.reportId = examId;
+    } else {
+      this.reportId = "";
+    }
+
+    id = "$taskType-$classId-${this.reportId}";
     done = false;
   }
 

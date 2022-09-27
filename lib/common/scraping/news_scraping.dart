@@ -67,7 +67,6 @@ Future<List<NewsItemModel>> fetchAllNews() async {
       result.add(news);
     } catch (e, stackTrace) {
       print(e);
-      print(stackTrace);
     }
   });
 
