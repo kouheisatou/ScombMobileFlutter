@@ -18,6 +18,8 @@ const SYLLABUS_SEARCH_URL =
 const TIMETABLE_PAGE_URL =
     "http://timetable.sic.shibaura-it.ac.jp/table/\${yearCode}/Timetable\${sectionCode}\${departmentCode}01\${termCode}\${gradeCode}.html";
 const TIMETABLE_LIST_PAGE_URL = "http://timetable.sic.shibaura-it.ac.jp/";
+const NEWS_LIST_PAGE_URL =
+    "https://scombz.shibaura-it.ac.jp/portal/home/information/list";
 
 // ScombのCookieとして保存されているセッションIDのキー
 const SESSION_COOKIE_ID = "SESSION";
