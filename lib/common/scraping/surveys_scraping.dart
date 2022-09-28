@@ -67,12 +67,19 @@ Future<void> _constructSurveys(Document document) async {
         await db.currentClassCellDao.getClassCellByClassId(classId);
     customColor = classCellFromDB?.customColorInt;
 
+    String url;
+    if (classId == "") {
+      url = "$SURVEY_PAGE_URL?surveyId=$surveyId";
+    } else {
+      url = "$LMS_SURVEY_PAGE_URL?idnumber=$classId&surveyId=$surveyId";
+    }
+
     var newSurvey = Task(
       title,
       surveyDomain,
       TaskType.SURVEY,
       stringToTime(deadline, includeSecond: false),
-      "$SURVEY_PAGE_URL?surveyId=$surveyId",
+      url,
       surveyId,
       classId,
       customColor,

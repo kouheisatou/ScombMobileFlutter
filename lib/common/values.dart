@@ -10,6 +10,8 @@ const TASK_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/task";
 const SURVEY_LIST_PAGE_URL =
     "https://scombz.shibaura-it.ac.jp/portal/surveys/list";
 const SURVEY_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/surveys/take";
+const LMS_SURVEY_PAGE_URL =
+    "https://scombz.shibaura-it.ac.jp/lms/course/surveys/take";
 const TWITTER_URL = "https://twitter.com/ScombMobile";
 const GITHUB_URL = "https://github.com/kouheisatou/ScombMobileFlutter";
 const PRIVACY_POLICY_URL = "https://kouheisatou.github.io/ScombMobileFlutter/";
