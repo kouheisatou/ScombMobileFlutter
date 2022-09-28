@@ -13,7 +13,6 @@ import '../dialog/syllabus_search_dialog.dart';
 const SGSOT_URL =
     "http://sgsot.sic.shibaura-it.ac.jp/redirect.php?user=\${username}&domain=sic.shibaura-it.ac.jp&method=&GID_COMMIT=%A5%ED%A5%B0%A5%A4%A5%F3";
 const BUS_ARRIVAL_TIMETABLE = "http://bus.shibaura-it.ac.jp/ts/today_sheet.php";
-const SIT_COOP_URL = "https://task.univ.coop/memberscard/top/sit";
 const GP_GRAPH_PAGE_URL = "https://gp.sic.shibaura-it.ac.jp/";
 
 class LinkListScreen extends StatefulWidget {
@@ -27,11 +26,6 @@ class _LinkListScreenState extends State<LinkListScreen> {
       "ScombZ",
       SCOMB_HOME_URL,
       Image.asset("resources/scombz_icon.png"),
-    ),
-    MyLink.preset(
-      "芝浦工業大学生協",
-      SIT_COOP_URL,
-      Image.asset("resources/coop_icon.png"),
     ),
     MyLink.preset(
       "学バス時刻表",
