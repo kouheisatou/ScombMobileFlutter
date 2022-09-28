@@ -60,6 +60,7 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
   @override
   Future<void> refreshData() async {
     taskListInitialized = false;
+    taskList.clear();
     super.fetchData();
   }
 
