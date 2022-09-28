@@ -9,7 +9,6 @@ import 'package:scomb_mobile/ui/screen/login_screen.dart';
 import 'package:scomb_mobile/ui/screen/timetable/my_timetable_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
 class SinglePageScomb extends StatefulWidget {
@@ -70,10 +69,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       loading = true;
                     });
                   },
-                  initialUrlRequest: URLRequest(
-                    url: widget.initUrl,
-                    headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
-                  ),
+                  initialUrlRequest: URLRequest(url: widget.initUrl),
                   onLoadError: (controller, url, code, msg) {
                     setState(() {
                       errorMsg =
@@ -110,12 +106,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                         );
                         try {
                           controller.loadUrl(
-                            urlRequest: URLRequest(
-                              url: widget.initUrl,
-                              headers: {
-                                "Cookie": "$SESSION_COOKIE_ID=$sessionId"
-                              },
-                            ),
+                            urlRequest: URLRequest(url: widget.initUrl),
                           );
                         } catch (e) {
                           print(e);
@@ -157,10 +148,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     );
                     try {
                       controller.loadUrl(
-                        urlRequest: URLRequest(
-                          url: widget.initUrl,
-                          headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
-                        ),
+                        urlRequest: URLRequest(url: widget.initUrl),
                       );
                     } catch (e) {
                       print(e);
@@ -201,10 +189,6 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                                       webView.loadUrl(
                                         urlRequest: URLRequest(
                                           url: widget.initUrl,
-                                          headers: {
-                                            "Cookie":
-                                                "$SESSION_COOKIE_ID=$sessionId"
-                                          },
                                         ),
                                       );
                                     } catch (e) {
