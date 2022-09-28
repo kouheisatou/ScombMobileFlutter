@@ -68,9 +68,12 @@ Future<void> _constructSurveys(Document document) async {
     customColor = classCellFromDB?.customColorInt;
 
     String url;
+    // surveys from others
     if (classId == "") {
       url = "$SURVEY_PAGE_URL?surveyId=$surveyId";
-    } else {
+    }
+    // surveys from LMS
+    else {
       url = "$LMS_SURVEY_PAGE_URL?idnumber=$classId&surveyId=$surveyId";
     }
 
