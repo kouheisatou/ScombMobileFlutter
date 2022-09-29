@@ -65,7 +65,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
     // day of week row
     dayOfWeekCells.add(
       const SizedBox(
-        width: 20,
+        width: 24,
         child: Text(
           "00:00",
           style: TextStyle(
@@ -117,7 +117,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
     // period column
     tableCells.add(
       SizedBox(
-        width: 20,
+        width: 24,
         height: double.infinity,
         child: Column(
           mainAxisSize: MainAxisSize.max,
