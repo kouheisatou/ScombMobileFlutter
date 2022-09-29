@@ -13,6 +13,7 @@ class TimetableComponent extends StatefulWidget {
   bool isEditMode = false;
   bool shouldEmphasizeToday;
   bool shouldShowCellText;
+  bool shouldShowPeriodTime;
   Function? onUpdatedUi;
 
   TimetableComponent(this.timetable, this.showSaturday,
@@ -20,6 +21,7 @@ class TimetableComponent extends StatefulWidget {
       required this.isEditMode,
       this.shouldEmphasizeToday = true,
       this.shouldShowCellText = true,
+      this.shouldShowPeriodTime = true,
       this.onUpdatedUi});
 
   @override
@@ -58,15 +60,19 @@ class _TimetableComponentState extends State<TimetableComponent> {
     );
   }
 
-  Row buildDayOfWeekRow() {
+  Widget buildDayOfWeekRow() {
     List<Widget> dayOfWeekCells = [];
     // day of week row
     dayOfWeekCells.add(
-      const Text(
-        "0限",
-        style: TextStyle(
-          color: Colors.transparent,
-          fontFeatures: [FontFeature.tabularFigures()],
+      const SizedBox(
+        width: 20,
+        child: Text(
+          "00:00",
+          style: TextStyle(
+            color: Colors.transparent,
+            fontFeatures: [FontFeature.tabularFigures()],
+            fontSize: 8,
+          ),
         ),
       ),
     );
@@ -95,7 +101,14 @@ class _TimetableComponentState extends State<TimetableComponent> {
         }
       },
     );
-    return Row(children: dayOfWeekCells);
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.shade300),
+        ),
+      ),
+      child: Row(children: dayOfWeekCells),
+    );
   }
 
   Widget buildTableRow(int row) {
@@ -103,13 +116,58 @@ class _TimetableComponentState extends State<TimetableComponent> {
 
     // period column
     tableCells.add(
-      Center(
-        child: Text(
-          textAlign: TextAlign.center,
-          PERIOD_MAP[row] ?? "",
-          style: const TextStyle(
-            fontFeatures: [FontFeature.tabularFigures()],
-          ),
+      SizedBox(
+        width: 20,
+        height: double.infinity,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Visibility(
+              visible: widget.shouldShowPeriodTime,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  PERIOD_TIME_MAP[row]?[0] ?? "",
+                  style: TextStyle(
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                    fontSize: 8,
+                    overflow: TextOverflow.clip,
+                    color: Colors.grey.shade400,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  textAlign: TextAlign.center,
+                  PERIOD_MAP[row] ?? "",
+                  style: const TextStyle(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                    fontSize: 8,
+                    overflow: TextOverflow.clip,
+                  ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: widget.shouldShowPeriodTime,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  PERIOD_TIME_MAP[row]?[1] ?? "",
+                  style: TextStyle(
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                    fontSize: 8,
+                    overflow: TextOverflow.clip,
+                    color: Colors.grey.shade400,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -121,7 +179,16 @@ class _TimetableComponentState extends State<TimetableComponent> {
       }
     }
 
-    return Expanded(child: Row(children: tableCells));
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Colors.grey.shade300),
+          ),
+        ),
+        child: Row(children: tableCells),
+      ),
+    );
   }
 
   Widget buildTableCell(int row, int col) {

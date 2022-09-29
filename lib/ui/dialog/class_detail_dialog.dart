@@ -33,7 +33,7 @@ class _ClassDetailDialogState extends State<ClassDetailDialog> {
               color: Colors.transparent,
             ),
             Text(
-              "${PERIOD_MAP[widget.classCell.period]}  ${PERIOD_TIME_MAP[widget.classCell.period]}",
+              "${PERIOD_MAP[widget.classCell.period]}  ${PERIOD_TIME_MAP[widget.classCell.period]?[0] ?? ""} - ${PERIOD_TIME_MAP[widget.classCell.period]?[1] ?? ""}",
               style: const TextStyle(fontSize: 14),
             ),
           ],

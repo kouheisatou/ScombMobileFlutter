@@ -137,6 +137,7 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
                             isEditMode: false,
                             shouldEmphasizeToday: false,
                             shouldShowCellText: false,
+                            shouldShowPeriodTime: false,
                           ),
                         ),
                         Container(
