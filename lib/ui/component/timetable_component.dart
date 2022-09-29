@@ -64,15 +64,12 @@ class _TimetableComponentState extends State<TimetableComponent> {
     List<Widget> dayOfWeekCells = [];
     // day of week row
     dayOfWeekCells.add(
-      const SizedBox(
-        width: 24,
-        child: Text(
-          "00:00",
-          style: TextStyle(
-            color: Colors.transparent,
-            fontFeatures: [FontFeature.tabularFigures()],
-            fontSize: 8,
-          ),
+      const Text(
+        "00:00",
+        style: TextStyle(
+          color: Colors.transparent,
+          fontFeatures: [FontFeature.tabularFigures()],
+          fontSize: 8,
         ),
       ),
     );
@@ -116,59 +113,55 @@ class _TimetableComponentState extends State<TimetableComponent> {
 
     // period column
     tableCells.add(
-      SizedBox(
-        width: 24,
-        height: double.infinity,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Visibility(
-              visible: widget.shouldShowPeriodTime,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  textAlign: TextAlign.center,
-                  PERIOD_TIME_MAP[row]?[0] ?? "",
-                  style: TextStyle(
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                    fontSize: 8,
-                    overflow: TextOverflow.clip,
-                    color: Colors.grey.shade400,
-                  ),
+      Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Visibility(
+            visible: widget.shouldShowPeriodTime,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                textAlign: TextAlign.center,
+                PERIOD_TIME_MAP[row]?[0] ?? "",
+                style: TextStyle(
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                  fontSize: 8,
+                  overflow: TextOverflow.clip,
+                  color: Colors.grey.shade400,
                 ),
               ),
             ),
-            Expanded(
-              child: Center(
-                child: Text(
-                  textAlign: TextAlign.center,
-                  PERIOD_MAP[row] ?? "",
-                  style: const TextStyle(
-                    fontFeatures: [FontFeature.tabularFigures()],
-                    fontSize: 8,
-                    overflow: TextOverflow.clip,
-                  ),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                textAlign: TextAlign.center,
+                PERIOD_MAP[row] ?? "",
+                style: const TextStyle(
+                  fontFeatures: [FontFeature.tabularFigures()],
+                  fontSize: 8,
+                  overflow: TextOverflow.clip,
                 ),
               ),
             ),
-            Visibility(
-              visible: widget.shouldShowPeriodTime,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(
-                  textAlign: TextAlign.center,
-                  PERIOD_TIME_MAP[row]?[1] ?? "",
-                  style: TextStyle(
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                    fontSize: 8,
-                    overflow: TextOverflow.clip,
-                    color: Colors.grey.shade400,
-                  ),
+          ),
+          Visibility(
+            visible: widget.shouldShowPeriodTime,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                textAlign: TextAlign.center,
+                PERIOD_TIME_MAP[row]?[1] ?? "",
+                style: TextStyle(
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                  fontSize: 8,
+                  overflow: TextOverflow.clip,
+                  color: Colors.grey.shade400,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
 

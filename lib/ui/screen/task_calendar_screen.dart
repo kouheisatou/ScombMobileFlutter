@@ -156,10 +156,14 @@ class _TaskCalendarScreenState extends TaskListScreenState {
                   break;
               }
               return Center(
+                child: DefaultTextStyle(
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
                   child: Text(
-                text,
-                style: style,
-              ));
+                    text,
+                    style: style,
+                  ),
+                ),
+              );
             },
           ),
           onFormatChanged: (format) {

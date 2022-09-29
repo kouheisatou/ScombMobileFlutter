@@ -59,6 +59,12 @@ class ScombMobileState extends State<ScombMobile> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
       debugShowCheckedModeBanner: false,
       title: "ScombMobile",
       theme: ThemeData(
