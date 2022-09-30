@@ -49,7 +49,8 @@ dependencies:
   # encrypt
   encrypt: ^5.0.1
   # share
-  flutter_share: ^2.0.0
+  share_plus: ^4.4.0
+  path_provider: any
 
 flutter_native_splash:
   image: "resources/splash.png"

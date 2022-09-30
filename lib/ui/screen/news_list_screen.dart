@@ -125,4 +125,5 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
     isLoading = false;
     widget.newsFetched = true;
     setState(() {});
+  }
 }
