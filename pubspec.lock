@@ -349,6 +349,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.10+1"
+  flutter_share:
+    dependency: "direct main"
+    description:
+      name: flutter_share
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -625,13 +632,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
-  share:
-    dependency: "direct main"
-    description:
-      name: share
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.4"
   shelf:
     dependency: transitive
     description:
