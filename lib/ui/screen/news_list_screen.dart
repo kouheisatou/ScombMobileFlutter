@@ -124,5 +124,5 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
     widget.news = await fetchAllNews();
     isLoading = false;
     widget.newsFetched = true;
-  }
+    setState(() {});
 }
