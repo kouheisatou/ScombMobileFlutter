@@ -65,7 +65,6 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Column(
         children: [
           TextField(
-            autofocus: true,
             decoration: const InputDecoration(labelText: "学籍番号"),
             controller: _userController,
           ),
