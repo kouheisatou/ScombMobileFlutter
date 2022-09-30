@@ -137,7 +137,7 @@ class _LinkListScreenState extends State<LinkListScreen> {
                 ),
               ],
               title: Row(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(linkModel.title),
                   const Spacer(),
