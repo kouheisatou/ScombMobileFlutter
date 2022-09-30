@@ -484,6 +484,20 @@ class _$NewsItemModelDao extends NewsItemModelDao {
   }
 
   @override
+  Future<List<NewsItemModel>> getAllNews() async {
+    return _queryAdapter.queryList('SELECT * FROM news_item',
+        mapper: (Map<String, Object?> row) => NewsItemModel(
+            row['newsId'] as String,
+            row['data2'] as String,
+            row['title'] as String,
+            row['category'] as String,
+            row['domain'] as String,
+            row['publishTime'] as String,
+            row['tags'] as String,
+            (row['unread'] as int) != 0));
+  }
+
+  @override
   Future<void> insertNewsModel(NewsItemModel news) async {
     await _newsItemModelInsertionAdapter.insert(
         news, OnConflictStrategy.replace);

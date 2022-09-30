@@ -8,4 +8,7 @@ abstract class NewsItemModelDao {
 
   @Query("SELECT * FROM news_item WHERE newsId = :newsId LIMIT 1")
   Future<NewsItemModel?> getNews(String newsId);
+
+  @Query("SELECT * FROM news_item")
+  Future<List<NewsItemModel>> getAllNews();
 }

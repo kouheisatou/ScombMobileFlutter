@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:floor/floor.dart';
 import 'package:scomb_mobile/common/db/class_cell_dao.dart';
@@ -22,9 +23,13 @@ abstract class AppDatabase extends FloorDatabase {
   static AppDatabase? _appDatabase;
 
   SettingDao get currentSettingDao;
+
   ClassCellDao get currentClassCellDao;
+
   TaskDao get currentTaskDao;
+
   MyLinkDao get currentMyLinkDao;
+
   NewsItemModelDao get currentNewsItemModelDao;
 
   static Future<AppDatabase> getDatabase() async {
@@ -37,6 +42,21 @@ abstract class AppDatabase extends FloorDatabase {
       migration4to5,
       migration5to6,
     ]).build();
+  }
+
+  Future<String> exportToJson() async {
+    var allClasses = await currentClassCellDao.getAllClasses();
+    var allMyLinks = await currentMyLinkDao.getAllLinks();
+    var allNewsItems = await currentNewsItemModelDao.getAllNews();
+    var allSettings = await currentSettingDao.getAllSetting();
+    var allTasks = await currentTaskDao.getAllTasks();
+    return json.encode({
+      "class_cell": allClasses,
+      "settings": allSettings,
+      "task": allTasks,
+      "my_links": allMyLinks,
+      "news_item": allNewsItems,
+    });
   }
 }
 

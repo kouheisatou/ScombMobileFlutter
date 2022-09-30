@@ -28,4 +28,15 @@ class NewsItemModel {
   String toString() {
     return "NewsItemModel(newsId=$newsId, data2=$data2, title=$title, category=$category, domain=$domain, publishTime=$publishTime, tags=$tags)";
   }
+
+  dynamic toJson() => {
+        "newsId": newsId,
+        "data2": data2,
+        "title": title,
+        "category": category,
+        "domain": domain,
+        "publishTime": publishTime,
+        "tags": tags,
+        "unread": unread,
+      };
 }

@@ -239,4 +239,22 @@ class ClassCell {
       },
     );
   }
+
+  dynamic toJson() => {
+        "classId": classId,
+        "period": period,
+        "dayOfWeek": dayOfWeek,
+        "isUserClassCell": isUserClassCell,
+        "timetableTitle": timetableTitle,
+        "year": year,
+        "term": term,
+        "name": name,
+        "teachers": teachers,
+        "room": room,
+        "customColorInt": customColorInt,
+        "url": url,
+        "note": note,
+        "syllabusUrl": syllabusUrl,
+        "numberOfCredit": numberOfCredit,
+      };
 }

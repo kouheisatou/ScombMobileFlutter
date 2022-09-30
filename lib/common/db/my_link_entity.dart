@@ -92,4 +92,10 @@ class MyLink {
   late LinkButtonClickCallback onPressed;
   @ignore
   late bool manuallyAdded;
+
+  dynamic toJson() => {
+        "id": id,
+        "title": title,
+        "url": url,
+      };
 }

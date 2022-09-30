@@ -152,6 +152,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
               },
             ),
+            SettingsTile(
+              title: const Text("エクスポート"),
+              onPressed: (context) async {
+                var db = await AppDatabase.getDatabase();
+                var json = await db.exportToJson();
+                print(json);
+              },
+            ),
           ],
         ),
         SettingsSection(

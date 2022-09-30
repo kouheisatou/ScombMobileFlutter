@@ -25,6 +25,11 @@ class Setting {
   String toString() {
     return "Setting($settingKey=$settingValue)";
   }
+
+  dynamic toJson() => {
+        "settingKey": settingKey,
+        "settingValue": settingValue,
+      };
 }
 
 class SettingKeys {

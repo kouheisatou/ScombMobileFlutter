@@ -90,4 +90,18 @@ class Task {
   String toString() {
     return "Task { id=$id, title=$title, className=$className, taskType=$taskType, deadline=${timeToString(deadline)}, url=$url, classId=$classId, reportId=$reportId, customColor=$customColor, done=$done } ";
   }
+
+  dynamic toJson() => {
+        "id": id,
+        "title": title,
+        "className": className,
+        "taskType": taskType,
+        "deadline": deadline,
+        "url": url,
+        "reportId": reportId,
+        "classId": classId,
+        "customColor": customColor,
+        "addManually": addManually,
+        "done": done,
+      };
 }
