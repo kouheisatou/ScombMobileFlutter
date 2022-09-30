@@ -12,6 +12,7 @@ class NewsScreen extends NetworkScreen {
   NewsScreen(super.title, {Key? key}) : super(key: key);
 
   List<NewsItemModel> news = [];
+  bool newsFetched = false;
 
   @override
   NetworkScreenState<NewsScreen> createState() => NewsScreenState();
@@ -23,9 +24,11 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
 
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
+    if (widget.newsFetched) return;
     isLoading = true;
     widget.news = await fetchAllNews();
     isLoading = false;
+    widget.newsFetched = true;
   }
 
   @override
@@ -116,8 +119,10 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
 
   @override
   Future<void> refreshData() async {
+    widget.newsFetched = false;
     isLoading = true;
     widget.news = await fetchAllNews();
     isLoading = false;
+    widget.newsFetched = true;
   }
 }
