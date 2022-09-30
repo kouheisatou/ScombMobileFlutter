@@ -376,13 +376,13 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
     List<Widget> result = [
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: InkResponse(
-          onTap: () {
+        child: IconButton(
+          onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (builder) {
               return TaskCalendarScreen("課題カレンダー");
             }));
           },
-          child: const Icon(Icons.calendar_month),
+          icon: const Icon(Icons.calendar_month),
         ),
       ),
     ];

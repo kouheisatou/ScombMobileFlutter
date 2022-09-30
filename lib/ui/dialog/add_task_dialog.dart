@@ -82,7 +82,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
-                autofocus: true,
                 decoration: const InputDecoration(labelText: "課題タイトル"),
                 onChanged: (text) {
                   title = text;

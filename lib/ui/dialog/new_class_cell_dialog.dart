@@ -185,7 +185,6 @@ class _NewClassCellDialogState extends State<NewClassCellDialog> {
                   color: Colors.transparent,
                 ),
                 TextFormField(
-                  autofocus: true,
                   decoration: const InputDecoration(labelText: "授業名*"),
                   initialValue: widget.editingClassCell.name,
                   onChanged: (text) {
