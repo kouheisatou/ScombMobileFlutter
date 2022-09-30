@@ -8,6 +8,7 @@ import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/dialog/color_picker_dialog.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/notification.dart';
@@ -158,6 +159,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 var db = await AppDatabase.getDatabase();
                 var json = await db.exportToJson();
                 print(json);
+                Share.share(json, subject: "ScombMobileDB");
               },
             ),
           ],
