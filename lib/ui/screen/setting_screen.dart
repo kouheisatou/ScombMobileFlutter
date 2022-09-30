@@ -167,13 +167,15 @@ class _SettingScreenState extends State<SettingScreen> {
                 var json = await db.exportToJson();
                 print(json);
 
-                final directory = await getTemporaryDirectory();
+                final directory = await getApplicationDocumentsDirectory();
                 var filePath = "${directory.path}/ExportedScombMobileDB.json";
                 var file = File(filePath);
-                file.writeAsString(json);
+                await file.writeAsString(json);
 
-                Share.shareFiles([filePath],
-                    subject: "ExportedScombMobileDB.json");
+                Share.shareFiles(
+                  [filePath],
+                  subject: "ExportedScombMobileDB.json",
+                );
               },
             ),
           ],
