@@ -8,6 +8,7 @@ import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/dialog/add_task_dialog.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
+import 'package:scomb_mobile/ui/screen/task_calendar_screen.dart';
 
 import '../../common/db/task.dart';
 import '../../common/scraping/surveys_scraping.dart';
@@ -368,6 +369,24 @@ class TaskListScreenState extends NetworkScreenState<TaskListScreen> {
       addOrReplaceTask(newTask, false);
       sortTasks();
     });
+  }
+
+  @override
+  List<Widget> buildAppBarActions() {
+    List<Widget> result = [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: InkResponse(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (builder) {
+              return TaskCalendarScreen("課題カレンダー");
+            }));
+          },
+          child: const Icon(Icons.calendar_month),
+        ),
+      ),
+    ];
+    return result;
   }
 }
 

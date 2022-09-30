@@ -86,8 +86,8 @@ class ScombMobileState extends State<ScombMobile> {
                 label: "時間割",
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.list),
-                label: "課題一覧",
+                icon: Icon(Icons.task),
+                label: "課題",
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.open_in_new),
