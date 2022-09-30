@@ -217,4 +217,9 @@ class _TaskCalendarScreenState extends TaskListScreenState {
       sortTasks();
     });
   }
+
+  @override
+  List<Widget> buildAppBarActions() {
+    return [];
+  }
 }
