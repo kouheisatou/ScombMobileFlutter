@@ -28,6 +28,27 @@ class _LinkListScreenState extends State<LinkListScreen> {
       Image.asset("resources/scombz_icon.png"),
     ),
     MyLink.preset(
+      "時間割検索システム",
+      TIMETABLE_LIST_PAGE_URL,
+      Image.asset("resources/official_timetable_icon.png"),
+      onPressed: (context, linkItemModel) async {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (builder) {
+              return SinglePageScomb(
+                Uri.parse(linkItemModel.url),
+                linkItemModel.title,
+                shouldShowAddNewClassButton: true,
+                shouldRemoveHeader: false,
+              );
+            },
+            fullscreenDialog: true,
+          ),
+        );
+      },
+    ),
+    MyLink.preset(
       "シラバス検索システム",
       SYLLABUS_SEARCH_URL,
       const Icon(Icons.school),
@@ -146,27 +167,6 @@ class _LinkListScreenState extends State<LinkListScreen> {
               return SinglePageScomb(
                 uri,
                 linkModel.title,
-                shouldRemoveHeader: false,
-              );
-            },
-            fullscreenDialog: true,
-          ),
-        );
-      },
-    ),
-    MyLink.preset(
-      "時間割検索システム",
-      TIMETABLE_LIST_PAGE_URL,
-      Image.asset("resources/official_timetable_icon.png"),
-      onPressed: (context, linkItemModel) async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (builder) {
-              return SinglePageScomb(
-                Uri.parse(linkItemModel.url),
-                linkItemModel.title,
-                shouldShowAddNewClassButton: true,
                 shouldRemoveHeader: false,
               );
             },
