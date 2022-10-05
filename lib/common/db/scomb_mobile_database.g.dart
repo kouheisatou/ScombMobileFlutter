@@ -273,9 +273,9 @@ class _$ClassCellDao extends ClassCellDao {
   }
 
   @override
-  Future<ClassCell?> getClassCellByClassId(String classId) async {
-    return _queryAdapter.query(
-        'SELECT * FROM class_cell WHERE classId = ?1 LIMIT 1',
+  Future<List<ClassCell>> getCells(String timetableTitle) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM class_cell WHERE timetableTitle = ?1',
         mapper: (Map<String, Object?> row) => ClassCell(
             row['classId'] as String,
             row['period'] as int,
@@ -292,6 +292,14 @@ class _$ClassCellDao extends ClassCellDao {
             row['note'] as String?,
             row['syllabusUrl'] as String?,
             row['numberOfCredit'] as int?),
+        arguments: [timetableTitle]);
+  }
+
+  @override
+  Future<ClassCell?> getCurrentClassCellByClassId(String classId) async {
+    return _queryAdapter.query(
+        'SELECT * FROM class_cell WHERE classId = ?1 AND isUserClassCell = 0 LIMIT 1',
+        mapper: (Map<String, Object?> row) => ClassCell(row['classId'] as String, row['period'] as int, row['dayOfWeek'] as int, (row['isUserClassCell'] as int) != 0, row['timetableTitle'] as String, row['year'] as int?, row['term'] as String?, row['name'] as String?, row['teachers'] as String?, row['room'] as String?, row['customColorInt'] as int?, row['url'] as String?, row['note'] as String?, row['syllabusUrl'] as String?, row['numberOfCredit'] as int?),
         arguments: [classId]);
   }
 

@@ -77,8 +77,8 @@ Future<void> _constructTasks(Document document) async {
     );
 
     // custom color from timetable
-    var classCellFromDB =
-        await db.currentClassCellDao.getClassCellByClassId(newTask.classId);
+    var classCellFromDB = await db.currentClassCellDao
+        .getCurrentClassCellByClassId(newTask.classId);
     newTask.customColor = classCellFromDB?.customColorInt;
 
     // if already exists

@@ -6,10 +6,7 @@ import 'package:scomb_mobile/common/scraping/timetable_scraping.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/ui/component/timetable_component.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
-import 'package:scomb_mobile/ui/screen/task_list_screen.dart';
 
-import '../../../common/scraping/surveys_scraping.dart';
-import '../../../common/scraping/task_scraping.dart';
 import '../../../common/shared_resource.dart';
 import '../../../common/values.dart';
 import 'my_timetable_list_screen.dart';
@@ -27,19 +24,6 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
   _TimetableScreenState();
 
   bool saturdayClassExists = true;
-
-  Future<void> fetchAllTasks(String savedSessionId) async {
-    if (taskListInitialized) return;
-
-    // tasks from db
-    inflateTasksFromDB();
-
-    // inflate tasks from server
-    fetchSurveys(sessionId ?? savedSessionId);
-    fetchTasks(sessionId ?? savedSessionId);
-
-    taskListInitialized = true;
-  }
 
   @override
   Future<void> getFromServerAndSaveToSharedResource(savedSessionId) async {
@@ -99,16 +83,24 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
         timetableYear ?? DateTime.now().year,
         timetableTerm ?? getCurrentTerm(),
       );
+
+      // last update time
       db.currentSettingDao.insertSetting(
-        Setting(SettingKeys.TIMETABLE_LAST_UPDATE,
-            DateTime.now().millisecondsSinceEpoch.toString()),
+        Setting(
+          SettingKeys.TIMETABLE_LAST_UPDATE,
+          DateTime.now().millisecondsSinceEpoch.toString(),
+        ),
       );
     } else {
-      // recover from db
-      var allClasses = await db.currentClassCellDao.getAllClasses();
+      // get from db
+      var allClasses = await db.currentClassCellDao
+          .getCells("$timetableYear-$timetableTerm");
       for (var c in allClasses) {
-        if (c.year == timetableYear && c.term == timetableTerm) {
-          sharedTimetable.timetable[c.period][c.dayOfWeek] = c;
+        if (c.year == timetableYear &&
+            c.term == timetableTerm &&
+            !c.isUserClassCell) {
+          sharedTimetable.cells[c.period][c.dayOfWeek] = c;
+          print(c);
         }
       }
     }
@@ -124,7 +116,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
     var allClasses = await db.currentClassCellDao.getAllClasses();
     for (var c in allClasses) {
       if (c.year == timetableYear && c.term == timetableTerm) {
-        sharedTimetable.timetable[c.period][c.dayOfWeek] = c;
+        sharedTimetable.cells[c.period][c.dayOfWeek] = c;
       }
     }
   }

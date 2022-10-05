@@ -6,9 +6,9 @@ import 'package:scomb_mobile/common/scraping/syllabus_scraping.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
-import 'package:scomb_mobile/ui/screen/timetable/my_timetable_list_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../common/db/class_cell_dao.dart';
 import '../../common/shared_resource.dart';
 import '../../common/values.dart';
 
@@ -289,7 +289,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                                 // override confirmation
                                 bool? shouldReplace = true;
                                 if (addDestinationTimetable!
-                                            .timetable[newCell.period]
+                                            .cells[newCell.period]
                                         [newCell.dayOfWeek] !=
                                     null) {
                                   shouldReplace = await showDialog(
@@ -298,7 +298,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                                       return AlertDialog(
                                         title: const Text("授業置き換え"),
                                         content: Text(
-                                            "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} には既に ${addDestinationTimetable?.timetable[newCell.period][newCell.dayOfWeek]?.name} が登録されています。置き換えますか？"),
+                                            "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} には既に ${addDestinationTimetable?.cells[newCell.period][newCell.dayOfWeek]?.name} が登録されています。置き換えますか？"),
                                         actions: [
                                           TextButton(
                                             onPressed: () {

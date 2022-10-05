@@ -396,7 +396,7 @@ Future<void> inflateTasksFromDB() async {
   for (var task in tasksFromDB) {
     print("task_from_db : $task");
     var relatedClass =
-        await db.currentClassCellDao.getClassCellByClassId(task.classId);
+        await db.currentClassCellDao.getCurrentClassCellByClassId(task.classId);
     if (relatedClass != null) {
       task.customColor = relatedClass.customColorInt;
     }

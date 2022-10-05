@@ -5,6 +5,7 @@ import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/component/timetable_component.dart';
 
 import '../../../common/db/class_cell.dart';
+import '../../../common/db/class_cell_dao.dart';
 import 'customized_timetable_screen.dart';
 
 class MyTimetableListScreen extends StatefulWidget {
@@ -233,41 +234,4 @@ class _MyTimetableListScreenState extends State<MyTimetableListScreen> {
             ),
     );
   }
-}
-
-Future<Map<String, TimetableModel>> getAllTimetables({
-  required Function(Map<String, TimetableModel> result) onFetchFinished,
-}) async {
-  Map<String, TimetableModel> timetables = {};
-
-  var db = await AppDatabase.getDatabase();
-  var allCells = await db.currentClassCellDao.getAllClasses();
-
-  for (var cell in allCells) {
-    // if my timetable, year is 0
-    if (cell.isUserClassCell) {
-      // new timetable model
-      if (timetables[cell.timetableTitle] == null) {
-        timetables[cell.timetableTitle] = TimetableModel(
-          cell.timetableTitle,
-          true,
-        );
-      }
-
-      // insert to map
-      cell.currentTimetable = timetables[cell.timetableTitle]!;
-      if (cell.period >= 0 && cell.dayOfWeek >= 0) {
-        timetables[cell.timetableTitle]!.timetable[cell.period]
-            [cell.dayOfWeek] = cell;
-      }
-    }
-  }
-
-  timetables.forEach((key, value) {
-    print(value);
-  });
-
-  onFetchFinished(timetables);
-
-  return timetables;
 }

@@ -41,6 +41,9 @@ Future<void> fetchTimetable(
 Future<void> _constructTimetableArray(
     Document doc, int year, String term) async {
   var db = await AppDatabase.getDatabase();
+  String timetableTitle = "$year-$term";
+
+  var cellsInDB = await db.currentClassCellDao.getCells(timetableTitle);
 
   var timetableRows = doc.getElementsByClassName(TIMETABLE_ROW_CSS_CLASS_NM);
   for (var r = 0; r < timetableRows.length; r++) {
@@ -80,7 +83,7 @@ Future<void> _constructTimetableArray(
         r,
         c,
         false,
-        "$year-$term",
+        timetableTitle,
         year,
         term,
         name,
@@ -92,17 +95,28 @@ Future<void> _constructTimetableArray(
         null,
         null,
       );
-      sharedTimetable.timetable[r][c] = newCell;
+      sharedTimetable.cells[r][c] = newCell;
 
       // merge old timetable and new one
-      var classCellFromDB =
-          await db.currentClassCellDao.getClassCellByClassId(newCell.classId);
-      print("class_from_db : $classCellFromDB");
-      newCell.customColorInt = classCellFromDB?.customColorInt;
-      newCell.note = classCellFromDB?.note;
+      for (var cellInDB in cellsInDB) {
+        if (cellInDB.classId == newCell.classId) {
+          newCell.customColorInt = cellInDB.customColorInt;
+          newCell.note = cellInDB.note;
+          cellsInDB.remove(cellInDB);
+          break;
+        }
+      }
       await db.currentClassCellDao.insertClassCell(newCell);
 
       print("class_from_server : $newCell");
     }
+  }
+
+  // remove classes that are localDB but not in Scomb
+  for (var removeTargetCell in cellsInDB) {
+    await db.currentClassCellDao.removeClassCell(removeTargetCell);
+    removeTargetCell.timetableTitle = "unregistered";
+    await db.currentClassCellDao.insertClassCell(removeTargetCell);
+    print("removed $removeTargetCell");
   }
 }

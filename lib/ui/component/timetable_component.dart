@@ -51,7 +51,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
     List<Widget> tableRows = [buildDayOfWeekRow()];
 
     // main rows
-    for (int r = 0; r < widget.timetable.timetable.length; r++) {
+    for (int r = 0; r < widget.timetable.cells.length; r++) {
       tableRows.add(buildTableRow(r));
     }
 
@@ -166,7 +166,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
     );
 
     // main columns
-    for (int c = 0; c < widget.timetable.timetable[0].length; c++) {
+    for (int c = 0; c < widget.timetable.cells[0].length; c++) {
       if (widget.showSaturday || c != 5) {
         tableCells.add(buildTableCell(row, c));
       }
@@ -193,7 +193,7 @@ class _TimetableComponentState extends State<TimetableComponent> {
                 : null,
         width: double.infinity,
         height: double.infinity,
-        child: widget.timetable.timetable[row][col] == null
+        child: widget.timetable.cells[row][col] == null
             ? widget.isEditMode
                 ? MaterialButton(
                     onPressed: () async {
@@ -216,11 +216,11 @@ class _TimetableComponentState extends State<TimetableComponent> {
                 : const Text("")
             : MaterialButton(
                 color: Color(
-                  widget.timetable.timetable[row][col]?.customColorInt ??
+                  widget.timetable.cells[row][col]?.customColorInt ??
                       Colors.white70.value,
                 ),
                 onPressed: () async {
-                  await widget.timetable.timetable[row][col]!
+                  await widget.timetable.cells[row][col]!
                       .showClassDetailDialog(context);
                   setState(() {});
                 },
@@ -230,21 +230,21 @@ class _TimetableComponentState extends State<TimetableComponent> {
                           row,
                           col,
                           context,
-                          classCell: widget.timetable.timetable[row][col]!,
+                          classCell: widget.timetable.cells[row][col]!,
                         );
                         setState(() {});
                       }
                     : () async {
-                        print(widget.timetable.timetable[row][col]);
+                        print(widget.timetable.cells[row][col]);
                         Fluttertoast.showToast(
-                          msg: widget.timetable.timetable[row][col]?.room ?? "",
+                          msg: widget.timetable.cells[row][col]?.room ?? "",
                         );
                       },
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
                   child: buildLimitedText(
                     widget.shouldShowCellText
-                        ? widget.timetable.timetable[row][col]?.name ?? ""
+                        ? widget.timetable.cells[row][col]?.name ?? ""
                         : "",
                     widget.showSaturday ? 3 : 4,
                   ),

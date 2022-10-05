@@ -6,10 +6,10 @@ import 'db/class_cell.dart';
 
 class TimetableModel {
   TimetableModel(this.title, this.isUserClassCell) {
-    timetable = createEmptyTimetable();
+    cells = createEmptyTimetable();
   }
 
-  late List<List<ClassCell?>> timetable;
+  late List<List<ClassCell?>> cells;
   String title;
   bool isUserClassCell;
 
@@ -36,9 +36,9 @@ class TimetableModel {
   }
 
   void clearTimetable() {
-    for (int r = 0; r < timetable.length; r++) {
-      for (int c = 0; c < timetable[0].length; c++) {
-        timetable[r][c] = null;
+    for (int r = 0; r < cells.length; r++) {
+      for (int c = 0; c < cells[0].length; c++) {
+        cells[r][c] = null;
       }
     }
   }
@@ -47,22 +47,22 @@ class TimetableModel {
     var db = await AppDatabase.getDatabase();
 
     // remove old cell
-    var oldCell = timetable[cell.period][cell.dayOfWeek];
+    var oldCell = cells[cell.period][cell.dayOfWeek];
     if (oldCell != null) {
       await removeCell(oldCell, db);
     }
 
     await db.currentClassCellDao.insertClassCell(cell);
     if (cell.period >= 0 && cell.dayOfWeek >= 0) {
-      timetable[cell.period][cell.dayOfWeek] = cell;
+      cells[cell.period][cell.dayOfWeek] = cell;
     }
   }
 
   Future<void> applyToAllCells(
       void Function(ClassCell? classCell) process) async {
-    for (int r = 0; r < timetable.length; r++) {
-      for (int c = 0; c < timetable[0].length; c++) {
-        process(timetable[r][c]);
+    for (int r = 0; r < cells.length; r++) {
+      for (int c = 0; c < cells[0].length; c++) {
+        process(cells[r][c]);
       }
     }
   }
@@ -82,7 +82,7 @@ class TimetableModel {
 
   Future<void> removeCell(ClassCell cell, AppDatabase db) async {
     if (cell.period >= 0 && cell.dayOfWeek >= 0) {
-      timetable[cell.period][cell.dayOfWeek] = null;
+      cells[cell.period][cell.dayOfWeek] = null;
     }
     print("removed $cell");
     await db.currentClassCellDao.removeClassCell(cell);
