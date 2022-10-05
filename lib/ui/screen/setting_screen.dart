@@ -163,6 +163,8 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("全てのデータをJSON形式でエクスポート"),
               onPressed: (context) async {
+                final box = context.findRenderObject() as RenderBox?;
+
                 var db = await AppDatabase.getDatabase();
                 var json = await db.exportToJson();
                 print(json);
@@ -175,6 +177,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 Share.shareFiles(
                   [filePath],
                   subject: "ExportedScombMobileDB.json",
+                  sharePositionOrigin:
+                      box!.localToGlobal(Offset.zero) & box.size,
                 );
               },
             ),
