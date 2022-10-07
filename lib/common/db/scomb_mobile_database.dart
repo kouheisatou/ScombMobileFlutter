@@ -68,8 +68,77 @@ abstract class AppDatabase extends FloorDatabase {
       File file = File(path);
 
       try {
-        String json = await file.readAsString();
-        print(json);
+        String jsonString = await file.readAsString();
+        Map<String, dynamic> tables = json.decode(jsonString);
+        for (var tableName in tables.keys) {
+          for (var instance in tables[tableName]) {
+            if (tableName == "class_cell") {
+              var classCell = ClassCell(
+                instance["classId"],
+                instance["period"],
+                instance["dayOfWeek"],
+                instance["isUserClassCell"],
+                instance["timetableTitle"],
+                instance["year"],
+                instance["term"],
+                instance["name"],
+                instance["teachers"],
+                instance["room"],
+                instance["customColorInt"],
+                instance["url"],
+                instance["note"],
+                instance["syllabusUrl"],
+                instance["numberOfCredit"],
+              );
+              print(classCell);
+              currentClassCellDao.insertClassCell(classCell);
+            } else if (tableName == "my_links") {
+              var linkModel = MyLink(
+                instance["id"],
+                instance["title"],
+                instance["url"],
+              );
+              print(linkModel);
+              currentMyLinkDao.insertLink(linkModel);
+            } else if (tableName == "news_item") {
+              var newsItemModel = NewsItemModel(
+                instance["newsId"],
+                instance["data2"],
+                instance["title"],
+                instance["category"],
+                instance["domain"],
+                instance["publishTime"],
+                instance["tags"],
+                instance["unread"],
+              );
+              print(newsItemModel);
+              currentNewsItemModelDao.insertNewsModel(newsItemModel);
+            } else if (tableName == "settings") {
+              var setting = Setting(
+                instance["settingKey"],
+                instance["settingValue"],
+              );
+              print(setting);
+              currentSettingDao.insertSetting(setting);
+            } else if (tableName == "task") {
+              var task = Task(
+                instance["title"],
+                instance["className"],
+                instance["taskType"],
+                instance["deadline"],
+                instance["url"],
+                instance["reportId"],
+                instance["classId"],
+                instance["customColor"],
+                instance["addManually"],
+                instance["done"],
+              );
+              print(task);
+              currentTaskDao.insertTask(task);
+            }
+            print(instance);
+          }
+        }
       } catch (e, stackTrace) {
         print(e);
         print(stackTrace);

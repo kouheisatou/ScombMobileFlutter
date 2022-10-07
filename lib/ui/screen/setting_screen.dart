@@ -187,6 +187,7 @@ class _SettingScreenState extends State<SettingScreen> {
               onPressed: (context) async {
                 var db = await AppDatabase.getDatabase();
                 await db.importFromJson();
+                await getDB();
               },
             ),
           ],
