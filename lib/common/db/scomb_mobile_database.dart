@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:floor/floor.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/db/class_cell_dao.dart';
 import 'package:scomb_mobile/common/db/my_link_dao.dart';
 import 'package:scomb_mobile/common/db/my_link_entity.dart';
@@ -61,89 +60,91 @@ abstract class AppDatabase extends FloorDatabase {
     });
   }
 
-  Future<void> importFromJson() async {
-    var result = await FilePicker.platform.pickFiles();
-    var path = result?.files.single.path;
-    if (path != null) {
-      File file = File(path);
-
-      try {
-        String jsonString = await file.readAsString();
-        Map<String, dynamic> tables = json.decode(jsonString);
-        for (var tableName in tables.keys) {
-          for (var instance in tables[tableName]) {
-            if (tableName == "class_cell") {
-              var classCell = ClassCell(
-                instance["classId"],
-                instance["period"],
-                instance["dayOfWeek"],
-                instance["isUserClassCell"],
-                instance["timetableTitle"],
-                instance["year"],
-                instance["term"],
-                instance["name"],
-                instance["teachers"],
-                instance["room"],
-                instance["customColorInt"],
-                instance["url"],
-                instance["note"],
-                instance["syllabusUrl"],
-                instance["numberOfCredit"],
-              );
-              print(classCell);
-              currentClassCellDao.insertClassCell(classCell);
-            } else if (tableName == "my_links") {
-              var linkModel = MyLink(
-                instance["id"],
-                instance["title"],
-                instance["url"],
-              );
-              print(linkModel);
-              currentMyLinkDao.insertLink(linkModel);
-            } else if (tableName == "news_item") {
-              var newsItemModel = NewsItemModel(
-                instance["newsId"],
-                instance["data2"],
-                instance["title"],
-                instance["category"],
-                instance["domain"],
-                instance["publishTime"],
-                instance["tags"],
-                instance["unread"],
-              );
-              print(newsItemModel);
-              currentNewsItemModelDao.insertNewsModel(newsItemModel);
-            } else if (tableName == "settings") {
-              var setting = Setting(
-                instance["settingKey"],
-                instance["settingValue"],
-              );
-              print(setting);
-              currentSettingDao.insertSetting(setting);
-            } else if (tableName == "task") {
-              var task = Task(
-                instance["title"],
-                instance["className"],
-                instance["taskType"],
-                instance["deadline"],
-                instance["url"],
-                instance["reportId"],
-                instance["classId"],
-                instance["customColor"],
-                instance["addManually"],
-                instance["done"],
-              );
-              print(task);
-              currentTaskDao.insertTask(task);
-            }
-            print(instance);
+  Future<void> importFromJson(String jsonString) async {
+    try {
+      Map<String, dynamic> tables = json.decode(jsonString);
+      for (var tableName in tables.keys) {
+        for (var instance in tables[tableName]) {
+          if (tableName == "class_cell") {
+            var classCell = ClassCell(
+              instance["classId"],
+              instance["period"],
+              instance["dayOfWeek"],
+              instance["isUserClassCell"],
+              instance["timetableTitle"],
+              instance["year"],
+              instance["term"],
+              instance["name"],
+              instance["teachers"],
+              instance["room"],
+              instance["customColorInt"],
+              instance["url"],
+              instance["note"],
+              instance["syllabusUrl"],
+              instance["numberOfCredit"],
+            );
+            print(classCell);
+            await currentClassCellDao.insertClassCell(classCell);
+          } else if (tableName == "my_links") {
+            var linkModel = MyLink(
+              instance["id"],
+              instance["title"],
+              instance["url"],
+            );
+            print(linkModel);
+            await currentMyLinkDao.insertLink(linkModel);
+          } else if (tableName == "news_item") {
+            var newsItemModel = NewsItemModel(
+              instance["newsId"],
+              instance["data2"],
+              instance["title"],
+              instance["category"],
+              instance["domain"],
+              instance["publishTime"],
+              instance["tags"],
+              instance["unread"],
+            );
+            print(newsItemModel);
+            await currentNewsItemModelDao.insertNewsModel(newsItemModel);
+          } else if (tableName == "settings") {
+            var setting = Setting(
+              instance["settingKey"],
+              instance["settingValue"],
+            );
+            print(setting);
+            await currentSettingDao.insertSetting(setting);
+          } else if (tableName == "task") {
+            var task = Task(
+              instance["title"],
+              instance["className"],
+              instance["taskType"],
+              instance["deadline"],
+              instance["url"],
+              instance["reportId"],
+              instance["classId"],
+              instance["customColor"],
+              instance["addManually"],
+              instance["done"],
+            );
+            print(task);
+            await currentTaskDao.insertTask(task);
           }
+          print(instance);
         }
-      } catch (e, stackTrace) {
-        print(e);
-        print(stackTrace);
       }
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
+      Fluttertoast.showToast(msg: "データ構造が正しくありません");
     }
+  }
+
+  Future<void> resetDatabase() async {
+    await database.execute("DELETE FROM class_cell");
+    await database.execute("DELETE FROM my_links");
+    await database.execute("DELETE FROM news_item");
+    await database.execute("DELETE FROM settings");
+    await database.execute("DELETE FROM task");
   }
 }
 

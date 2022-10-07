@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_review/app_review.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
@@ -161,7 +162,7 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
             SettingsTile(
-              title: const Text("全てのデータをJSON形式でエクスポート"),
+              title: const Text("JSONファイルにデータをバックアップ"),
               onPressed: (context) async {
                 final box = context.findRenderObject() as RenderBox?;
 
@@ -185,9 +186,49 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("JSONファイルからデータを復元"),
               onPressed: (context) async {
-                var db = await AppDatabase.getDatabase();
-                await db.importFromJson();
-                await getDB();
+                var result = await FilePicker.platform.pickFiles();
+                var path = result?.files.single.path;
+                if (path == null) return;
+                File file = File(path);
+                String jsonString = await file.readAsString();
+
+                showDialog<int>(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text("データ復元"),
+                    content:
+                        const Text("現在のデータは復元されるファイルのデータに全て置き換えられます。よろしいですか？"),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("キャンセル")),
+                      TextButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          setState(() {
+                            isLoading = true;
+                          });
+
+                          var db = await AppDatabase.getDatabase();
+                          await db.resetDatabase();
+                          await db.importFromJson(jsonString);
+                          await getDB();
+
+                          taskListInitialized = false;
+                          timetableInitialized = false;
+
+                          var themeColor = settings[SettingKeys.THEME_COLOR];
+                          if (themeColor != null) {
+                            parent.setThemeColor(Color(int.parse(themeColor)));
+                          }
+                        },
+                        child: const Text("復元"),
+                      )
+                    ],
+                  ),
+                );
               },
             ),
           ],
