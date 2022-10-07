@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:floor/floor.dart';
 import 'package:scomb_mobile/common/db/class_cell_dao.dart';
 import 'package:scomb_mobile/common/db/my_link_dao.dart';
@@ -57,6 +59,22 @@ abstract class AppDatabase extends FloorDatabase {
       "my_links": allMyLinks,
       "news_item": allNewsItems,
     });
+  }
+
+  Future<void> importFromJson() async {
+    var result = await FilePicker.platform.pickFiles();
+    var path = result?.files.single.path;
+    if (path != null) {
+      File file = File(path);
+
+      try {
+        String json = await file.readAsString();
+        print(json);
+      } catch (e, stackTrace) {
+        print(e);
+        print(stackTrace);
+      }
+    }
   }
 }
 

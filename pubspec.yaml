@@ -51,6 +51,7 @@ dependencies:
   # share
   share_plus: ^4.4.0
   path_provider: any
+  file_picker: ^5.2.0+1
 
 flutter_native_splash:
   image: "resources/splash.png"

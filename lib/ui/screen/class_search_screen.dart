@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/screen/single_page_scomb.dart';
-import 'package:scomb_mobile/ui/screen/timetable/my_timetable_list_screen.dart';
 
+import '../../common/db/class_cell_dao.dart';
 import '../../common/timetable_model.dart';
 import '../dialog/selector_dialog.dart';
 import '../dialog/syllabus_search_dialog.dart';

@@ -182,6 +182,13 @@ class _SettingScreenState extends State<SettingScreen> {
                 );
               },
             ),
+            SettingsTile(
+              title: const Text("JSONファイルからデータを復元"),
+              onPressed: (context) async {
+                var db = await AppDatabase.getDatabase();
+                await db.importFromJson();
+              },
+            ),
           ],
         ),
         SettingsSection(
