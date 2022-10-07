@@ -186,7 +186,11 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("JSONファイルからデータを復元"),
               onPressed: (context) async {
-                var result = await FilePicker.platform.pickFiles();
+                var result = await FilePicker.platform.pickFiles(
+                  type: FileType.custom,
+                  allowedExtensions: ["json"],
+                  allowMultiple: false,
+                );
                 var path = result?.files.single.path;
                 if (path == null) return;
                 File file = File(path);

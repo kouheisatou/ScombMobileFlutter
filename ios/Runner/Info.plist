@@ -54,5 +54,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>remote-notification</string>
+    </array>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>バックアップファイル読み込み</string>
 </dict>
 </plist>
