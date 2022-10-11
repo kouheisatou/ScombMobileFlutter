@@ -102,6 +102,7 @@ Future<void> _constructTimetableArray(
         if (cellInDB.classId == newCell.classId) {
           newCell.customColorInt = cellInDB.customColorInt;
           newCell.note = cellInDB.note;
+          newCell.syllabusUrl = cellInDB.syllabusUrl;
           cellsInDB.remove(cellInDB);
           break;
         }
