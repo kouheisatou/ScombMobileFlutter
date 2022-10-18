@@ -1,11 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
+import 'package:scomb_mobile/common/db/setting_entity.dart';
+import 'package:scomb_mobile/common/password_encripter.dart';
 import 'package:scomb_mobile/common/scraping/syllabus_scraping.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/db/class_cell_dao.dart';
@@ -78,10 +84,37 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       loading = false;
                     });
                   },
+                  initialOptions: InAppWebViewGroupOptions(
+                    crossPlatform: InAppWebViewOptions(
+                      useOnDownloadStart: true,
+                    ),
+                  ),
+                  onDownloadStartRequest: (controller, url) async {
+                    download(
+                      url.url.toString(),
+                      url.suggestedFilename ?? "null",
+                    );
+                  },
                   onLoadStart: (controller, currentUrl) {
                     print(currentUrl.toString());
                   },
                   onLoadStop: (controller, currentUrl) async {
+                    // save cookie
+                    CookieManager cookieManager = CookieManager.instance();
+                    Cookie? cookie = await cookieManager.getCookie(
+                      url: Uri.parse(SCOMBZ_DOMAIN),
+                      name: SESSION_COOKIE_ID,
+                    );
+                    sessionId = cookie?.value;
+                    (await AppDatabase.getDatabase())
+                        .currentSettingDao
+                        .insertSetting(
+                          Setting(
+                            SettingKeys.SESSION_ID,
+                            encryptAES(sessionId!),
+                          ),
+                        );
+
                     // only school local network error handling
                     String? html = await controller.evaluateJavascript(
                       source:
@@ -122,8 +155,6 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
                     this.currentUrl = currentUrl ?? widget.initUrl;
                     if (widget.shouldRemoveHeader) {
-                      print(
-                          "shouldRemoveHeader : ${widget.shouldRemoveHeader}");
                       await controller.evaluateJavascript(
                         source:
                             "document.getElementById('$HEADER_ELEMENT_ID').remove();",
@@ -358,6 +389,26 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       ),
                     ),
                   ),
+                  Visibility(
+                    visible: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkResponse(
+                        borderRadius: BorderRadius.circular(1000),
+                        onTap: () async {},
+                        child: Column(
+                          children: const [
+                            Icon(Icons.download),
+                            Text(
+                              "ダウンロード",
+                              style: TextStyle(fontSize: 10),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkResponse(
@@ -412,5 +463,50 @@ class _SinglePageScombState extends State<SinglePageScomb> {
         ],
       ),
     );
+  }
+
+  Future<void> download(String url, String downloadFileName) async {
+    var dir = (await getApplicationDocumentsDirectory()).path;
+    var filepath = "$dir/$downloadFileName";
+
+    try {
+      // Response response = await dio.get(
+      //   url.url.toString(),
+      //   options: Options(
+      //     responseType: ResponseType.bytes,
+      //     followRedirects: false,
+      //     headers: {
+      //       "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+      //     },
+      //     method: "GET",
+      //   ),
+      // );
+      // print(response.headers);
+      // File file = File(filepath);
+      // var raf = file.openSync(mode: FileMode.write);
+      // raf.writeFromSync(response.data);
+      // await raf.close();
+
+      final box = context.findRenderObject() as RenderBox?;
+      Dio dio = Dio();
+      print(url);
+      await dio.download(
+        url.toString(),
+        filepath,
+        options: Options(
+          headers: {
+            "Cookie": "$SESSION_COOKIE_ID=$sessionId",
+          },
+        ),
+      );
+
+      Share.shareFiles(
+        [filepath],
+        subject: downloadFileName,
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }
