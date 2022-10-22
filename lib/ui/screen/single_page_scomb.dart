@@ -482,7 +482,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
       await File(filepath).writeAsBytes(response.bodyBytes);
 
-      Share.shareFiles(
+      await Share.shareFiles(
         [filepath],
         subject: downloadFileName,
         sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
