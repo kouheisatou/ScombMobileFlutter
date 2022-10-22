@@ -397,26 +397,6 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       ),
                     ),
                   ),
-                  Visibility(
-                    visible: false,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkResponse(
-                        borderRadius: BorderRadius.circular(1000),
-                        onTap: () async {},
-                        child: Column(
-                          children: const [
-                            Icon(Icons.download),
-                            Text(
-                              "ダウンロード",
-                              style: TextStyle(fontSize: 10),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkResponse(
@@ -478,29 +458,12 @@ class _SinglePageScombState extends State<SinglePageScomb> {
     String downloadFileName,
     List<Cookie> allCookies,
   ) async {
+    final box = context.findRenderObject() as RenderBox?;
+
     var dir = (await getApplicationDocumentsDirectory()).path;
     var filepath = "$dir/$downloadFileName";
 
     try {
-      // Response response = await dio.get(
-      //   url.url.toString(),
-      //   options: Options(
-      //     responseType: ResponseType.bytes,
-      //     followRedirects: false,
-      //     headers: {
-      //       "Cookie": "$SESSION_COOKIE_ID=$sessionId",
-      //     },
-      //     method: "GET",
-      //   ),
-      // );
-      // print(response.headers);
-      // File file = File(filepath);
-      // var raf = file.openSync(mode: FileMode.write);
-      // raf.writeFromSync(response.data);
-      // await raf.close();
-
-      final box = context.findRenderObject() as RenderBox?;
-
       String cookieString = "";
       for (int i = 0; i < allCookies.length; i++) {
         cookieString += "${allCookies[i].name}=${allCookies[i].value}";
@@ -508,13 +471,6 @@ class _SinglePageScombState extends State<SinglePageScomb> {
           cookieString += ";";
         }
       }
-      print(cookieString);
-
-      // if (url.contains("downloadMode=")) {
-      //   url = url.toString().replaceAll("downloadMode=", "downloadMode=1");
-      // } else {
-      //   url += "&downloadMode=1";
-      // }
       print(url);
 
       var response = await http.get(
@@ -526,21 +482,13 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
       await File(filepath).writeAsBytes(response.bodyBytes);
 
-      // await dio.download(
-      //   url,
-      //   filepath,
-      //   options: Options(
-      //     headers: {
-      //       "Cookie": cookieString,
-      //     },
-      //   ),
-      // );
-      //
       Share.shareFiles(
         [filepath],
         subject: downloadFileName,
         sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
       );
+
+      File(filepath).delete();
     } catch (e) {
       print(e);
     }
