@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/notification.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
+import 'package:scomb_mobile/common/utils.dart';
 
 import 'db/task.dart';
 
@@ -86,4 +87,9 @@ Future<void> _saveToDB(Task newTask) async {
   db.currentTaskDao.insertTask(newTask);
 }
 
-MaterialColor themeColor = Colors.blueGrey;
+MaterialColor themeColor = MaterialColor(
+  hexToColor("#FF90CAF9").value,
+  getSwatch(
+    hexToColor("#FF90CAF9"),
+  ),
+);
