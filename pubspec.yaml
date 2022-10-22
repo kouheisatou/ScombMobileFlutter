@@ -14,15 +14,15 @@ dependencies:
   flutter_inappwebview: ^5.4.3+7
   # http
   http: ^0.13.5
-  html: ^0.15.0
+  html: ^0.15.1
   dio: ^4.0.6
   cookie_jar: ^3.0.1
   dio_cookie_manager: ^2.0.0
   # toast
-  fluttertoast: ^8.0.9
+  fluttertoast: ^8.1.1
   intl: ^0.17.0
   # icon
-  flutter_native_splash: ^2.2.10+1
+  flutter_native_splash: ^2.2.11
   flutter_launcher_icons: ^0.10.0
   cupertino_icons: ^1.0.5
   # db
@@ -34,7 +34,7 @@ dependencies:
   # calendar
   table_calendar: ^3.0.7
   # notification
-  flutter_local_notifications: ^11.0.1
+  flutter_local_notifications: ^12.0.2
   timezone: ^0.9.0
   # data time picker
   flutter_datetime_picker: ^1.5.1
@@ -51,7 +51,7 @@ dependencies:
   # share
   share_plus: ^4.4.0
   path_provider: any
-  file_picker: ^5.2.0+1
+  file_picker: ^5.2.2
 
 flutter_native_splash:
   image: "resources/splash.png"
@@ -67,7 +67,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   # DB
   floor_generator: ^1.3.0
-  build_runner: ^2.2.1
+  build_runner: ^2.3.2
 
 flutter:
   uses-material-design: true
