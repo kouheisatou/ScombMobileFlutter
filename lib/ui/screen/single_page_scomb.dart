@@ -81,27 +81,28 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                   initialUrlRequest: URLRequest(url: widget.initUrl),
                   onLoadError: (controller, url, code, msg) {
                     setState(() {
-                      errorMsg =
-                          "[ロードエラー]\n\n\n・学内ネットからのみアクセス可能なページの可能性があります。\n\n・URLが間違えている可能性があります。";
+                      if (code == -1003) {
+                        errorMsg =
+                            "[ロードエラー]\n\n\n・学内ネットからのみアクセス可能なページの可能性があります。\n\n・URLが間違えている可能性があります。";
+                      } else if (code == 102) {
+                      } else {
+                        errorMsg = "$code : $msg";
+                      }
                       loading = false;
                     });
                   },
                   initialOptions: InAppWebViewGroupOptions(
                     crossPlatform: InAppWebViewOptions(
                       useOnDownloadStart: true,
+                      useOnLoadResource: true,
                     ),
                   ),
                   onDownloadStartRequest: (controller, url) async {
-                    CookieManager cookieManager = CookieManager.instance();
-
-                    var allCookies =
-                        await cookieManager.getCookies(url: currentUrl);
-
                     download(
                       url.url,
                       url.suggestedFilename ?? "null",
-                      allCookies,
                     );
+                    webView.reload();
                   },
                   onLoadStart: (controller, currentUrl) {
                     print(currentUrl.toString());
@@ -276,6 +277,13 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                   IconButton(
                     onPressed: () async {
                       errorMsg = null;
+                      await webView.reload();
+                    },
+                    icon: const Icon(Icons.refresh),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      errorMsg = null;
                       var canGoForward = await webView.canGoForward();
                       if (canGoForward) {
                         await webView.goForward();
@@ -397,6 +405,25 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       ),
                     ),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: InkResponse(
+                  //     borderRadius: BorderRadius.circular(1000),
+                  //     onTap: () async {
+                  //       download(currentUrl, (await webView.getTitle()) ?? "");
+                  //     },
+                  //     child: Column(
+                  //       children: const [
+                  //         Icon(Icons.download),
+                  //         Text(
+                  //           "ダウンロード",
+                  //           style: TextStyle(fontSize: 10),
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkResponse(
@@ -456,27 +483,23 @@ class _SinglePageScombState extends State<SinglePageScomb> {
   Future<void> download(
     Uri url,
     String downloadFileName,
-    List<Cookie> allCookies,
   ) async {
+    print("download $url");
     final box = context.findRenderObject() as RenderBox?;
 
-    var dir = (await getApplicationDocumentsDirectory()).path;
-    var filepath = "$dir/$downloadFileName";
+    var dir =
+        Directory("${(await getApplicationDocumentsDirectory()).path}/temp/");
+    if (await dir.exists()) {
+      dir.deleteSync(recursive: true);
+    }
+    dir.createSync(recursive: true);
+    var filepath = "${dir.path}/$downloadFileName";
 
     try {
-      String cookieString = "";
-      for (int i = 0; i < allCookies.length; i++) {
-        cookieString += "${allCookies[i].name}=${allCookies[i].value}";
-        if (i < allCookies.length - 1) {
-          cookieString += ";";
-        }
-      }
-      print(url);
-
       var response = await http.get(
         url,
         headers: {
-          "Cookie": cookieString,
+          "Cookie": "$SESSION_COOKIE_ID=$sessionId",
         },
       );
 
@@ -487,8 +510,6 @@ class _SinglePageScombState extends State<SinglePageScomb> {
         subject: downloadFileName,
         sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
       );
-
-      File(filepath).delete();
     } catch (e) {
       print(e);
     }
