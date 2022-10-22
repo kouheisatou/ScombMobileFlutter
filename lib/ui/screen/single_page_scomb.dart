@@ -1,8 +1,10 @@
-import 'package:dio/dio.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
@@ -90,9 +92,15 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     ),
                   ),
                   onDownloadStartRequest: (controller, url) async {
+                    CookieManager cookieManager = CookieManager.instance();
+
+                    var allCookies =
+                        await cookieManager.getCookies(url: currentUrl);
+
                     download(
-                      url.url.toString(),
+                      url.url,
                       url.suggestedFilename ?? "null",
+                      allCookies,
                     );
                   },
                   onLoadStart: (controller, currentUrl) {
@@ -465,7 +473,11 @@ class _SinglePageScombState extends State<SinglePageScomb> {
     );
   }
 
-  Future<void> download(String url, String downloadFileName) async {
+  Future<void> download(
+    Uri url,
+    String downloadFileName,
+    List<Cookie> allCookies,
+  ) async {
     var dir = (await getApplicationDocumentsDirectory()).path;
     var filepath = "$dir/$downloadFileName";
 
@@ -488,18 +500,42 @@ class _SinglePageScombState extends State<SinglePageScomb> {
       // await raf.close();
 
       final box = context.findRenderObject() as RenderBox?;
-      Dio dio = Dio();
+
+      String cookieString = "";
+      for (int i = 0; i < allCookies.length; i++) {
+        cookieString += "${allCookies[i].name}=${allCookies[i].value}";
+        if (i < allCookies.length - 1) {
+          cookieString += ";";
+        }
+      }
+      print(cookieString);
+
+      // if (url.contains("downloadMode=")) {
+      //   url = url.toString().replaceAll("downloadMode=", "downloadMode=1");
+      // } else {
+      //   url += "&downloadMode=1";
+      // }
       print(url);
-      await dio.download(
-        url.toString(),
-        filepath,
-        options: Options(
-          headers: {
-            "Cookie": "$SESSION_COOKIE_ID=$sessionId",
-          },
-        ),
+
+      var response = await http.get(
+        url,
+        headers: {
+          "Cookie": cookieString,
+        },
       );
 
+      await File(filepath).writeAsBytes(response.bodyBytes);
+
+      // await dio.download(
+      //   url,
+      //   filepath,
+      //   options: Options(
+      //     headers: {
+      //       "Cookie": cookieString,
+      //     },
+      //   ),
+      // );
+      //
       Share.shareFiles(
         [filepath],
         subject: downloadFileName,
