@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   # web view
-  flutter_inappwebview: ^5.4.3+7
+  flutter_inappwebview: ^5.7.0
   # http
   http: ^0.13.5
   html: ^0.15.1
@@ -49,9 +49,9 @@ dependencies:
   # encrypt
   encrypt: ^5.0.1
   # share
-  share_plus: ^4.4.0
-  path_provider: any
-  file_picker: ^5.2.2
+  share_plus: ^6.0.1
+  path_provider: ^2.0.11
+  file_picker: ^3.0.4
 
 flutter_native_splash:
   image: "resources/splash.png"
@@ -72,4 +72,4 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-   - resources/
+    - resources/
