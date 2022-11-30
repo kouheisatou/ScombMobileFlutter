@@ -444,8 +444,9 @@ class _SinglePageScombState extends State<SinglePageScomb> {
     Uri url,
     String downloadFileName,
   ) async {
-    final box = context.findRenderObject() as RenderBox?;
+    // final box = context.findRenderObject() as RenderBox?;
     print("download $url");
+    Fluttertoast.showToast(msg: "ダウンロードを開始しました");
 
     var dir = Directory("${(await getApplicationDocumentsDirectory()).path}/temp/");
     if (await dir.exists()) {
