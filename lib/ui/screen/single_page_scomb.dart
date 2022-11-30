@@ -13,7 +13,7 @@ import 'package:scomb_mobile/common/scraping/syllabus_scraping.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/db/class_cell_dao.dart';
@@ -51,10 +51,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
   @override
   Widget build(context) {
-    var addNewClassButtonAvailable =
-        (currentUrl.host == "timetable.sic.shibaura-it.ac.jp" &&
-            currentUrl.path.contains("detail") &&
-            errorMsg == null);
+    var addNewClassButtonAvailable = (currentUrl.host == "timetable.sic.shibaura-it.ac.jp" && currentUrl.path.contains("detail") && errorMsg == null);
 
     return Scaffold(
       appBar: AppBar(
@@ -82,8 +79,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                   onLoadError: (controller, url, code, msg) {
                     setState(() {
                       if (code == -1003) {
-                        errorMsg =
-                            "[ロードエラー]\n\n\n・学内ネットからのみアクセス可能なページの可能性があります。\n\n・URLが間違えている可能性があります。";
+                        errorMsg = "[ロードエラー]\n\n\n・学内ネットからのみアクセス可能なページの可能性があります。\n\n・URLが間違えている可能性があります。";
                       } else if (code == 102) {
                       } else {
                         errorMsg = "$code : $msg";
@@ -115,9 +111,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       name: SESSION_COOKIE_ID,
                     );
                     sessionId = cookie?.value;
-                    (await AppDatabase.getDatabase())
-                        .currentSettingDao
-                        .insertSetting(
+                    (await AppDatabase.getDatabase()).currentSettingDao.insertSetting(
                           Setting(
                             SettingKeys.SESSION_ID,
                             encryptAES(sessionId!),
@@ -126,8 +120,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
                     // only school local network error handling
                     String? html = await controller.evaluateJavascript(
-                      source:
-                          "window.document.getElementsByTagName('html')[0].outerHTML;",
+                      source: "window.document.getElementsByTagName('html')[0].outerHTML;",
                     );
                     if (html?.contains("アクセスしたデータは現在参照できません。") == true) {
                       errorMsg = "学内ネットからのみアクセス可能なページです";
@@ -135,8 +128,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     }
 
                     if (currentUrl != null) {
-                      var currentUrlString =
-                          "https://${currentUrl.host}${currentUrl.path}";
+                      var currentUrlString = "https://${currentUrl.host}${currentUrl.path}";
                       if (currentUrlString == SCOMB_LOGGED_OUT_PAGE_URL) {
                         await Navigator.push(
                           context,
@@ -151,9 +143,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                           controller.loadUrl(
                             urlRequest: URLRequest(
                               url: widget.initUrl,
-                              headers: {
-                                "Cookie": "$SESSION_COOKIE_ID=$sessionId"
-                              },
+                              headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
                             ),
                           );
                         } catch (e) {
@@ -165,12 +155,10 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     this.currentUrl = currentUrl ?? widget.initUrl;
                     if (widget.shouldRemoveHeader) {
                       await controller.evaluateJavascript(
-                        source:
-                            "document.getElementById('$HEADER_ELEMENT_ID').remove();",
+                        source: "document.getElementById('$HEADER_ELEMENT_ID').remove();",
                       );
                       await controller.evaluateJavascript(
-                        source:
-                            "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
+                        source: "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
                       );
                     }
                     if (widget.javascript != null) {
@@ -302,16 +290,14 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                                 var addDestinationTimetable = widget.timetable;
                                 // show add destination timetable select dialog
                                 if (addDestinationTimetable == null) {
-                                  var allTimetables = await getAllTimetables(
-                                      onFetchFinished: (result) {});
+                                  var allTimetables = await getAllTimetables(onFetchFinished: (result) {});
                                   var dialogResponse = await showDialog(
                                     context: context,
                                     builder: (_) {
                                       return SelectorDialog<TimetableModel?>(
                                         allTimetables,
                                         (key, value) async {
-                                          addDestinationTimetable =
-                                              allTimetables[key];
+                                          addDestinationTimetable = allTimetables[key];
                                           if (addDestinationTimetable == null) {
                                             return;
                                           }
@@ -335,17 +321,13 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
                                 // override confirmation
                                 bool? shouldReplace = true;
-                                if (addDestinationTimetable!
-                                            .cells[newCell.period]
-                                        [newCell.dayOfWeek] !=
-                                    null) {
+                                if (addDestinationTimetable!.cells[newCell.period][newCell.dayOfWeek] != null) {
                                   shouldReplace = await showDialog(
                                     context: context,
                                     builder: (_) {
                                       return AlertDialog(
                                         title: const Text("授業置き換え"),
-                                        content: Text(
-                                            "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} には既に ${addDestinationTimetable?.cells[newCell.period][newCell.dayOfWeek]?.name} が登録されています。置き換えますか？"),
+                                        content: Text("${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} には既に ${addDestinationTimetable?.cells[newCell.period][newCell.dayOfWeek]?.name} が登録されています。置き換えますか？"),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
@@ -368,12 +350,10 @@ class _SinglePageScombState extends State<SinglePageScomb> {
 
                                 // add to local db
                                 if (shouldReplace == true) {
-                                  await addDestinationTimetable!
-                                      .addCell(newCell);
+                                  await addDestinationTimetable!.addCell(newCell);
 
                                   Fluttertoast.showToast(
-                                    msg:
-                                        "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} に ${newCell.name} を登録しました。",
+                                    msg: "${DAY_OF_WEEK_MAP[newCell.dayOfWeek]}${PERIOD_MAP[newCell.period]} に ${newCell.name} を登録しました。",
                                   );
                                 }
                               }
@@ -386,17 +366,13 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                           children: [
                             Icon(
                               Icons.add,
-                              color: addNewClassButtonAvailable
-                                  ? Colors.black
-                                  : Colors.grey,
+                              color: addNewClassButtonAvailable ? Colors.black : Colors.grey,
                             ),
                             Text(
                               "履修計画に登録",
                               style: TextStyle(
                                 fontSize: 10,
-                                color: addNewClassButtonAvailable
-                                    ? Colors.black
-                                    : Colors.grey,
+                                color: addNewClassButtonAvailable ? Colors.black : Colors.grey,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -405,25 +381,6 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       ),
                     ),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.all(8.0),
-                  //   child: InkResponse(
-                  //     borderRadius: BorderRadius.circular(1000),
-                  //     onTap: () async {
-                  //       download(currentUrl, (await webView.getTitle()) ?? "");
-                  //     },
-                  //     child: Column(
-                  //       children: const [
-                  //         Icon(Icons.download),
-                  //         Text(
-                  //           "ダウンロード",
-                  //           style: TextStyle(fontSize: 10),
-                  //           overflow: TextOverflow.ellipsis,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkResponse(
@@ -484,11 +441,10 @@ class _SinglePageScombState extends State<SinglePageScomb> {
     Uri url,
     String downloadFileName,
   ) async {
-    print("download $url");
     final box = context.findRenderObject() as RenderBox?;
+    print("download $url");
 
-    var dir =
-        Directory("${(await getApplicationDocumentsDirectory()).path}/temp/");
+    var dir = Directory("${(await getApplicationDocumentsDirectory()).path}/temp/");
     if (await dir.exists()) {
       dir.deleteSync(recursive: true);
     }
@@ -508,7 +464,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
       await Share.shareFiles(
         [filepath],
         subject: downloadFileName,
-        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+        // sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
       );
     } catch (e) {
       print(e);

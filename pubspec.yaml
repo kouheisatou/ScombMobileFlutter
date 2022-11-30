@@ -49,7 +49,7 @@ dependencies:
   # encrypt
   encrypt: ^5.0.1
   # share
-  share_plus: ^6.0.1
+  share: ^2.0.4
   path_provider: ^2.0.11
   file_picker: ^3.0.4
 
