@@ -111,12 +111,15 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       name: SESSION_COOKIE_ID,
                     );
                     sessionId = cookie?.value;
-                    (await AppDatabase.getDatabase()).currentSettingDao.insertSetting(
-                          Setting(
-                            SettingKeys.SESSION_ID,
-                            encryptAES(sessionId!),
-                          ),
-                        );
+
+                    if (sessionId != null) {
+                      (await AppDatabase.getDatabase()).currentSettingDao.insertSetting(
+                            Setting(
+                              SettingKeys.SESSION_ID,
+                              encryptAES(sessionId!),
+                            ),
+                          );
+                    }
 
                     // only school local network error handling
                     String? html = await controller.evaluateJavascript(
@@ -143,7 +146,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                           controller.loadUrl(
                             urlRequest: URLRequest(
                               url: widget.initUrl,
-                              headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
+                              headers: sessionId != null ? {"Cookie": "$SESSION_COOKIE_ID=$sessionId"} : null,
                             ),
                           );
                         } catch (e) {
