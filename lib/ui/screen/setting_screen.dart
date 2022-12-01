@@ -12,7 +12,7 @@ import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/dialog/color_picker_dialog.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/notification.dart';
@@ -167,8 +167,6 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("JSONファイルにデータをバックアップ"),
               onPressed: (context) async {
-                final box = context.findRenderObject() as RenderBox?;
-
                 var db = await AppDatabase.getDatabase();
                 var json = await db.exportToJson();
                 print(json);
@@ -181,7 +179,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 Share.shareFiles(
                   [filePath],
                   subject: "ExportedScombMobileDB.json",
-                  // sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+                  sharePositionOrigin: const Rect.fromLTWH(0, 0, 300, 300),
                 );
               },
             ),

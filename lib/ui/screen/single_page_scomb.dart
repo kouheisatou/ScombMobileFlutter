@@ -13,7 +13,7 @@ import 'package:scomb_mobile/common/scraping/syllabus_scraping.dart';
 import 'package:scomb_mobile/common/timetable_model.dart';
 import 'package:scomb_mobile/ui/dialog/selector_dialog.dart';
 import 'package:scomb_mobile/ui/screen/login_screen.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/db/class_cell_dao.dart';
@@ -444,7 +444,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
     Uri url,
     String downloadFileName,
   ) async {
-    // final box = context.findRenderObject() as RenderBox?;
+    // final box = context.findRenderObject() as RenderBox;
     print("download $url");
     Fluttertoast.showToast(msg: "ダウンロードを開始しました");
 
@@ -468,7 +468,9 @@ class _SinglePageScombState extends State<SinglePageScomb> {
       await Share.shareFiles(
         [filepath],
         subject: downloadFileName,
-        // sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+        // sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+        sharePositionOrigin: const Rect.fromLTWH(0, 0, 300, 300),
+        // sharePositionOrigin: Rect.fromPoints(const Offset(0, 0), Offset(box.size.width, box.size.height)),
       );
     } catch (e) {
       print(e);

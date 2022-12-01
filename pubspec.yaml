@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   # web view
-  flutter_inappwebview: ^5.7.2
+  flutter_inappwebview: ^5.7.2+1
   # http
   http: ^0.13.5
   html: ^0.15.1
@@ -49,7 +49,7 @@ dependencies:
   # encrypt
   encrypt: ^5.0.1
   # share
-  share: ^2.0.4
+  share_plus: ^6.3.0
   path_provider: ^2.0.11
   file_picker: ^5.2.3
 
