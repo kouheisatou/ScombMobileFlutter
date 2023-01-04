@@ -52,6 +52,15 @@ String getCurrentTerm() {
   }
 }
 
+int getCurrentYear() {
+  var today = DateTime.now();
+  if (today.month < 3) {
+    return today.year - 1;
+  } else {
+    return today.year;
+  }
+}
+
 // return only last one
 T1? findMapKeyFromValue<T1, T2>(Map<T1, T2> map, T2 targetValue) {
   T1? resultKey;

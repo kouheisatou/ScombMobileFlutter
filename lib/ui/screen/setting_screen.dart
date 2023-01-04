@@ -132,7 +132,8 @@ class _SettingScreenState extends State<SettingScreen> {
                     ],
                     color: Color(
                       int.parse(
-                        settings[SettingKeys.THEME_COLOR] ?? themeColor.value.toString(),
+                        settings[SettingKeys.THEME_COLOR] ??
+                            themeColor.value.toString(),
                       ),
                     ),
                   ),
@@ -154,7 +155,8 @@ class _SettingScreenState extends State<SettingScreen> {
                   builder: (_) {
                     return SelectorDialog(
                       SettingValues.SECTION,
-                      selectedKey: findMapKeyFromValue(SettingValues.SECTION, settings[SettingKeys.SECTION]),
+                      selectedKey: findMapKeyFromValue(
+                          SettingValues.SECTION, settings[SettingKeys.SECTION]),
                       (key, value) async {
                         updateSetting(SettingKeys.SECTION, value.toString());
                       },
@@ -200,7 +202,8 @@ class _SettingScreenState extends State<SettingScreen> {
                   context: context,
                   builder: (_) => AlertDialog(
                     title: const Text("データ復元"),
-                    content: const Text("現在のデータは復元されるファイルのデータに全て置き換えられます。よろしいですか？"),
+                    content:
+                        const Text("現在のデータは復元されるファイルのデータに全て置き換えられます。よろしいですか？"),
                     actions: [
                       TextButton(
                           onPressed: () {
@@ -274,7 +277,8 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SettingsTile(
               title: const Text("パスワード"),
-              value: Text(genHiddenText(decryptAES(settings[SettingKeys.PASSWORD]) ?? "")),
+              value: Text(genHiddenText(
+                  decryptAES(settings[SettingKeys.PASSWORD]) ?? "")),
               onPressed: (context) {
                 showDialog(
                   context: context,
@@ -284,7 +288,8 @@ class _SettingScreenState extends State<SettingScreen> {
                       content: TextFormField(
                         obscureText: true,
                         autofocus: true,
-                        initialValue: decryptAES(settings[SettingKeys.PASSWORD]),
+                        initialValue:
+                            decryptAES(settings[SettingKeys.PASSWORD]),
                         onChanged: (text) {
                           updateSetting(
                             SettingKeys.PASSWORD,
@@ -402,7 +407,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 findMapKeyFromValue(
                       SettingValues.TIMETABLE_UPDATE_INTERVAL,
                       int.parse(
-                        settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ?? (86400000 * 1).toString(),
+                        settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
+                            (86400000 * 1).toString(),
                       ),
                     ) ??
                     "1日",
@@ -419,11 +425,13 @@ class _SettingScreenState extends State<SettingScreen> {
                           selectedValue.toString(),
                         );
                       },
-                      description: "時間割は一度ScombZから取得すると、しばらく本体に保存されます。\n\n保存する期間を選択してください。",
+                      description:
+                          "時間割は一度ScombZから取得すると、しばらく本体に保存されます。\n\n保存する期間を選択してください。",
                       selectedKey: findMapKeyFromValue(
                             SettingValues.TIMETABLE_UPDATE_INTERVAL,
                             int.parse(
-                              settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ?? (86400000 * 1).toString(),
+                              settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
+                                  (86400000 * 1).toString(),
                             ),
                           ) ??
                           "1日",
@@ -460,7 +468,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 findMapKeyFromValue<String, int>(
                       SettingValues.NOTIFICATION_TIMING,
                       int.parse(
-                        settings[SettingKeys.NOTIFICATION_TIMING] ?? (60000 * 60).toString(),
+                        settings[SettingKeys.NOTIFICATION_TIMING] ??
+                            (60000 * 60).toString(),
                       ),
                     ) ??
                     "１時間前",
@@ -474,11 +483,13 @@ class _SettingScreenState extends State<SettingScreen> {
                       selectedKey: findMapKeyFromValue<String, int>(
                         SettingValues.NOTIFICATION_TIMING,
                         int.parse(
-                          settings[SettingKeys.NOTIFICATION_TIMING] ?? (60000 * 60).toString(),
+                          settings[SettingKeys.NOTIFICATION_TIMING] ??
+                              (60000 * 60).toString(),
                         ),
                       ),
                       (key, value) async {
-                        updateSetting(SettingKeys.NOTIFICATION_TIMING, value.toString());
+                        updateSetting(
+                            SettingKeys.NOTIFICATION_TIMING, value.toString());
                       },
                     );
                   },
@@ -487,14 +498,18 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SettingsTile(
               title: const Text("\"今日の課題\"通知時刻"),
-              value: Text(settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ?? "8:00"),
+              value: Text(settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ??
+                  "8:00"),
               onPressed: (context) async {
-                var prevSetting = settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ?? "8:00";
+                var prevSetting =
+                    settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ??
+                        "8:00";
                 var prevSetTime = TimeOfDay(
                   hour: int.parse(prevSetting.split(":")[0]),
                   minute: int.parse(prevSetting.split(":")[1]),
                 );
-                var selectedTime = await showTimePicker(context: context, initialTime: prevSetTime);
+                var selectedTime = await showTimePicker(
+                    context: context, initialTime: prevSetTime);
                 if (selectedTime == null) return;
                 updateSetting(
                   SettingKeys.TODAYS_TASK_NOTIFICATION_TIME,
@@ -566,7 +581,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Map<String, int?> buildYearSelection(int range, bool allowNull) {
     Map<String, int?> yearSelection = {};
-    var thisYear = DateTime.now().year;
+    var thisYear = getCurrentYear();
     if (allowNull) {
       yearSelection["最新"] = null;
     }

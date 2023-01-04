@@ -40,7 +40,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       timetableYear = int.parse(
           (await db.currentSettingDao.getSetting(SettingKeys.TIMETABLE_YEAR))
                   ?.settingValue ??
-              DateTime.now().year.toString());
+              getCurrentYear().toString());
       timetableTerm =
           (await db.currentSettingDao.getSetting(SettingKeys.TIMETABLE_TERM))
                   ?.settingValue ??
@@ -80,7 +80,7 @@ class _TimetableScreenState extends NetworkScreenState<TimetableScreen> {
       // fetch timetable from server
       await fetchTimetable(
         sessionId ?? savedSessionId,
-        timetableYear ?? DateTime.now().year,
+        timetableYear ?? getCurrentYear(),
         timetableTerm ?? getCurrentTerm(),
       );
 
