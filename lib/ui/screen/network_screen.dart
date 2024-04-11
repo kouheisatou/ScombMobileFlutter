@@ -32,10 +32,9 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
       // recover session_id from local db
       var sessionIdSetting =
           await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
-      var savedSessionId = decryptAES(sessionIdSetting?.settingValue);
 
       // first launch
-      if (savedSessionId == null) {
+      if (sessionIdSetting == null) {
         await showDialog(
           context: context,
           builder: (_) {
@@ -78,6 +77,8 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
         );
         throw LoginException("ログインが必要です");
       }
+
+      var savedSessionId = await decryptAES(sessionIdSetting.settingValue);
 
       // fetch data from server
       setState(() {
@@ -131,7 +132,7 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
 
     // unhandled error
     catch (e, stackTrace) {
-      Fluttertoast.showToast(msg: "予期せぬエラーが発生しました。\n$e,$stackTrace");
+      Fluttertoast.showToast(msg: "error");
       print(e);
       print(stackTrace);
     } finally {

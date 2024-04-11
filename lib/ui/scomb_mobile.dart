@@ -67,6 +67,7 @@ class ScombMobileState extends State<ScombMobile> {
       title: "ScombMobile",
       theme: ThemeData(
         primarySwatch: themeColor,
+        useMaterial3: false,
       ),
       home: Scaffold(
           // if selected index null, attach login screen

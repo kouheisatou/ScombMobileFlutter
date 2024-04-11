@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await db.currentSettingDao.getSetting(SettingKeys.SESSION_ID);
 
     _userController.text = usernameSetting?.settingValue ?? "";
-    _passwordController.text = decryptAES(passwordSetting?.settingValue) ?? "";
+    _passwordController.text = await decryptAES(passwordSetting?.settingValue) ?? "";
 
     if (usernameSetting != null &&
         passwordSetting != null &&
@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
     CookieManager cookieManager = CookieManager.instance();
     cookieManager.deleteAllCookies();
     webView?.loadUrl(
-      urlRequest: URLRequest(url: Uri.parse(SCOMB_LOGIN_PAGE_URL)),
+      urlRequest: URLRequest(url: WebUri.uri(Uri.parse(SCOMB_LOGIN_PAGE_URL))),
     );
   }
 
@@ -114,16 +114,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 onLoadStop: (controller, url) async {
                   CookieManager cookieManager = CookieManager.instance();
                   Cookie? cookie = await cookieManager.getCookie(
-                    url: Uri.parse(SCOMBZ_DOMAIN),
+                    url: WebUri.uri(Uri.parse(SCOMBZ_DOMAIN)),
                     name: SESSION_COOKIE_ID,
                   );
 
                   // two step auth page
                   if (cookie == null) {
+                    // click login button
+                    await webView?.evaluateJavascript(
+                        source: "document.getElementById('userNameInput').value = '${_userController.text}@sic'; document.getElementById('passwordInput').value = '${_passwordController.text}'; Login.submitLoginRequest();"
+                    );
+
                     // skip twp step auth
                     await webView?.evaluateJavascript(
-                      source:
-                          "document.getElementById('$TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID').click();",
+                      source: "document.getElementById('$TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID').click();",
                     );
                   } else {
                     sessionId = cookie.value;
@@ -135,13 +139,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       db.currentSettingDao.insertSetting(
                         Setting(
                           SettingKeys.SESSION_ID,
-                          encryptAES(sessionId!),
+                          await encryptAES(sessionId!),
                         ),
                       );
                       db.currentSettingDao.insertSetting(
                         Setting(
                           SettingKeys.PASSWORD,
-                          encryptAES(_passwordController.text),
+                          await encryptAES(_passwordController.text),
                         ),
                       );
                       db.currentSettingDao.insertSetting(

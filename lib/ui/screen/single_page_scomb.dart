@@ -75,7 +75,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       loading = true;
                     });
                   },
-                  initialUrlRequest: URLRequest(url: widget.initUrl),
+                  initialUrlRequest: URLRequest(url: WebUri.uri(widget.initUrl)),
                   onLoadError: (controller, url, code, msg) {
                     setState(() {
                       if (code == -1003) {
@@ -107,7 +107,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     // save cookie
                     CookieManager cookieManager = CookieManager.instance();
                     Cookie? cookie = await cookieManager.getCookie(
-                      url: Uri.parse(SCOMBZ_DOMAIN),
+                      url: WebUri.uri(Uri.parse(SCOMBZ_DOMAIN)),
                       name: SESSION_COOKIE_ID,
                     );
                     sessionId = cookie?.value;
@@ -116,7 +116,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                       (await AppDatabase.getDatabase()).currentSettingDao.insertSetting(
                             Setting(
                               SettingKeys.SESSION_ID,
-                              encryptAES(sessionId!),
+                              await encryptAES(sessionId!),
                             ),
                           );
                     }
@@ -145,7 +145,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                         try {
                           controller.loadUrl(
                             urlRequest: URLRequest(
-                              url: widget.initUrl,
+                              url: WebUri.uri(widget.initUrl),
                               headers: sessionId != null ? {"Cookie": "$SESSION_COOKIE_ID=$sessionId"} : null,
                             ),
                           );
@@ -186,7 +186,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                     try {
                       controller.loadUrl(
                         urlRequest: URLRequest(
-                          url: widget.initUrl,
+                          url: WebUri.uri(widget.initUrl),
                           headers: {"Cookie": "$SESSION_COOKIE_ID=$sessionId"},
                         ),
                       );
@@ -228,7 +228,7 @@ class _SinglePageScombState extends State<SinglePageScomb> {
                                     try {
                                       webView.loadUrl(
                                         urlRequest: URLRequest(
-                                          url: widget.initUrl,
+                                          url: WebUri.uri(widget.initUrl),
                                         ),
                                       );
                                     } catch (e) {

@@ -61,5 +61,7 @@
     </array>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>バックアップファイル読み込み</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

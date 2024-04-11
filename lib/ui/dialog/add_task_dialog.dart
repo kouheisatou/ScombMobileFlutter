@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scomb_mobile/common/utils.dart';
 import 'package:scomb_mobile/common/values.dart';
@@ -177,17 +177,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                               DatePicker.showDateTimePicker(
                                 context,
                                 showTitleActions: true,
-                                theme: const DatePickerTheme(
-                                  backgroundColor: Colors.blue,
-                                  itemStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  doneStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
                                 onChanged: (date) {
                                   if (date.millisecondsSinceEpoch <
                                       DateTime.now().millisecondsSinceEpoch) {

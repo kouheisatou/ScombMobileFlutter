@@ -41,7 +41,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
     return Scaffold(
       appBar: AppBar(title: const Text("BasicAuthWebView")),
       body: InAppWebView(
-        initialUrlRequest: URLRequest(url: Uri.parse(SCOMB_LOGIN_PAGE_URL)),
+        initialUrlRequest: URLRequest(url: WebUri.uri(Uri.parse(SCOMB_LOGIN_PAGE_URL))),
         onWebViewCreated: (InAppWebViewController controller) {
           webView = controller;
         },

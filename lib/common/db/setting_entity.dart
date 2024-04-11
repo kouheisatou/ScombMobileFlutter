@@ -48,6 +48,7 @@ class SettingKeys {
   static String TODAYS_TASK_NOTIFICATION_TIME = "todays_task_notification_time";
 
   static String THEME_COLOR = "theme_color";
+  static String AES_IV = "aes_iv";
 }
 
 class SettingValues {

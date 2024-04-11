@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:app_review/app_review.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scomb_mobile/common/db/scomb_mobile_database.dart';
 import 'package:scomb_mobile/common/db/setting_entity.dart';
@@ -33,6 +33,7 @@ class _SettingScreenState extends State<SettingScreen> {
   ScombMobileState parent;
   late AppDatabase db;
   Map<String, String?> settings = {};
+  String? password = null;
   late bool isLoading;
   bool isLatestTimetable = true;
 
@@ -55,6 +56,7 @@ class _SettingScreenState extends State<SettingScreen> {
     }
     print("setting_inflated");
     print(settings);
+    password = await decryptAES(settings[SettingKeys.PASSWORD]);
 
     setState(() {
       isLoading = false;
@@ -78,6 +80,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Future<void> updateSetting(String settingKey, String? settingValue) async {
     settings[settingKey] = settingValue;
+    password = await decryptAES(settings[SettingKeys.PASSWORD]);
     db.currentSettingDao.insertSetting(Setting(settingKey, settingValue));
     setState(() {});
   }
@@ -132,8 +135,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ],
                     color: Color(
                       int.parse(
-                        settings[SettingKeys.THEME_COLOR] ??
-                            themeColor.value.toString(),
+                        settings[SettingKeys.THEME_COLOR] ?? themeColor.value.toString(),
                       ),
                     ),
                   ),
@@ -155,8 +157,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   builder: (_) {
                     return SelectorDialog(
                       SettingValues.SECTION,
-                      selectedKey: findMapKeyFromValue(
-                          SettingValues.SECTION, settings[SettingKeys.SECTION]),
+                      selectedKey: findMapKeyFromValue(SettingValues.SECTION, settings[SettingKeys.SECTION]),
                       (key, value) async {
                         updateSetting(SettingKeys.SECTION, value.toString());
                       },
@@ -202,8 +203,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   context: context,
                   builder: (_) => AlertDialog(
                     title: const Text("データ復元"),
-                    content:
-                        const Text("現在のデータは復元されるファイルのデータに全て置き換えられます。よろしいですか？"),
+                    content: const Text("現在のデータは復元されるファイルのデータに全て置き換えられます。よろしいですか？"),
                     actions: [
                       TextButton(
                           onPressed: () {
@@ -254,11 +254,11 @@ class _SettingScreenState extends State<SettingScreen> {
                       content: TextFormField(
                         autofocus: true,
                         initialValue: settings[SettingKeys.USERNAME],
-                        onChanged: (text) {
+                        onChanged: (text) async {
                           updateSetting(SettingKeys.USERNAME, text);
                           updateSetting(
                             SettingKeys.SESSION_ID,
-                            encryptAES("null"),
+                            await encryptAES("null"),
                           );
                         },
                       ),
@@ -277,8 +277,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SettingsTile(
               title: const Text("パスワード"),
-              value: Text(genHiddenText(
-                  decryptAES(settings[SettingKeys.PASSWORD]) ?? "")),
+              value: Text(genHiddenText(password ?? "")),
               onPressed: (context) {
                 showDialog(
                   context: context,
@@ -288,16 +287,15 @@ class _SettingScreenState extends State<SettingScreen> {
                       content: TextFormField(
                         obscureText: true,
                         autofocus: true,
-                        initialValue:
-                            decryptAES(settings[SettingKeys.PASSWORD]),
-                        onChanged: (text) {
+                        initialValue: password,
+                        onChanged: (text) async {
                           updateSetting(
                             SettingKeys.PASSWORD,
-                            encryptAES(text),
+                            await encryptAES(text),
                           );
                           updateSetting(
                             SettingKeys.SESSION_ID,
-                            encryptAES("null"),
+                            await encryptAES("null"),
                           );
                         },
                         decoration: const InputDecoration(hintText: "パスワード"),
@@ -407,8 +405,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 findMapKeyFromValue(
                       SettingValues.TIMETABLE_UPDATE_INTERVAL,
                       int.parse(
-                        settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
-                            (86400000 * 1).toString(),
+                        settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ?? (86400000 * 1).toString(),
                       ),
                     ) ??
                     "1日",
@@ -425,13 +422,11 @@ class _SettingScreenState extends State<SettingScreen> {
                           selectedValue.toString(),
                         );
                       },
-                      description:
-                          "時間割は一度ScombZから取得すると、しばらく本体に保存されます。\n\n保存する期間を選択してください。",
+                      description: "時間割は一度ScombZから取得すると、しばらく本体に保存されます。\n\n保存する期間を選択してください。",
                       selectedKey: findMapKeyFromValue(
                             SettingValues.TIMETABLE_UPDATE_INTERVAL,
                             int.parse(
-                              settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ??
-                                  (86400000 * 1).toString(),
+                              settings[SettingKeys.TIMETABLE_UPDATE_INTERVAL] ?? (86400000 * 1).toString(),
                             ),
                           ) ??
                           "1日",
@@ -468,8 +463,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 findMapKeyFromValue<String, int>(
                       SettingValues.NOTIFICATION_TIMING,
                       int.parse(
-                        settings[SettingKeys.NOTIFICATION_TIMING] ??
-                            (60000 * 60).toString(),
+                        settings[SettingKeys.NOTIFICATION_TIMING] ?? (60000 * 60).toString(),
                       ),
                     ) ??
                     "１時間前",
@@ -483,13 +477,11 @@ class _SettingScreenState extends State<SettingScreen> {
                       selectedKey: findMapKeyFromValue<String, int>(
                         SettingValues.NOTIFICATION_TIMING,
                         int.parse(
-                          settings[SettingKeys.NOTIFICATION_TIMING] ??
-                              (60000 * 60).toString(),
+                          settings[SettingKeys.NOTIFICATION_TIMING] ?? (60000 * 60).toString(),
                         ),
                       ),
                       (key, value) async {
-                        updateSetting(
-                            SettingKeys.NOTIFICATION_TIMING, value.toString());
+                        updateSetting(SettingKeys.NOTIFICATION_TIMING, value.toString());
                       },
                     );
                   },
@@ -498,18 +490,14 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SettingsTile(
               title: const Text("\"今日の課題\"通知時刻"),
-              value: Text(settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ??
-                  "8:00"),
+              value: Text(settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ?? "8:00"),
               onPressed: (context) async {
-                var prevSetting =
-                    settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ??
-                        "8:00";
+                var prevSetting = settings[SettingKeys.TODAYS_TASK_NOTIFICATION_TIME] ?? "8:00";
                 var prevSetTime = TimeOfDay(
                   hour: int.parse(prevSetting.split(":")[0]),
                   minute: int.parse(prevSetting.split(":")[1]),
                 );
-                var selectedTime = await showTimePicker(
-                    context: context, initialTime: prevSetTime);
+                var selectedTime = await showTimePicker(context: context, initialTime: prevSetTime);
                 if (selectedTime == null) return;
                 updateSetting(
                   SettingKeys.TODAYS_TASK_NOTIFICATION_TIME,
@@ -529,9 +517,10 @@ class _SettingScreenState extends State<SettingScreen> {
             SettingsTile(
               title: const Text("レビューを送信"),
               onPressed: (context) async {
-                AppReview.requestReview.then((onValue) {
-                  print(onValue);
-                });
+                final InAppReview inAppReview = InAppReview.instance;
+                if (await inAppReview.isAvailable()) {
+                  inAppReview.requestReview();
+                }
               },
             ),
             SettingsTile(
