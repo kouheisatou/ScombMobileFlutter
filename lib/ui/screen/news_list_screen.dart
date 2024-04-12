@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:scomb_mobile/common/scraping/news_scraping.dart';
 import 'package:scomb_mobile/common/values.dart';
 import 'package:scomb_mobile/ui/screen/network_screen.dart';
@@ -48,8 +49,7 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
                       builder: (context) => SinglePageScomb(
                         Uri.parse(NEWS_LIST_PAGE_URL),
                         widget.news[index].title,
-                        javascript:
-                            "detailPortalInfo('${widget.news[index].newsId}', '${widget.news[index].data2}')",
+                        javascript: "detailPortalInfo('${widget.news[index].newsId}', '${widget.news[index].data2}')",
                       ),
                       fullscreenDialog: true,
                     ),
@@ -60,50 +60,36 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
                     widget.news[index].unread = false;
                   });
                   var db = await AppDatabase.getDatabase();
-                  await db.currentNewsItemModelDao
-                      .insertNewsModel(widget.news[index]);
+                  await db.currentNewsItemModelDao.insertNewsModel(widget.news[index]);
                 },
                 onLongPress: () {
                   print(widget.news[index]);
                 },
-                child: ListTile(
-                  subtitle: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "${widget.news[index].domain}\n${widget.news[index].publishTime}",
-                      overflow: TextOverflow.ellipsis,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Opacity(
+                    opacity: widget.news[index].unread ? 0.4 : 1,
+                    child: ListTile(
+                      subtitle: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                widget.news[index].domain,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Text(widget.news[index].publishTime),
+                          ],
+                        ),
+                      ),
+                      title: Text(
+                        widget.news[index].title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
                     ),
-                  ),
-                  title: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          widget.news[index].title,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Container(
-                          width: 8,
-                          height: 8,
-                          decoration: widget.news[index].unread
-                              ? const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      spreadRadius: 1,
-                                      blurRadius: 3,
-                                    )
-                                  ],
-                                  color: Colors.deepOrange,
-                                )
-                              : null,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
