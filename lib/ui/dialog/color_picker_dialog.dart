@@ -32,7 +32,7 @@ class ColorPickerDialog extends StatelessWidget {
         hexToColor("#FFFFAB91"),
         hexToColor("#FFBCAAA4"),
         // default color
-        defaultColor != null ? defaultColor! : Colors.white70
+        defaultColor != null ? defaultColor! : Colors.blueGrey
       ],
       layoutBuilder: (context, colors, child) {
         return Center(

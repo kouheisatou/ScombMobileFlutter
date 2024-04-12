@@ -97,14 +97,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 int? selectedColor = await showDialog(
                   context: context,
                   builder: (_) {
-                    return ColorPickerDialog(
-                      defaultColor: MaterialColor(
-                        hexToColor("#FF90CAF9").value,
-                        getSwatch(
-                          hexToColor("#FF90CAF9"),
-                        ),
-                      ),
-                    );
+                    return ColorPickerDialog(defaultColor: Colors.blueGrey);
                   },
                 );
 

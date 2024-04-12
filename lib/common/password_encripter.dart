@@ -35,9 +35,9 @@ Future<IV> getIV() async {
   var db = await AppDatabase.getDatabase();
 
   IV iv;
-  try{
+  try {
     iv = IV.fromBase64((await db.currentSettingDao.getSetting(SettingKeys.AES_IV))!.settingValue!);
-  }catch(e){
+  } catch (e) {
     iv = IV.fromLength(16);
     db.currentSettingDao.insertSetting(Setting(SettingKeys.AES_IV, iv.base64));
   }
