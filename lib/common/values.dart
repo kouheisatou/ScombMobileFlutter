@@ -1,27 +1,21 @@
 const SCOMBZ_DOMAIN = "https://scombz.shibaura-it.ac.jp";
-const SCOMB_LOGIN_PAGE_URL =
-    "https://scombz.shibaura-it.ac.jp/saml/login?idp=http://adfs.sic.shibaura-it.ac.jp/adfs/services/trust";
+const SCOMB_LOGIN_PAGE_URL = "https://scombz.shibaura-it.ac.jp/saml/login?idp=http://adfs.sic.shibaura-it.ac.jp/adfs/services/trust";
 const SCOMB_HOME_URL = "https://scombz.shibaura-it.ac.jp/portal/home";
 const SCOMB_LOGGED_OUT_PAGE_URL = "https://scombz.shibaura-it.ac.jp/login";
 const SCOMB_TIMETABLE_URL = "https://scombz.shibaura-it.ac.jp/lms/timetable";
-const CLASS_PAGE_URL =
-    "https://scombz.shibaura-it.ac.jp/lms/course?idnumber=\${classId}";
+const CLASS_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course?idnumber=\${classId}";
 const TASK_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/task";
-const SURVEY_LIST_PAGE_URL =
-    "https://scombz.shibaura-it.ac.jp/portal/surveys/list";
+const SURVEY_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/surveys/list";
 const SURVEY_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/surveys/take";
-const LMS_SURVEY_PAGE_URL =
-    "https://scombz.shibaura-it.ac.jp/lms/course/surveys/take";
+const LMS_SURVEY_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course/surveys/take";
 const TWITTER_URL = "https://twitter.com/ScombMobile";
 const GITHUB_URL = "https://github.com/kouheisatou/ScombMobileFlutter";
 const PRIVACY_POLICY_URL = "https://kouheisatou.github.io/ScombMobileFlutter/";
-const SYLLABUS_SEARCH_URL =
-    "http://syllabus.sic.shibaura-it.ac.jp/namazu/namazu.cgi?ajaxmode=true&query=\${className}&whence=0&idxname=\${admissionYearAndSection}&max=20&result=normal&sort=score";
-const TIMETABLE_PAGE_URL =
-    "http://timetable.sic.shibaura-it.ac.jp/table/\${yearCode}/Timetable\${sectionCode}\${departmentCode}01\${termCode}\${gradeCode}.html";
+const SYLLABUS_SEARCH_URL = "http://syllabus.sic.shibaura-it.ac.jp/namazu/namazu.cgi?ajaxmode=true&query=\${className}&whence=0&idxname=\${admissionYearAndSection}&max=20&result=normal&sort=score";
+const TIMETABLE_PAGE_URL = "http://timetable.sic.shibaura-it.ac.jp/table/\${yearCode}/Timetable\${sectionCode}\${departmentCode}01\${termCode}\${gradeCode}.html";
 const TIMETABLE_LIST_PAGE_URL = "http://timetable.sic.shibaura-it.ac.jp/";
-const NEWS_LIST_PAGE_URL =
-    "https://scombz.shibaura-it.ac.jp/portal/home/information/list";
+const NEWS_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/home/information/list";
+const NEWS_DETAIL_PAGE_URL = "https://scombz.shibaura-it.ac.jp/portal/home/information/detail_direct?informationId=\${newsId}&selectCategoryCd=\${data2}&idnumber=";
 
 // ScombのCookieとして保存されているセッションIDのキー
 const SESSION_COOKIE_ID = "SESSION";

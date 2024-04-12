@@ -47,9 +47,10 @@ class NewsScreenState extends NetworkScreenState<NewsScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => SinglePageScomb(
-                        Uri.parse(NEWS_LIST_PAGE_URL),
+                        Uri.parse(
+                          NEWS_DETAIL_PAGE_URL.replaceAll("\${newsId}", widget.news[index].newsId).replaceAll("\${data2}", widget.news[index].data2),
+                        ),
                         widget.news[index].title,
-                        javascript: "detailPortalInfo('${widget.news[index].newsId}', '${widget.news[index].data2}')",
                       ),
                       fullscreenDialog: true,
                     ),
