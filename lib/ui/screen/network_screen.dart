@@ -133,6 +133,22 @@ abstract class NetworkScreenState<T extends NetworkScreen> extends State<T> {
     // unhandled error
     catch (e, stackTrace) {
       Fluttertoast.showToast(msg: "error");
+
+      print("login_fail $e\n$stackTrace");
+      Fluttertoast.showToast(msg: "ログインが必要です");
+      var canceled = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (builder) {
+            return LoginScreen();
+          },
+          fullscreenDialog: true,
+        ),
+      );
+      if (canceled is bool && canceled == false) {
+        await refreshData();
+      }
+
       print(e);
       print(stackTrace);
     } finally {
