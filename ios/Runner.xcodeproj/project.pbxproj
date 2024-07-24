@@ -379,6 +379,7 @@
 				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_TEAM = 32L4KX2S36;
 				ENABLE_BITCODE = NO;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Scomb Mobile";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -517,6 +518,7 @@
 				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_TEAM = 32L4KX2S36;
 				ENABLE_BITCODE = NO;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Scomb Mobile";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -547,6 +549,7 @@
 				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_TEAM = 32L4KX2S36;
 				ENABLE_BITCODE = NO;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Scomb Mobile";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
